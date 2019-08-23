@@ -1,4 +1,4 @@
---输入的相关操作都在这儿做。
+--we upadate all input data here
 
 function updateInput()
 	if love.keyboard.isDown('up') then

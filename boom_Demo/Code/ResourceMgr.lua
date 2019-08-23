@@ -1,5 +1,5 @@
---现在这个东西就是简单的加载一下内容，这里需要添加的东西还是蛮多的
---路径管理，自动加载卸载；甚至打包的strip其实都需要考虑的。
+--currently, it only finish a very simple job--just load some image and wav
+--in future, we could do path management, auto loading, or even strip during packaging
 
 function loadResource()
 	fighter0=love.graphics.newImage("Art/Sprite/Fighter0_0.png");

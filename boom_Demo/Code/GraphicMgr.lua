@@ -1,9 +1,9 @@
---这个里面的函数主要是渲染，贴图的绘制都个在这。
+--put all rendering and graphicing API here
 
 function initArtAsset()
-	--这个主要是几张图的sampler要强制设一下
-	--最好强制设成这种没有插值的。
-	--但是比较坑，这个必须在draw里面设，考虑资源管理里面搞个API
+	--we force the sampler here.
+	--don't like any interpolation, just use point filter is good.
+	--however, setting sampler have to do every draw.
 	fighter0:setFilter("nearest", "nearest");
 	bullet0:setFilter("nearest", "nearest");
 	emptybullet0:setFilter("nearest", "nearest");

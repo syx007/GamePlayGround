@@ -1,11 +1,11 @@
 require("Code/InputMgr");
-
---角色相关的东西都在这了。
+--all info and operation relate to player here
 
 function initPlayer()
-	--这个其实就是一个lua的table，但是其实考虑成struct就行
-	--然后lua里面没有写local的变量都是全局的。
-	--所以不用return。
+	--this is infact a table in LUA
+	--however we could use this just like a struct
+	--and every variable in LUA is global in default.
+	--unless you put local keyword
 	player={};
 	player.x=100;
 	player.y=120;
