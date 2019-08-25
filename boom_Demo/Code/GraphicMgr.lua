@@ -1,4 +1,5 @@
 -- put all rendering and graphicing API here
+require("Code/ElementLib")
 function initArtAsset()
     -- we force the sampler here.
     -- don't like any interpolation, just use point filter is good.
@@ -35,13 +36,14 @@ end
 function updateMap()
 	for i=1,mapLineCount do
 		for j=1,mapLineCount do
-			ElementData=mapData[i][j];
-			if ElementData>0 then
+			ElementData=getElementByID(mapData[i][j].id);
+			if not (ElementData==nil) then
 				local gsize = mapSize / mapLineCount
 				local csize = mapSize / mapLineCount - 10
 				local cPosX = mapULoffsetX + i * gsize;
 				local cPosY = mapULoffsetY + j * gsize;
-				love.graphics.setColor(0,0,1.0);
+				-- love.graphics.setColor(0,0,1);
+				love.graphics.setColor(ElementData.color[1]/255,ElementData.color[2]/255,ElementData.color[3]/255);
 				love.graphics.circle("fill", cPosX-gsize/2.0, cPosY-gsize/2.0, csize/2.0)
 			end
 		end
