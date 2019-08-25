@@ -29,9 +29,7 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
-	updateMap_Cursor();
-
-
+	updateMap_Cursor_pushOnly();
     cursor.cx = cursor.cx + cursor.dx
     cursor.cy = cursor.cy + cursor.dy
     cursor.cy = math.min(mapLineCount - 1, math.max(0, cursor.cy))

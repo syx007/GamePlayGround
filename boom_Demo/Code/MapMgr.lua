@@ -8,7 +8,7 @@ function initMap()
     end
 end
 
-function updateMap_Cursor()
+function updateMap_Cursor_pushOnly()
     ePosX = cursor.cx + 1
     ePosY = cursor.cy + 1
     for i = 1, mapLineCount do
