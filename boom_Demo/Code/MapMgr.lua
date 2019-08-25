@@ -5,25 +5,45 @@ require("Code/ElementLib")
 -- [1 0 4]
 -- [  3  ]
 
+function dispToOffset(pX, pY)
+    if pX == 0 then
+        if pY == 1 then
+            return 3
+        else
+            if pY == 0 then
+                return 0
+            else
+                return 2
+            end
+        end
+    else
+        if pX == 1 then
+            return 4
+        else
+            return 1
+        end
+    end
+end
+
 function posOffsetByConnectivity(connectivity)
-    local Pos = {0, 0};
+    local Pos = {0, 0}
 
     if connectivity == 0 then
-        return Pos;
+        return Pos
     elseif connectivity == 1 then
-        Pos[1] = Pos[1] - 1;
-        return Pos;
+        Pos[1] = Pos[1] - 1
+        return Pos
     elseif connectivity == 4 then
-        Pos[1] = Pos[1] + 1;
-        return Pos;
+        Pos[1] = Pos[1] + 1
+        return Pos
     elseif connectivity == 2 then
-        Pos[2] = Pos[2] - 1;
-        return Pos;
+        Pos[2] = Pos[2] - 1
+        return Pos
     elseif connectivity == 3 then
-        Pos[2] = Pos[2] + 1;
-        return Pos;
+        Pos[2] = Pos[2] + 1
+        return Pos
     end
-    return Pos;
+    return Pos
 end
 
 -- function shiftPosByConnectivity(Pos, connectivity)
@@ -59,6 +79,22 @@ function initMap()
     end
 end
 
+function initDisplacement()
+    displaceData = {}
+    for i = 1, mapLineCount do
+        displaceData[i] = {}
+        for j = 1, mapLineCount do displaceData[i][j] = 0 end
+    end
+end
+
+function initSwapMap()
+    swapMapData = {}
+    for i = 1, mapLineCount do
+        swapMapData[i] = {}
+        for j = 1, mapLineCount do swapMapData[i][j] = BlankElement() end
+    end
+end
+
 function copyNewMapByVal()
     local newMapData = {}
     for i = 1, mapLineCount do
@@ -83,51 +119,73 @@ end
 
 function connectivityMoveCheck(tragetPosX, tragetPosY, i, j, fromDir)
     -- print("connectivityMoveCheck");
-    local total=mapData[i][j].connectivity;
-    for i=0,3 do
-        print(math.floor(total/math.pow(10,i)%10));
-    end
-    local cctvty = 0
-    if not (mapData[i][j].connectivity%10 + fromDir == 5) then
-        cctvty = mapData[i][j].connectivity%10;--
-    end
-    if cctvty == 0 then
+    local total = mapData[i][j].connectivity
+    if total == 0 then
+        -- have really nothing else connected.
         return isTargetMovable(tragetPosX, tragetPosY)
     else
-        local offset = posOffsetByConnectivity(cctvty)
-        local localMovable = isTargetMovable(tragetPosX, tragetPosY)
+        local localMovable = false
+        local remoteMovable = true
+        for idx = 0, 3 do
+            local cctvty = math.floor(total / math.pow(10, idx) % 10)
+            local offset = posOffsetByConnectivity(cctvty)
+            local localMovableTmp = isTargetMovable(tragetPosX, tragetPosY)
 
-        if not localMovable then
-            if (offset[1] == tragetPosX - i) and (offset[2] == tragetPosY - j) then
-                localMovable = true
+            if not localMovableTmp then
+                if (offset[1] == tragetPosX - i) and
+                    (offset[2] == tragetPosY - j) then
+                    -- print("fliped")
+                    localMovableTmp = true
+                end
+            end
+            localMovable = localMovable or localMovableTmp
+            if not (cctvty + fromDir == 5) and (not (cctvty == 0)) then
+                local localMovableTmp = connectivityMoveCheck(
+                                            tragetPosX + offset[1],
+                                            tragetPosY + offset[2],
+                                            i + offset[1], j + offset[2], cctvty)
+                remoteMovable = remoteMovable and localMovableTmp
             end
         end
-
-        local remoteMovable = connectivityMoveCheck(tragetPosX + offset[1],
-                                                    tragetPosY + offset[2],
-                                                    i + offset[1],
-                                                    j + offset[2], cctvty)
-        return (localMovable and remoteMovable)
+        -- print((i .. j))
+        -- print(("localMovable"))
+        -- print((localMovable))
+        -- print(("remoteMovable"))
+        -- print((remoteMovable))
+        -- print((remoteMovable and localMovable))
+        return (remoteMovable and localMovable)
     end
 end
 
 function moveSingleElement(newMapData, mapData, i, j, tragetPosX, tragetPosY)
-    newMapData[tragetPosX][tragetPosY] = mapData[i][j]
-    newMapData[i][j] = BlankElement()
+    -- newMapData[tragetPosX][tragetPosY] = mapData[i][j]
+    -- newMapData[i][j] = BlankElement()
+    displaceData[i][j] = dispToOffset(tragetPosX - i, tragetPosY - j)
+    print(tragetPosX - i, tragetPosY - j)
+    print(displaceData[i][j])
 end
 
 function moveElement(newMapData, mapData, i, j, tragetPosX, tragetPosY, fromDir)
-    local cctvty = 0
-    if not (mapData[i][j].connectivity%10 + fromDir == 5) then
-        cctvty = mapData[i][j].connectivity%10;
+    -- print("moveElement")
+    local total = mapData[i][j].connectivity
+    if total == 0 then
+        -- have really nothing else connected.
+        -- print("moveElementOnly")
+        moveSingleElement(newMapData, mapData, i, j, tragetPosX, tragetPosY)
+    else
+        -- print("moveElementConnected")
+        for idx = 0, 3 do
+            local cctvty = math.floor(total / math.pow(10, idx) % 10)
+            if not (cctvty + fromDir == 5) and (not (cctvty == 0)) then
+                -- print(cctvty)
+                local offset = posOffsetByConnectivity(cctvty)
+                moveElement(newMapData, mapData, i + offset[1], j + offset[2],
+                            tragetPosX + offset[1], tragetPosY + offset[2],
+                            cctvty)
+            end
+        end
+        moveSingleElement(newMapData, mapData, i, j, tragetPosX, tragetPosY)
     end
-    if not (cctvty == 0) then
-        local cctvty = mapData[i][j].connectivity%10;
-        local offset = posOffsetByConnectivity(cctvty)
-        moveElement(newMapData, mapData, i + offset[1], j + offset[2],
-        tragetPosX + offset[1], tragetPosY + offset[2],cctvty)
-    end
-    moveSingleElement(newMapData, mapData, i, j, tragetPosX, tragetPosY)
 end
 
 function pushElement(cCX, cCY, i, j, cascadePush, newMapData)
@@ -138,7 +196,8 @@ function pushElement(cCX, cCY, i, j, cascadePush, newMapData)
     if (not isPushingY) and (not isPushingX) then return end
     local tragetPos = {i + cursor.dx, j + cursor.dy}
     if connectivityMoveCheck(tragetPos[1], tragetPos[2], i, j, 0) then
-        moveElement(newMapData, mapData, i, j, tragetPos[1], tragetPos[2],0)
+        moveElement(newMapData, mapData, i, j, tragetPos[1], tragetPos[2], 0)
+        print("====")
     else
         if isPushingY then cursor.dy = 0 end
         if isPushingX then cursor.dx = 0 end
@@ -150,8 +209,35 @@ function pullElement(cCX, cCY, i, j)
     -- TODO
 end
 
+function swapMap_wDisp()
+    initSwapMap()
+    for i = 1, mapLineCount do
+        for j = 1, mapLineCount do
+            if not (displaceData[i][j] == 0) then
+                print(displaceData[i][j])
+            end
+            local offset = posOffsetByConnectivity(displaceData[i][j])
+            if not (displaceData[i][j] == 0) then
+                print(offset[1] .. offset[2])
+            end
+            if not (mapData[i][j].id == 0) then
+                swapMapData[i + offset[1]][j + offset[2]] = mapData[i][j]
+            end
+        end
+    end
+    mapData = swapMapData
+end
+
+function swapMap()
+    initSwapMap()
+    for i = 1, mapLineCount do
+        for j = 1, mapLineCount do swapMapData[i][j] = mapData[i][j] end
+    end
+    mapData = swapMapData
+end
+
 function updateMap_Cursor_pushOnly()
-    local newMapData = copyNewMapByVal() -- this is pass by reference, need pass by value.
+    initDisplacement()
     local covtCX = cursor.cx + 1
     local covtCY = cursor.cy + 1
     for i = 1, mapLineCount do
@@ -161,7 +247,7 @@ function updateMap_Cursor_pushOnly()
             end
         end
     end
-    mapData = newMapData
+    swapMap_wDisp()
 end
 
 function setUpMap()
@@ -170,10 +256,10 @@ function setUpMap()
     mapData[2][3].connectivity = 4
 
     mapData[3][3].id = 1
-    mapData[3][3].connectivity = 24
+    mapData[3][3].connectivity = 13
 
     mapData[3][4].id = 2
-    mapData[3][4].connectivity = 34
+    mapData[3][4].connectivity = 24
 
     mapData[4][4].id = 2
     mapData[4][4].connectivity = 1
