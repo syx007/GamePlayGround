@@ -20,3 +20,17 @@ function getElementByID(id)
     -- return Element4;
     return chart[id];
 end
+
+function BlankElement()
+    local e = {}
+    e.id = 0
+    e.connectivity = 0
+    return e
+end
+
+function BlankStruct()
+    local e = {}
+    e.id = 0
+    e.connectivity = 0
+    return e
+end

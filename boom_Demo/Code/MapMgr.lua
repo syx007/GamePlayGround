@@ -1,108 +1,10 @@
 require("Code/ElementLib")
+require("Code/Utils")
 
 -- connectivity:
 -- [  2  ]
 -- [1 0 4]
 -- [  3  ]
-
-function dispToOffset(pX, pY)
-    if pX == 0 then
-        if pY == 1 then
-            return 3
-        else
-            if pY == 0 then
-                return 0
-            else
-                return 2
-            end
-        end
-    else
-        if pX == 1 then
-            return 4
-        else
-            return 1
-        end
-    end
-end
-
-function posOffsetByConnectivity(connectivity)
-    local Pos = {0, 0}
-
-    if connectivity == 0 then
-        return Pos
-    elseif connectivity == 1 then
-        Pos[1] = Pos[1] - 1
-        return Pos
-    elseif connectivity == 4 then
-        Pos[1] = Pos[1] + 1
-        return Pos
-    elseif connectivity == 2 then
-        Pos[2] = Pos[2] - 1
-        return Pos
-    elseif connectivity == 3 then
-        Pos[2] = Pos[2] + 1
-        return Pos
-    end
-    return Pos
-end
-
--- function shiftPosByConnectivity(Pos, connectivity)
---     if connectivity == 0 then
---         return Pos
---     elseif connectivity == 1 then
---         Pos[1] = Pos[1] - 1
---         return Pos
---     elseif connectivity == 4 then
---         Pos[1] = Pos[1] + 1
---         return Pos
---     elseif connectivity == 2 then
---         Pos[2] = Pos[2] - 1
---         return Pos
---     elseif connectivity == 3 then
---         Pos[2] = Pos[2] - 1
---         return Pos
---     end
--- end
-
-function BlankElement()
-    local e = {}
-    e.id = 0
-    e.connectivity = 0
-    return e
-end
-
-function initMap()
-    mapData = {}
-    for i = 1, mapLineCount do
-        mapData[i] = {}
-        for j = 1, mapLineCount do mapData[i][j] = BlankElement() end
-    end
-end
-
-function initDisplacement()
-    displaceData = {}
-    for i = 1, mapLineCount do
-        displaceData[i] = {}
-        for j = 1, mapLineCount do displaceData[i][j] = 0 end
-    end
-end
-
-function initSwapMap()
-    swapMapData = {}
-    for i = 1, mapLineCount do
-        swapMapData[i] = {}
-        for j = 1, mapLineCount do swapMapData[i][j] = BlankElement() end
-    end
-end
-
-function copyNewMapByVal()
-    local newMapData = {}
-    for i = 1, mapLineCount do
-        newMapData[i] = {}
-        for j = 1, mapLineCount do newMapData[i][j] = mapData[i][j] end
-    end
-    return newMapData
-end
 
 function isTargetInMap(tragetPosX, tragetPosY)
     return (tragetPosX > 0 and tragetPosX < mapLineCount + 1) and
@@ -158,11 +60,9 @@ function connectivityMoveCheck(tragetPosX, tragetPosY, i, j, fromDir)
 end
 
 function moveSingleElement(newMapData, mapData, i, j, tragetPosX, tragetPosY)
-    -- newMapData[tragetPosX][tragetPosY] = mapData[i][j]
-    -- newMapData[i][j] = BlankElement()
     displaceData[i][j] = dispToOffset(tragetPosX - i, tragetPosY - j)
-    print(tragetPosX - i, tragetPosY - j)
-    print(displaceData[i][j])
+    -- print(tragetPosX - i, tragetPosY - j)
+    -- print(displaceData[i][j])
 end
 
 function moveElement(newMapData, mapData, i, j, tragetPosX, tragetPosY, fromDir)
@@ -197,7 +97,7 @@ function pushElement(cCX, cCY, i, j, cascadePush, newMapData)
     local tragetPos = {i + cursor.dx, j + cursor.dy}
     if connectivityMoveCheck(tragetPos[1], tragetPos[2], i, j, 0) then
         moveElement(newMapData, mapData, i, j, tragetPos[1], tragetPos[2], 0)
-        print("====")
+        -- print("====")
     else
         if isPushingY then cursor.dy = 0 end
         if isPushingX then cursor.dx = 0 end
@@ -213,13 +113,7 @@ function swapMap_wDisp()
     initSwapMap()
     for i = 1, mapLineCount do
         for j = 1, mapLineCount do
-            if not (displaceData[i][j] == 0) then
-                print(displaceData[i][j])
-            end
             local offset = posOffsetByConnectivity(displaceData[i][j])
-            if not (displaceData[i][j] == 0) then
-                print(offset[1] .. offset[2])
-            end
             if not (mapData[i][j].id == 0) then
                 swapMapData[i + offset[1]][j + offset[2]] = mapData[i][j]
             end
@@ -250,17 +144,38 @@ function updateMap_Cursor_pushOnly()
     swapMap_wDisp()
 end
 
-function setUpMap()
-    -- save elementID
-    mapData[2][3].id = 1
-    mapData[2][3].connectivity = 4
+function addBound(oldBond, newBond)
 
-    mapData[3][3].id = 1
-    mapData[3][3].connectivity = 13
+    for idx = 0, 3 do
+        local cBond = math.floor(oldBond / math.pow(10, idx) % 10)
+        if cBond == newBond then return oldBond end
+    end
+    local res=oldBond * 10 + newBond;
+    return res;
+end
 
-    mapData[3][4].id = 2
-    mapData[3][4].connectivity = 24
-
-    mapData[4][4].id = 2
-    mapData[4][4].connectivity = 1
+function updateElementBond()
+    -- currently the bond is still exclusive.
+    if frametiker == 0 then
+        for i = 1, mapLineCount do
+            for j = 1, mapLineCount do
+                if mapData[i][j].id > 0 then
+                    if mapStructData[i][j].id > 0 then
+                        offset = posOffsetByConnectivity(
+                                     mapStructData[i][j].connectivity)
+                        if mapData[i + offset[1]][j + offset[2]].id > 0 then
+                            mapData[i][j].connectivity =
+                                addBound(mapData[i][j].connectivity,
+                                         mapStructData[i][j].connectivity)
+                            mapData[i + offset[1]][j + offset[2]].connectivity =
+                                addBound(
+                                    mapData[i + offset[1]][j + offset[2]]
+                                        .connectivity, mapStructData[i +
+                                        offset[1]][j + offset[2]].connectivity)
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
