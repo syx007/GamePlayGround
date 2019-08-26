@@ -11,11 +11,19 @@ function isTargetInMap(tragetPosX, tragetPosY)
                (tragetPosY > 0 and tragetPosY < mapLineCount + 1)
 end
 
+function isTargetMovable_Cursor(tragetPosX, tragetPosY)
+    if not isTargetInMap(tragetPosX, tragetPosY) then
+        return false
+    else
+        return (not (mapStructData[tragetPosX][tragetPosY].id == 5));
+    end
+end
+
 function isTargetMovable(tragetPosX, tragetPosY)
     if not isTargetInMap(tragetPosX, tragetPosY) then
         return false
     else
-        return (mapData[tragetPosX][tragetPosY].id <= 0)
+        return (mapData[tragetPosX][tragetPosY].id <= 0)and(not (mapStructData[tragetPosX][tragetPosY].id == 5))
     end
 end
 
@@ -150,8 +158,29 @@ function addBound(oldBond, newBond)
         local cBond = math.floor(oldBond / math.pow(10, idx) % 10)
         if cBond == newBond then return oldBond end
     end
-    local res=oldBond * 10 + newBond;
-    return res;
+    local res = oldBond * 10 + newBond
+    return res
+end
+
+function checkWinning()
+    if frametiker == 0 then
+        for i = 1, mapLineCount do
+            for j = 1, mapLineCount do
+                if mapGoalData[i][j].id > 0 then
+                    if (not (mapData[i][j].id == mapGoalData[i][j].id)) or
+                        (not (mapData[i][j].connectivity ==
+                            mapGoalData[i][j].connectivity)) then
+                        win = false
+                        return
+                    end
+                end
+            end
+        end
+        win = true
+        return
+    end
+    win = false
+    return
 end
 
 function updateElementBond()

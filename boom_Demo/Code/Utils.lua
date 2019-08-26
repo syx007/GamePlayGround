@@ -48,6 +48,15 @@ function initMap()
     end
 end
 
+function initGoalMap()
+    -- this is dynamic atom map
+    mapGoalData = {}
+    for i = 1, mapLineCount do
+        mapGoalData[i] = {}
+        for j = 1, mapLineCount do mapGoalData[i][j] = BlankElement() end
+    end
+end
+
 function initStructMap()
     -- put static struction data here
     mapStructData = {}
@@ -102,15 +111,39 @@ function setUpMap()
     mapData[5][3].connectivity = 0
 end
 
+function setGoalMap()
+    -- save elementID
+    -- mapData[2][3].id = 1
+    -- mapData[2][3].connectivity = 4
+
+    -- mapData[3][3].id = 1
+    -- mapData[3][3].connectivity = 13
+
+    -- mapData[3][4].id = 2
+    -- mapData[3][4].connectivity = 24
+
+    -- mapData[4][4].id = 2
+    -- mapData[4][4].connectivity = 1
+    mapGoalData[3][6].id = 1
+    mapGoalData[3][6].connectivity = 4
+
+    mapGoalData[4][6].id = 1
+    mapGoalData[4][6].connectivity = 1
+end
+
 function setUpStructMap()
     -- save elementID
     -- 1:add
     -- 2:minus
     -- 3:rotateL
     -- 4:rotateR
+    -- 5:Blocker
     mapStructData[3][4].id = 1
     mapStructData[3][4].connectivity = 4
 
     mapStructData[4][4].id = 1
     mapStructData[4][4].connectivity = 1
+
+    mapStructData[4][3].id = 5
+    mapStructData[4][3].connectivity = 0
 end
