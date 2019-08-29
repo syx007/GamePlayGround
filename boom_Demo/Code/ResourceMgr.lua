@@ -7,4 +7,5 @@ function loadResource()
 	emptybullet0=love.graphics.newImage("Art/Sprite/Bullet0_1.png");
 	shootSFX = love.audio.newSource("Music/SFX/Hit_00.wav", "static");
 	noBulletSFX = love.audio.newSource("Music/SFX/Open_01.wav", "static");
+	ship = love.graphics.newImage("Art/Sprite/ship.png");
 end

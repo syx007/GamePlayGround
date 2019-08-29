@@ -1,3 +1,5 @@
+
+require("Code/AnimationSheet");
 --put all rendering and graphicing API here
 
 function initArtAsset()
@@ -15,7 +17,9 @@ function mainGraphicUpdate()
 			love.graphics.draw(bullet0,bulletList[i].x,bulletList[i].y);
 		end
 	end
-	love.graphics.draw(fighter0,player.x,player.y);
+	-- love.graphics.draw(fighter0,player.x,player.y);
+
+	DrawAnimationSheet(player.sheet,player.x,player.y,0,1,1);
 end
 
 function uiUpdate()
