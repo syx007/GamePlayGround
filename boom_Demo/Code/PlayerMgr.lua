@@ -7,6 +7,8 @@ function initCursor()
 	cursor.cy = 0
 	cursor.dx = 0
     cursor.dy = 0
+    cursor.action = 0
+    cursor.rotate = 0
 end
 
 function initPlayer()

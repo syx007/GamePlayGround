@@ -13,12 +13,17 @@ end
 
 function drawCursor()
     local gsize = mapSize / mapLineCount
-    local csize = mapSize / mapLineCount - 10
+    -- local csize = mapSize / mapLineCount - 10
     local cPosX = mapULoffsetX + cursor.cx * gsize + 5
     local cPosY = mapULoffsetY + cursor.cy * gsize + 5
-    love.graphics.setColor(1.0, 1.0, 1.0)
-    love.graphics.rectangle("line", cPosX, cPosY, csize, csize, 3, 3, 5)
+    if playDemo_2 then
+        love.graphics.setColor(1.0, 1.0, 1.0)
+    else
+        love.graphics.setColor(1.0, 0.0, 0.0)
+    end
+    love.graphics.rectangle("line", cPosX, cPosY, cellSize, cellSize, 3, 3, 5)
 end
+
 function drawGrid(count, pX, pY, sX, sY)
     love.graphics.setColor(1.0, 1.0, 1.0, 1.0)
     love.graphics.setLineWidth(1)
@@ -83,8 +88,10 @@ function updateMap()
                 elseif (StructDataID == 5) then
                     love.graphics.setColor(1.0, 1.0, 1.0)
                     love.graphics.setLineWidth(1)
-                    love.graphics.line(cPosX,cPosY,cPosX-gridSize,cPosY-gridSize);
-                    love.graphics.line(cPosX,cPosY-gridSize,cPosX-gridSize,cPosY);
+                    love.graphics.line(cPosX, cPosY, cPosX - gridSize,
+                                       cPosY - gridSize)
+                    love.graphics.line(cPosX, cPosY - gridSize,
+                                       cPosX - gridSize, cPosY)
                 end
             end
             if not (ElementGoalData == nil) then
@@ -107,12 +114,73 @@ function updateMap()
     end
 end
 
+function updateTileMap()
+    for i = 1, mapLineCount do
+        for j = 1, mapLineCount do
+            -- ElementData = getElementByID(mapData[i][j].id)
+
+            local cPosX = mapULoffsetX + (i - 1) * gridSize + 5
+            local cPosY = mapULoffsetY + (j - 1) * gridSize + 5
+
+            local cCirPosX = cPosX - gridSize / 2.0
+            local cCirPosY = cPosY - gridSize / 2.0
+            local hCellSize = cellSize / 2.0
+            local tileCoreSize = cellSize * 0.6
+            local tileOffset=(cellSize-tileCoreSize)/2.0;
+            if not (mapData[i][j] == nil) then
+                local coreID=extractDataByPtr(mapData[i][j].id,0);
+                local westID=getRotatedSide_Single(1,mapData[i][j].id,mapData[i][j].rotation);
+                local northID=getRotatedSide_Single(2,mapData[i][j].id,mapData[i][j].rotation);
+                local southID=getRotatedSide_Single(3,mapData[i][j].id,mapData[i][j].rotation);
+                local eastID=getRotatedSide_Single(4,mapData[i][j].id,mapData[i][j].rotation);
+                
+                -- westID=getRotatedSide_Single(westID,mapData[i][j].rotation);
+                -- northID=getRotatedSide_Single(northID,mapData[i][j].rotation);
+                -- southID=getRotatedSide_Single(southID,mapData[i][j].rotation);
+                -- eastID=getRotatedSide_Single(eastID,mapData[i][j].rotation);
+                
+                CoreColor(coreID);
+                love.graphics.setColor(coreColor[1], coreColor[2], coreColor[3])--Core    
+                love.graphics.rectangle("fill", cPosX+tileOffset, cPosY+tileOffset, tileCoreSize,
+                tileCoreSize, 3, 3, 5)
+                
+                -- print(westID);
+                SubTileColor(westID);
+                love.graphics.setColor(subTileColor[1], subTileColor[2], subTileColor[3])--subtile-1     
+                love.graphics.rectangle("fill", cPosX-1, cPosY+tileOffset, tileOffset,
+                tileCoreSize, 3, 3, 5)
+                            
+                SubTileColor(northID);
+                love.graphics.setColor(subTileColor[1], subTileColor[2], subTileColor[3])--subtile-2
+                love.graphics.rectangle("fill", cPosX+tileOffset, cPosY-1, tileCoreSize,
+                tileOffset, 3, 3, 5)
+                
+                SubTileColor(southID);
+                love.graphics.setColor(subTileColor[1], subTileColor[2], subTileColor[3])--subtile-3
+                love.graphics.rectangle("fill", cPosX+tileOffset, cPosY+1+tileCoreSize+tileOffset, tileCoreSize,
+                tileOffset, 3, 3, 5)
+
+                SubTileColor(eastID);
+                love.graphics.setColor(subTileColor[1], subTileColor[2], subTileColor[3]) --subtile-4
+                love.graphics.rectangle("fill", cPosX+1+tileCoreSize+tileOffset, cPosY+tileOffset, tileOffset,
+                tileCoreSize, 3, 3, 5)
+            end
+        end
+    end
+end
+
 function mainGraphicUpdate()
     drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
-    updateMap()
-    updateTimer()
-    drawCursor()
-    printWin()
+    if playDemo_2 then
+        updateMap()
+        updateTimer()
+        drawCursor()
+        printWin()
+    else
+        updateTileMap()
+        drawCursor()
+        printScore();
+    end
 end
 
 function uiUpdate()
@@ -123,6 +191,12 @@ function uiUpdate()
             love.graphics.draw(emptybullet0, 10 + i * 24, 220)
         end
     end
+end
+
+function printScore()
+    love.graphics.setColor(1.0,1.0,1.0)
+    local font = love.graphics.newFont(14)
+    love.graphics.print(score, 265, 100)
 end
 
 function printWin()

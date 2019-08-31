@@ -6,16 +6,34 @@ require("Code/Utils")
 -- [1 0 4]
 -- [  3  ]
 
+-- s=1 r=1:
+
 function isTargetInMap(tragetPosX, tragetPosY)
     return (tragetPosX > 0 and tragetPosX < mapLineCount + 1) and
                (tragetPosY > 0 and tragetPosY < mapLineCount + 1)
 end
 
-function isTargetMovable_Cursor(tragetPosX, tragetPosY)
-    if not isTargetInMap(tragetPosX, tragetPosY) then
-        return false
+function tileIsBlocked(tragetPosX, tragetPosY)
+    return not (mapData[tragetPosX][tragetPosY] == nil)
+end
+
+function isTargetMovable_Cursor_withTile(tragetPosX, tragetPosY)
+    if isTargetInMap(tragetPosX, tragetPosY) then
+        return not tileIsBlocked(tragetPosX, tragetPosY)
     else
-        return (not (mapStructData[tragetPosX][tragetPosY].id == 5));
+        return false
+    end
+end
+
+function isTargetMovable_Cursor(tragetPosX, tragetPosY)
+    if playDemo_2 then
+        if not isTargetInMap(tragetPosX, tragetPosY) then
+            return false
+        else
+            return (not (mapStructData[tragetPosX][tragetPosY].id == 5))
+        end
+    else
+        return isTargetInMap(tragetPosX, tragetPosY)
     end
 end
 
@@ -23,7 +41,8 @@ function isTargetMovable(tragetPosX, tragetPosY)
     if not isTargetInMap(tragetPosX, tragetPosY) then
         return false
     else
-        return (mapData[tragetPosX][tragetPosY].id <= 0)and(not (mapStructData[tragetPosX][tragetPosY].id == 5))
+        return (mapData[tragetPosX][tragetPosY].id <= 0) and
+                   (not (mapStructData[tragetPosX][tragetPosY].id == 5))
     end
 end
 
@@ -207,4 +226,53 @@ function updateElementBond()
             end
         end
     end
+end
+
+function updateLakeScore()
+    -- as prototype the score counting should not implement by programming.
+    -- could implmement by hand.
+    -- local LakeScore=0;
+    -- for i = 1, mapLineCount do
+    --     for j = 1, mapLineCount do
+    --         local cId=mapStructData[i][j].id;
+    --         if extractDataByPtr(cId,0) then
+                
+    --         end
+    --     end
+    -- end
+    -- return LakeScore;
+end
+
+function updateTileMap_Cursor()
+    local covtCX = cursor.cx + 1
+    local covtCY = cursor.cy + 1
+    if not (cursor.action == 0) then
+        -- print("moving tile")
+        if not (mapData[covtCX][covtCY] == nil) then
+            -- print("moving tile 2")
+            local offset = posOffsetByConnectivity(cursor.action)
+            if isTargetMovable_Cursor_withTile(covtCX + offset[1],
+                                               covtCY + offset[2]) then
+                mapData[covtCX + offset[1]][covtCY + offset[2]] =
+                    mapData[covtCX][covtCY]
+                mapData[covtCX][covtCY] = nil
+                cursor.dx = offset[1]
+                cursor.dy = offset[2]
+            end
+        end
+    end
+    if (cursor.rotate == 1) then
+        if not (mapData[covtCX][covtCY] == nil) then
+            -- print("rotate tile")
+            mapData[covtCX][covtCY].rotation =
+                getNextRotate(mapData[covtCX][covtCY].rotation)
+            -- print(mapData[covtCX][covtCY].rotation)
+        end
+    end
+    cursor.rotate = 0
+    cursor.action = 0
+end
+
+function updateScore()
+
 end
