@@ -1,4 +1,5 @@
 require("Code/InputMgr");
+require("Code/AnimationSheet");
 --all info and operation relate to player here
 
 function initPlayer()
@@ -14,6 +15,9 @@ function initPlayer()
 	player.speed=65.0;
 	player.bulletSpeed=130.0;
 	player.bulletCount=5;
+	
+	-- Animation Sheet
+	player.sheet = GetAnimationSheet(ship,32,32,1)
 end
 
 function updatePlayer(dt)
@@ -22,6 +26,7 @@ function updatePlayer(dt)
 	player.y=player.y+player.dy*dt;
 	player.dx=0;
 	player.dy=0;
+	UpdateAnimationSheet(player.sheet,dt);
 end
 
 function _Fire()
