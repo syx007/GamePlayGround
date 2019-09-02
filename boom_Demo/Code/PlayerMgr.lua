@@ -30,32 +30,32 @@ function updatePlayer(dt)
 end
 
 function _Fire()
-	if player.bulletCount<=0 then
-		noBulletSFX:play();
-	else
-		player.bulletCount=player.bulletCount-1;
-		bullet={};
-		bullet.x=player.x+16;
-		bullet.y=player.y+16;
-		table.insert(bulletList,bullet);
-		shootSFX:play();
-		return;
-	end
+    if player.bulletCount <= 0 then
+        noBulletSFX:play()
+    else
+        player.bulletCount = player.bulletCount - 1
+        bullet = {}
+        bullet.x = player.x + 16
+        bullet.y = player.y + 16
+        table.insert(bulletList, bullet)
+        shootSFX:play()
+        return
+    end
 end
 
 function updateBullet(dt)
-	local dyingBullet={};
-	if #bulletList>0 then
-		for i=1,#bulletList do
-			bulletList[i].x=bulletList[i].x+player.bulletSpeed*dt;
-			if bulletList[i].x>320 then
-				table.insert(dyingBullet,i);
-			end
-		end
-	end
-	if #dyingBullet>0 then
-		for i=1,#dyingBullet do
-			table.remove(bulletList,dyingBullet[i]);
-		end
-	end
+    local dyingBullet = {}
+    if #bulletList > 0 then
+        for i = 1, #bulletList do
+            bulletList[i].x = bulletList[i].x + player.bulletSpeed * dt
+            if bulletList[i].x > 320 then
+                table.insert(dyingBullet, i)
+            end
+        end
+    end
+    if #dyingBullet > 0 then
+        for i = 1, #dyingBullet do
+            table.remove(bulletList, dyingBullet[i])
+        end
+    end
 end
