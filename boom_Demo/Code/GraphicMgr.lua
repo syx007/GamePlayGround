@@ -1,6 +1,6 @@
--- put all rendering and graphicing API here
 require("Code/ElementLib")
 require("Code/Utils")
+require("Code/AnimationSheet");
 
 function initArtAsset()
     -- we force the sampler here.
@@ -181,6 +181,14 @@ function mainGraphicUpdate()
         drawCursor()
         printScore();
     end
+-- 	if #bulletList>0 then
+-- 		for i=1,#bulletList do
+-- 			love.graphics.draw(bullet0,bulletList[i].x,bulletList[i].y);
+-- 		end
+-- 	end
+-- 	-- love.graphics.draw(fighter0,player.x,player.y);
+
+-- 	DrawAnimationSheet(player.sheet,player.x,player.y,0,1,1);
 end
 
 function uiUpdate()
