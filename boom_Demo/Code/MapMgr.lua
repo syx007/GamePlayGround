@@ -26,15 +26,7 @@ function isTargetMovable_Cursor_withTile(tragetPosX, tragetPosY)
 end
 
 function isTargetMovable_Cursor(tragetPosX, tragetPosY)
-    if playDemo_2 then
-        if not isTargetInMap(tragetPosX, tragetPosY) then
-            return false
-        else
-            return (not (mapStructData[tragetPosX][tragetPosY].id == 5))
-        end
-    else
-        return isTargetInMap(tragetPosX, tragetPosY)
-    end
+return isTargetInMap(tragetPosX, tragetPosY)
 end
 
 function isTargetMovable(tragetPosX, tragetPosY)

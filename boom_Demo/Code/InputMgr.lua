@@ -1,15 +1,4 @@
 -- we upadate all input data here
-function updateInput_DemoII(key)
-    if love.keyboard.isDown('up') then
-        cursor.dy = -1
-    elseif love.keyboard.isDown('down') then
-        cursor.dy = 1
-    elseif love.keyboard.isDown('left') then
-        cursor.dx = -1
-    elseif love.keyboard.isDown('right') then
-        cursor.dx = 1
-    end
-end
 
 function updateInput_DemoVI(key)
     if (love.keyboard.isDown('z') or love.keyboard.isDown('j')) then

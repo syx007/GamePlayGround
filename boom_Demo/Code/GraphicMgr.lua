@@ -1,6 +1,6 @@
 require("Code/ElementLib")
 require("Code/Utils")
-require("Code/AnimationSheet");
+require("Code/AnimationSheet")
 
 function initArtAsset()
     -- we force the sampler here.
@@ -16,11 +16,7 @@ function drawCursor()
     -- local csize = mapSize / mapLineCount - 10
     local cPosX = mapULoffsetX + cursor.cx * gsize + 5
     local cPosY = mapULoffsetY + cursor.cy * gsize + 5
-    if playDemo_2 then
-        love.graphics.setColor(1.0, 1.0, 1.0)
-    else
-        love.graphics.setColor(1.0, 0.0, 0.0)
-    end
+    love.graphics.setColor(1.0, 0.0, 0.0)
     love.graphics.rectangle("line", cPosX, cPosY, cellSize, cellSize, 3, 3, 5)
 end
 
@@ -126,83 +122,80 @@ function updateTileMap()
             local cCirPosY = cPosY - gridSize / 2.0
             local hCellSize = cellSize / 2.0
             local tileCoreSize = cellSize * 0.6
-            local tileOffset=(cellSize-tileCoreSize)/2.0;
+            local tileOffset = (cellSize - tileCoreSize) / 2.0
             if not (mapData[i][j] == nil) then
-                local coreID=extractDataByPtr(mapData[i][j].id,0);
-                local westID=getRotatedSide_Single(1,mapData[i][j].id,mapData[i][j].rotation);
-                local northID=getRotatedSide_Single(2,mapData[i][j].id,mapData[i][j].rotation);
-                local southID=getRotatedSide_Single(3,mapData[i][j].id,mapData[i][j].rotation);
-                local eastID=getRotatedSide_Single(4,mapData[i][j].id,mapData[i][j].rotation);
-                
+                local coreID = extractDataByPtr(mapData[i][j].id, 0)
+                local westID = getRotatedSide_Single(1, mapData[i][j].id,
+                                                     mapData[i][j].rotation)
+                local northID = getRotatedSide_Single(2, mapData[i][j].id,
+                                                      mapData[i][j].rotation)
+                local southID = getRotatedSide_Single(3, mapData[i][j].id,
+                                                      mapData[i][j].rotation)
+                local eastID = getRotatedSide_Single(4, mapData[i][j].id,
+                                                     mapData[i][j].rotation)
+
                 -- westID=getRotatedSide_Single(westID,mapData[i][j].rotation);
                 -- northID=getRotatedSide_Single(northID,mapData[i][j].rotation);
                 -- southID=getRotatedSide_Single(southID,mapData[i][j].rotation);
                 -- eastID=getRotatedSide_Single(eastID,mapData[i][j].rotation);
-                
-                CoreColor(coreID);
-                love.graphics.setColor(coreColor[1], coreColor[2], coreColor[3])--Core    
-                love.graphics.rectangle("fill", cPosX+tileOffset, cPosY+tileOffset, tileCoreSize,
-                tileCoreSize, 3, 3, 5)
-                
-                -- print(westID);
-                SubTileColor(westID);
-                love.graphics.setColor(subTileColor[1], subTileColor[2], subTileColor[3])--subtile-1     
-                love.graphics.rectangle("fill", cPosX-1, cPosY+tileOffset, tileOffset,
-                tileCoreSize, 3, 3, 5)
-                            
-                SubTileColor(northID);
-                love.graphics.setColor(subTileColor[1], subTileColor[2], subTileColor[3])--subtile-2
-                love.graphics.rectangle("fill", cPosX+tileOffset, cPosY-1, tileCoreSize,
-                tileOffset, 3, 3, 5)
-                
-                SubTileColor(southID);
-                love.graphics.setColor(subTileColor[1], subTileColor[2], subTileColor[3])--subtile-3
-                love.graphics.rectangle("fill", cPosX+tileOffset, cPosY+1+tileCoreSize+tileOffset, tileCoreSize,
-                tileOffset, 3, 3, 5)
 
-                SubTileColor(eastID);
-                love.graphics.setColor(subTileColor[1], subTileColor[2], subTileColor[3]) --subtile-4
-                love.graphics.rectangle("fill", cPosX+1+tileCoreSize+tileOffset, cPosY+tileOffset, tileOffset,
-                tileCoreSize, 3, 3, 5)
+                CoreColor(coreID)
+                love.graphics.setColor(coreColor[1], coreColor[2], coreColor[3]) -- Core    
+                love.graphics.rectangle("fill", cPosX + tileOffset,
+                                        cPosY + tileOffset, tileCoreSize,
+                                        tileCoreSize, 3, 3, 5)
+
+                -- print(westID);
+                SubTileColor(westID)
+                love.graphics.setColor(subTileColor[1], subTileColor[2],
+                                       subTileColor[3]) -- subtile-1     
+                love.graphics.rectangle("fill", cPosX - 1, cPosY + tileOffset,
+                                        tileOffset, tileCoreSize, 3, 3, 5)
+
+                SubTileColor(northID)
+                love.graphics.setColor(subTileColor[1], subTileColor[2],
+                                       subTileColor[3]) -- subtile-2
+                love.graphics.rectangle("fill", cPosX + tileOffset, cPosY - 1,
+                                        tileCoreSize, tileOffset, 3, 3, 5)
+
+                SubTileColor(southID)
+                love.graphics.setColor(subTileColor[1], subTileColor[2],
+                                       subTileColor[3]) -- subtile-3
+                love.graphics.rectangle("fill", cPosX + tileOffset,
+                                        cPosY + 1 + tileCoreSize + tileOffset,
+                                        tileCoreSize, tileOffset, 3, 3, 5)
+
+                SubTileColor(eastID)
+                love.graphics.setColor(subTileColor[1], subTileColor[2],
+                                       subTileColor[3]) -- subtile-4
+                love.graphics.rectangle("fill",
+                                        cPosX + 1 + tileCoreSize + tileOffset,
+                                        cPosY + tileOffset, tileOffset,
+                                        tileCoreSize, 3, 3, 5)
             end
         end
     end
 end
 
-function mainGraphicUpdate()
-    drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
-    if playDemo_2 then
-        updateMap()
-        updateTimer()
-        drawCursor()
-        printWin()
-    else
-        updateTileMap()
-        drawCursor()
-        printScore();
-    end
--- 	if #bulletList>0 then
--- 		for i=1,#bulletList do
--- 			love.graphics.draw(bullet0,bulletList[i].x,bulletList[i].y);
--- 		end
--- 	end
--- 	-- love.graphics.draw(fighter0,player.x,player.y);
-
--- 	DrawAnimationSheet(player.sheet,player.x,player.y,0,1,1);
+function updateAnimation()
+    --TODO
 end
 
-function uiUpdate()
-    for i = 0, 4 do
-        if i < player.bulletCount then
-            love.graphics.draw(bullet0, 10 + i * 24, 220)
-        else
-            love.graphics.draw(emptybullet0, 10 + i * 24, 220)
-        end
-    end
+function drawShop()
+    --TODO
+end
+
+function applyPP()
+    --TODO
+end
+
+function updateUI()
+    -- TODO
+    -- printScore();
 end
 
 function printScore()
-    love.graphics.setColor(1.0,1.0,1.0)
+    love.graphics.setColor(1.0, 1.0, 1.0)
     local font = love.graphics.newFont(14)
     love.graphics.print(score, 265, 100)
 end
