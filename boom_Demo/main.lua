@@ -14,26 +14,13 @@ function love.load()
     love.window.setMode(320, 240, {resizable = false})
     mapULoffsetX = 10
     mapULoffsetY = 10
-    if playDemo_2 then
-        mapLineCount = 6
-    else
-		mapLineCount = 6
-		mapWidthCount = 6
-		mapHeightCount = 6
-    end
+	mapLineCount = 6
+	mapWidthCount = 6
+	mapHeightCount = 6
     mapSize = 220
     initCursor()
     initMap()
-    if playDemo_2 then
-        setUpMap()
-        initStructMap()
-        setUpStructMap()
-        initGoalMap()
-        setGoalMap()
-        initDisplacement()
-    else
-        setTileMap()
-    end
+    setTileMap()
     timer = 0.0
     tiker = 0.0
     frameCounter = 0
@@ -51,24 +38,12 @@ function love.keypressed(key, scancode, isrepeat)
     if key == "escape" then love.event.quit() end
     --[[ABXY=JKUI DEOT]] --
     -- if key == "j" or key == "z" then _Fire() end
-    if playDemo_2 then
-        updateInput_DemoII(key)
-    else
-        updateInput_DemoVI(key)
-    end
+    updateInput_DemoVI(key)
 end
 
 function love.update(dt)
-    if playDemo_2 then
-        if not win then
-            updateElementBond()
-            updateMap_Cursor_pushOnly()
-            checkWinning()
-        end
-    else
-        updateTileMap_Cursor()
-        updateScore()
-    end
+    updateTileMap_Cursor()
+    updateScore()
     local tragetPosX = cursor.cx + cursor.dx
     local tragetPosY = cursor.cy + cursor.dy
     -- cursor and map coodinate and +1 +1 offset
@@ -87,8 +62,17 @@ function love.update(dt)
     frametiker = frameCounter % 60
 end
 
+function mainGraphicUpdate()
+    drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
+    updateTileMap()
+    drawCursor()
+    updateAnimation()
+    updateUI()
+    drawShop()
+    applyPP()
+end
+
 function love.draw()
-    -- initArtAsset()
+    -- initArtAsset()//only use once for loading asset
     mainGraphicUpdate()
-    -- uiUpdate()
 end
