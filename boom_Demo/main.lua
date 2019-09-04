@@ -17,7 +17,9 @@ function love.load()
     if playDemo_2 then
         mapLineCount = 6
     else
-        mapLineCount = 6
+		mapLineCount = 6
+		mapWidthCount = 6
+		mapHeightCount = 6
     end
     mapSize = 220
     initCursor()

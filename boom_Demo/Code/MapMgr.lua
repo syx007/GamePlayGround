@@ -1,5 +1,6 @@
 require("Code/ElementLib")
 require("Code/Utils")
+require("Code/mapUtils")
 
 -- connectivity:
 -- [  2  ]
@@ -229,6 +230,8 @@ function updateElementBond()
 end
 
 function updateLakeScore()
+
+    
     -- as prototype the score counting should not implement by programming.
     -- could implmement by hand.
     -- local LakeScore=0;
@@ -274,5 +277,15 @@ function updateTileMap_Cursor()
 end
 
 function updateScore()
+    initMapCalculation()
+
+
+    processor = getProcessor()
+
+    if not( processor == nil ) then
+        calculateProcessor(processor.indexX,processor.indexY,1)
+    end
+    score = sumProcessor()
+
 
 end
