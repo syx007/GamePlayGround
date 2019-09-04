@@ -197,11 +197,19 @@ end
 function printScore()
     love.graphics.setColor(0.5, 1.0, 0.5)
     local font = love.graphics.newFont(14)
-	love.graphics.print(greenScore, 265, 100)
+	love.graphics.print(greenScore, 265, 50)
 	
     love.graphics.setColor(0.5, 1, 1)
     local font = love.graphics.newFont(14)
-    love.graphics.print(blueScore, 265, 150)
+	love.graphics.print(blueScore, 265, 100)
+	
+	love.graphics.setColor(1, 0.5, 1)
+    local font = love.graphics.newFont(14)
+	love.graphics.print(edgeScore, 265, 150)
+	
+    love.graphics.setColor(1, 1, 0.5)
+    local font = love.graphics.newFont(14)
+    love.graphics.print(greenScore + blueScore + edgeScore , 265, 200)
 end
 
 function printWin()
