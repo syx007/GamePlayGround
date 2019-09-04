@@ -313,7 +313,7 @@ end
 
 function sumBlue()
     local count = 0
-    local blueScores = {40,80,120,160,200,240,280,320}
+    local blueScores = {50,75,100,125,150,175,200,200}
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
