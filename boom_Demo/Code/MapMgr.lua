@@ -272,12 +272,13 @@ function updateScore()
     initMapCalculation()
 
 
-    processor = getProcessor()
+    processor = getGreenCore()
 
     if not( processor == nil ) then
-        calculateProcessor(processor.indexX,processor.indexY,1)
+        calculateGreen(processor.indexX,processor.indexY,1)
     end
-    score = sumProcessor()
+    greenScore = sumGreen()
 
+    blueScore = 999
 
 end

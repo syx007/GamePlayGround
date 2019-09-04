@@ -191,13 +191,17 @@ end
 
 function updateUI()
     -- TODO
-    -- printScore();
+    printScore();
 end
 
 function printScore()
-    love.graphics.setColor(1.0, 1.0, 1.0)
+    love.graphics.setColor(0.5, 1.0, 0.5)
     local font = love.graphics.newFont(14)
-    love.graphics.print(score, 265, 100)
+	love.graphics.print(greenScore, 265, 100)
+	
+    love.graphics.setColor(0.5, 1, 1)
+    local font = love.graphics.newFont(14)
+    love.graphics.print(blueScore, 265, 150)
 end
 
 function printWin()

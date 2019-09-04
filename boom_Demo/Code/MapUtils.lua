@@ -16,7 +16,7 @@ end
 -- local southID=getRotatedSide_Single(3,mapData[i][j].id,mapData[i][j].rotation);
 -- local eastID=getRotatedSide_Single(4,mapData[i][j].id,mapData[i][j].rotation);
 
-function getProcessor()
+function getGreenCore()
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
@@ -95,7 +95,7 @@ function checkConnection(x,y,rotation)
 
 end
 
-function calculateProcessor(x,y,processorID)
+function calculateGreen(x,y,processorID)
     if x < 1 or x > mapWidthCount then
         return 
     end
@@ -124,22 +124,22 @@ function calculateProcessor(x,y,processorID)
         mapData[x][y].calFlag = processorID
 
         if westID == targetSide and checkConnection(x,y,1) then
-            calculateProcessor(x-1,y,processorID);
+            calculateGreen(x-1,y,processorID);
         end
         if northID == targetSide and checkConnection(x,y,2) then
-            calculateProcessor(x,y-1,processorID);
+            calculateGreen(x,y-1,processorID);
         end
         if southID == targetSide and checkConnection(x,y,3) then
-            calculateProcessor(x,y+1,processorID);
+            calculateGreen(x,y+1,processorID);
         end
         if eastID == targetSide and checkConnection(x,y,4) then
-            calculateProcessor(x+1,y,processorID);
+            calculateGreen(x+1,y,processorID);
         end
     end
 
 end
 
-function sumProcessor()
+function sumGreen()
     count = 0
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
