@@ -20,9 +20,9 @@ function loadResource()
     -- body
     -- Sprite Name Format:
     -- Core:
-    -- sp_Core[ID]_[fCount]
+    -- sp_Core[ID]
     -- Side:
-    -- sp_Side[ID]_[fCount]
+    -- sp_Side[ID]
     -- fighter0=love.graphics.newImage(ArtSpitePath..CoreFolderName.."Fighter0_0.png");
 
     local files = love.filesystem.getDirectoryItems(ArtCoreSpritePath)
