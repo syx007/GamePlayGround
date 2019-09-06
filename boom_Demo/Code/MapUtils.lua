@@ -1,23 +1,22 @@
+-- initalize the flag used in the BFS and DFS
 function initMapCalculation()
+    driverScore = 100
+
+
+
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
-            -- print('init map %d %d',i,j)
             if not(mapData[i][j] == nil) then
-                mapData[i][j].greenFlag = 0
+                mapData[i][j].FlagProcessor = 0
                 mapData[i][j].blueFlag = 0
             end
         end
     end
 end
 
-
--- local coreID=extractDataByPtr(mapData[i][j].id,0);
--- local westID=getRotatedSide_Single(1,mapData[i][j].id,mapData[i][j].rotation);
--- local northID=getRotatedSide_Single(2,mapData[i][j].id,mapData[i][j].rotation);
--- local southID=getRotatedSide_Single(3,mapData[i][j].id,mapData[i][j].rotation);
--- local eastID=getRotatedSide_Single(4,mapData[i][j].id,mapData[i][j].rotation);
-
-function getGreenCore()
+-- get the position of the processor
+-- return : mapData, with indexX and indexY set to x,y
+function getProcessor()
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
@@ -34,6 +33,8 @@ function getGreenCore()
     return nil
 end
 
+-- get the coreID of the neighbour
+-- return -1 if the index overflow or the mapData is nil
 function getNeighbourCoreID(x,y,rotation)
 
     local xx , yy
@@ -67,7 +68,11 @@ function getNeighbourCoreID(x,y,rotation)
     return coreID
 end
 
+-- check if the connection between two tile is succcessful
+-- notice that the grass (2) can connect with load(3)
 function checkConnection(x,y,rotation)
+
+    -- validate the (x,y)
     if x < 1 or x > mapWidthCount then
         return false
     end
@@ -79,6 +84,7 @@ function checkConnection(x,y,rotation)
         return false
     end
 
+    -- calculate the (xx,yy) of the neighbour 
     local xx , yy
     if rotation == 1 then -- west 
         xx = x - 1
@@ -94,6 +100,7 @@ function checkConnection(x,y,rotation)
         yy = y
     end
 
+    -- validate the (xx,yy)
     if xx < 1 or xx > mapWidthCount then
         return false
     end
@@ -105,6 +112,7 @@ function checkConnection(x,y,rotation)
         return false
     end
 
+    -- find the connected rotation of the neighbour
     local selfRot , nextRot 
     if rotation == 1 then -- west 
         selfRot = 1
@@ -125,11 +133,20 @@ function checkConnection(x,y,rotation)
     local nextSide = getRotatedSide_Single(nextRot,mapData[xx][yy].id,mapData[xx][yy].rotation);
     -- print(x,y,xx,yy,mapData[x][y].id, mapData[x][y].rotation,selfSide,mapData[xx][yy].id, mapData[xx][yy].rotation,nextSide)
     
-    return selfSide == nextSide
+    return (selfSide == nextSide) or ( selfSide + nextSide == 5)
 
 end
 
-function calculateGreen(x,y,processorID)
+function IsSpreadableDriverSide(sideID)
+    local SideGrass = 2
+    local SideLoad = 3
+    return (sideID == SideGrass) or (sideID == SideLoad)
+end
+
+-- make a BFS on the Drivers 
+-- mark the FlagProcessor as the target processorID
+-- (now the processorID is always 1, there can be multiply processors in the game)
+function BFS_Driver(x,y,processorID)
     if x < 1 or x > mapWidthCount then
         return 
     end
@@ -139,12 +156,13 @@ function calculateGreen(x,y,processorID)
     if mapData[x][y] == nil then
         return 
     end
-    if mapData[x][y].greenFlag > 0 then 
+    if mapData[x][y].FlagProcessor > 0 then 
         return
     end
 
     local targetCore = 3
-    local targetSide = 2
+    local SideGrass = 2
+    local SideLoad = 3
 
     local coreID=extractDataByPtr(mapData[x][y].id,0);
     if coreID == 4 or coreID == targetCore then
@@ -154,19 +172,19 @@ function calculateGreen(x,y,processorID)
         local southID=getRotatedSide_Single(3,mapData[x][y].id,mapData[x][y].rotation);
         local eastID=getRotatedSide_Single(4,mapData[x][y].id,mapData[x][y].rotation);
     
-        mapData[x][y].greenFlag = processorID
+        mapData[x][y].FlagProcessor = processorID
 
-        if westID == targetSide and checkConnection(x,y,1) then
-            calculateGreen(x-1,y,processorID);
+        if IsSpreadableDriverSide(westID) and checkConnection(x,y,1) then
+            BFS_Driver(x-1,y,processorID);
         end
-        if northID == targetSide and checkConnection(x,y,2) then
-            calculateGreen(x,y-1,processorID);
+        if IsSpreadableDriverSide(northID) and checkConnection(x,y,2) then
+            BFS_Driver(x,y-1,processorID);
         end
-        if southID == targetSide and checkConnection(x,y,3) then
-            calculateGreen(x,y+1,processorID);
+        if IsSpreadableDriverSide(southID) and checkConnection(x,y,3) then
+            BFS_Driver(x,y+1,processorID);
         end
-        if eastID == targetSide and checkConnection(x,y,4) then
-            calculateGreen(x+1,y,processorID);
+        if IsSpreadableDriverSide(eastID) and checkConnection(x,y,4) then
+            BFS_Driver(x+1,y,processorID);
         end
     end
 
@@ -295,15 +313,15 @@ function calculateEdge(x,y)
 end
 
 
-
-function sumGreen()
+-- calculate the total score of the drive based on the FlagProcessor
+function evaluateDriver()
     local count = 0
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
                 local coreID=extractDataByPtr(mapData[i][j].id,0);
-                if coreID == 3 and mapData[i][j].greenFlag > 0 then
-                    count = count + 100
+                if coreID == 3 and mapData[i][j].FlagProcessor > 0 then
+                    count = count + driverScore
                 end
             end
         end

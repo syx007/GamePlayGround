@@ -197,7 +197,7 @@ end
 function printScore()
     love.graphics.setColor(0.5, 1.0, 0.5)
     local font = love.graphics.newFont(14)
-	love.graphics.print("CPU scr:"..greenScore, 240, 50)
+	love.graphics.print("CPU scr:"..driverScore, 240, 50)
 	
     love.graphics.setColor(0.5, 1, 1)
     local font = love.graphics.newFont(14)
@@ -209,7 +209,7 @@ function printScore()
 	
     love.graphics.setColor(1, 1, 0.5)
     local font = love.graphics.newFont(14)
-    love.graphics.print("TTL scr:"..(greenScore + blueScore + edgeScore) , 240, 200)
+    love.graphics.print("TTL scr:"..(driverScore + blueScore + edgeScore) , 240, 200)
 end
 
 function printWin()
