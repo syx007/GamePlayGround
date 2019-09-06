@@ -1,14 +1,14 @@
 -- initalize the flag used in the BFS and DFS
 function initMapCalculation()
     driverScore = 100
-
-
+    networkScores = {50,75,100,125,150,175,200,200}
+    edgeScore = 50
 
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
                 mapData[i][j].FlagProcessor = 0
-                mapData[i][j].blueFlag = 0
+                mapData[i][j].FlagNetwork = 0
             end
         end
     end
@@ -190,13 +190,14 @@ function BFS_Driver(x,y,processorID)
 
 end
 
-function calculateBlue()
+-- pre calculate network
+function preDFSNetwork()
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
                 local coreID=extractDataByPtr(mapData[i][j].id,0);
-                if coreID == 1 and mapData[i][j].blueFlag == 0 then
-                    DFS_Blue(i,j,-1,0)
+                if coreID == 1 and mapData[i][j].FlagNetwork == 0 then
+                    DFS_Network(i,j,-1,0)
                 end
             end
         end
@@ -219,7 +220,16 @@ function min(x,y)
     end
 end
 
-function DFS_Blue(x,y,lastStep,total)
+
+function IsSpreadableNetworkSide(sideID)
+    local SideWater = 1
+    return (sideID == SideWater)
+end
+-- DFS the network tiles
+-- FlagNetwork == 0  => this tile is not searched
+-- FlagNetwork == -1 => this tile is being searched, but has no result
+-- FlagNetwork >0 => this tile has been searched, the number equals to the total number of connected tile
+function DFS_Network(x,y,lastStep,total)
     if x < 1 or x > mapWidthCount then
         return total
     end
@@ -234,31 +244,30 @@ function DFS_Blue(x,y,lastStep,total)
     local targetSide = 1 -- water
 
     local coreID=extractDataByPtr(mapData[x][y].id,0);
-    if coreID == targetCore and mapData[x][y].blueFlag == 0 then
+    if coreID == targetCore and mapData[x][y].FlagNetwork == 0 then
 
-        
         local westID=getRotatedSide_Single(1,mapData[x][y].id,mapData[x][y].rotation);
         local northID=getRotatedSide_Single(2,mapData[x][y].id,mapData[x][y].rotation);
         local southID=getRotatedSide_Single(3,mapData[x][y].id,mapData[x][y].rotation);
         local eastID=getRotatedSide_Single(4,mapData[x][y].id,mapData[x][y].rotation);
     
-        mapData[x][y].blueFlag = -1
+        mapData[x][y].FlagNetwork = -1
 
         local res = total+1;
-        if westID == targetSide and checkConnection(x,y,1) and not(lastStep==4) then
-            res = max(DFS_Blue(x-1,y,1,total+1),res);
+        if IsSpreadableNetworkSide(westID) and checkConnection(x,y,1) and not(lastStep==4) then
+            res = max(DFS_Network(x-1,y,1,total+1),res);
         end
-        if northID == targetSide and checkConnection(x,y,2) and not(lastStep==3) then
-            res = max(DFS_Blue(x,y-1,2,total+1),res);
+        if IsSpreadableNetworkSide(northID) and checkConnection(x,y,2) and not(lastStep==3) then
+            res = max(DFS_Network(x,y-1,2,total+1),res);
         end
-        if southID == targetSide and checkConnection(x,y,3) and not(lastStep==2) then
-            res = max(DFS_Blue(x,y+1,3,total+1),res);
+        if IsSpreadableNetworkSide(southID) and checkConnection(x,y,3) and not(lastStep==2) then
+            res = max(DFS_Network(x,y+1,3,total+1),res);
         end
-        if eastID == targetSide and checkConnection(x,y,4) and not(lastStep==1) then
-            res = max(DFS_Blue(x+1,y,4,total+1),res);
+        if IsSpreadableNetworkSide(eastID) and checkConnection(x,y,4) and not(lastStep==1) then
+            res = max(DFS_Network(x+1,y,4,total+1),res);
         end
 
-        mapData[x][y].blueFlag = res;
+        mapData[x][y].FlagNetwork = res;
 
 
         return res
@@ -281,31 +290,32 @@ function calculateEdge(x,y)
         return 0
     end
 
-    local targetCore = 1 -- lake
-    local neighbourCore = 3 -- mill
-    local targetSide = 2 -- grass
+    local targetCore = 3 -- driver
+    local neighbourCore = 1 -- network
+    -- local targetSide = 2 -- grass
 
-
-    local coreID=extractDataByPtr(mapData[x][y].id,0);
+    local data = mapData[x][y]
+    local coreID=extractDataByPtr(data.id,0);
 
     local res = 0
 
-    if coreID == targetCore then
-        local westID=getRotatedSide_Single(1,mapData[x][y].id,mapData[x][y].rotation);
-        local northID=getRotatedSide_Single(2,mapData[x][y].id,mapData[x][y].rotation);
-        local southID=getRotatedSide_Single(3,mapData[x][y].id,mapData[x][y].rotation);
-        local eastID=getRotatedSide_Single(4,mapData[x][y].id,mapData[x][y].rotation);
+    if coreID == targetCore and data.FlagProcessor > 0 then
+
+        local westID=getRotatedSide_Single(1,data.id,data.rotation);
+        local northID=getRotatedSide_Single(2,data.id,data.rotation);
+        local southID=getRotatedSide_Single(3,data.id,data.rotation);
+        local eastID=getRotatedSide_Single(4,data.id,data.rotation);
     
-        if westID == targetSide and checkConnection(x,y,1) and getNeighbourCoreID(x,y,1) == neighbourCore then
+        if IsSpreadableDriverSide(westID) and checkConnection(x,y,1) and getNeighbourCoreID(x,y,1) == neighbourCore  then
             res = res + 1
         end
-        if northID == targetSide and checkConnection(x,y,2) and getNeighbourCoreID(x,y,2) == neighbourCore then
+        if IsSpreadableDriverSide(northID) and checkConnection(x,y,2) and getNeighbourCoreID(x,y,2) == neighbourCore then
             res = res + 1
         end
-        if southID == targetSide and checkConnection(x,y,3) and getNeighbourCoreID(x,y,3) == neighbourCore then
+        if IsSpreadableDriverSide(southID) and checkConnection(x,y,3) and getNeighbourCoreID(x,y,3) == neighbourCore then
             res = res + 1
         end
-        if eastID == targetSide and checkConnection(x,y,4) and getNeighbourCoreID(x,y,4) == neighbourCore then
+        if IsSpreadableDriverSide(eastID) and checkConnection(x,y,4) and getNeighbourCoreID(x,y,4) == neighbourCore then
             res = res + 1
         end
     end
@@ -321,7 +331,7 @@ function evaluateDriver()
             if not(mapData[i][j] == nil) then
                 local coreID=extractDataByPtr(mapData[i][j].id,0);
                 if coreID == 3 and mapData[i][j].FlagProcessor > 0 then
-                    count = count + driverScore
+                    count = count + driverScore 
                 end
             end
         end
@@ -329,15 +339,14 @@ function evaluateDriver()
     return count
 end
 
-function sumBlue()
+function evaluateNetwork()
     local count = 0
-    local blueScores = {50,75,100,125,150,175,200,200}
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
                 local coreID=extractDataByPtr(mapData[i][j].id,0);
-                if coreID == 1 and mapData[i][j].blueFlag > 0 then
-                    count = count + blueScores[min(8,mapData[i][j].blueFlag)]
+                if coreID == 1 and mapData[i][j].FlagNetwork > 0 then
+                    count = count + networkScores[min(table.getn(networkScores),mapData[i][j].FlagNetwork)]
                 end
             end
         end
@@ -345,11 +354,11 @@ function sumBlue()
     return count
 end
 
-function sumEdge()
+function evaluateEdge()
     local count = 0
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
-            count = count + calculateEdge(i,j) * 50
+            count = count + calculateEdge(i,j) * edgeScore
         end
     end
 

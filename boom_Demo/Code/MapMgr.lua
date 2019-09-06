@@ -280,11 +280,12 @@ function updateScore()
         BFS_Driver(processor.indexX,processor.indexY,processorID)
     end
     driverScore = evaluateDriver()
+    
+    -- calculate edge
+    edgeScore = evaluateEdge()
 
     -- calculate blue
-    calculateBlue()
-    blueScore = sumBlue()
+    preDFSNetwork()
+    blueScore = evaluateNetwork()
 
-    -- calculate edge
-    edgeScore = sumEdge()
 end
