@@ -68,6 +68,29 @@ function getNeighbourCoreID(x,y,rotation)
     return coreID
 end
 
+function checkConnectionOverNetwork(x,y,rotation)
+    
+    -- calculate the (xx,yy) of the neighbour 
+    local xx , yy
+    if rotation == 1 then -- west 
+        xx = x - 1
+        yy = y
+    elseif rotation == 2 then -- north
+        xx = x
+        yy = y - 1
+    elseif rotation == 3 then -- south
+        xx = x 
+        yy = y + 1
+    else -- east
+        xx = x + 1
+        yy = y
+    end
+
+    local networkCoreID = 1
+
+    return getNeighbourCoreID(x,y,rotation) == networkCoreID and checkConnection(x,y,rotation) and checkConnection(xx,yy,rotation)
+end
+
 -- check if the connection between two tile is succcessful
 -- notice that the grass (2) can connect with load(3)
 function checkConnection(x,y,rotation)
@@ -174,18 +197,47 @@ function BFS_Driver(x,y,processorID)
     
         mapData[x][y].FlagProcessor = processorID
 
-        if IsSpreadableDriverSide(westID) and checkConnection(x,y,1) then
-            BFS_Driver(x-1,y,processorID);
+        if IsSpreadableDriverSide(westID) then 
+            if checkConnection(x,y,1) then
+                BFS_Driver(x-1,y,processorID);
+            end
+            if checkConnectionOverNetwork(x,y,1) then
+                BFS_Driver(x-2,y,processorID);
+            end
         end
-        if IsSpreadableDriverSide(northID) and checkConnection(x,y,2) then
-            BFS_Driver(x,y-1,processorID);
+        if IsSpreadableDriverSide(northID) then 
+            if checkConnection(x,y,2) then
+                BFS_Driver(x,y-1,processorID);
+            end
+            if checkConnectionOverNetwork(x,y,2) then
+                BFS_Driver(x,y-2,processorID);
+            end
         end
-        if IsSpreadableDriverSide(southID) and checkConnection(x,y,3) then
-            BFS_Driver(x,y+1,processorID);
+        if IsSpreadableDriverSide(southID) then 
+            if checkConnection(x,y,3) then
+                BFS_Driver(x,y+1,processorID);
+            end
+            if checkConnectionOverNetwork(x,y,3) then
+                BFS_Driver(x,y+2,processorID);
+            end
         end
-        if IsSpreadableDriverSide(eastID) and checkConnection(x,y,4) then
-            BFS_Driver(x+1,y,processorID);
+        if IsSpreadableDriverSide(eastID) then 
+            if checkConnection(x,y,4) then
+                BFS_Driver(x+1,y,processorID);
+            end
+            if checkConnectionOverNetwork(x,y,4) then
+                BFS_Driver(x+2,y,processorID);
+            end
         end
+        -- if IsSpreadableDriverSide(northID) and checkConnection(x,y,2) then
+        --     BFS_Driver(x,y-1,processorID);
+        -- end
+        -- if IsSpreadableDriverSide(southID) and checkConnection(x,y,3) then
+        --     BFS_Driver(x,y+1,processorID);
+        -- end
+        -- if IsSpreadableDriverSide(eastID) and checkConnection(x,y,4) then
+        --     BFS_Driver(x+1,y,processorID);
+        -- end
     end
 
 end
