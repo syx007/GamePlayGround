@@ -63,23 +63,26 @@ end]]
     
 end]]
 function updateInputPlayingGame(key)
-    --if key =="o" then
-    --    SelectedMode=not SelectedMode;
-    --end
-    if (love.keyboard.isDown('j')) then
-        if love.keyboard.isDown('up') then
-            cursor.action = 2
-        elseif love.keyboard.isDown('down') then
-            cursor.action = 3
-        elseif love.keyboard.isDown('left') then
-            cursor.action = 1
-        elseif love.keyboard.isDown('right') then
-            cursor.action = 4
+    if key =="i" then
+        SelectedMode=not SelectedMode;
+    end
+    if key =="o" then
+        Help=not Help
+    end
+    if SelectedMode==true then
+        if (love.keyboard.isDown('j')) then
+            if love.keyboard.isDown('up') then
+                cursor.action = 2
+            elseif love.keyboard.isDown('down') then
+                cursor.action = 3
+            elseif love.keyboard.isDown('left') then
+                cursor.action = 1
+            elseif love.keyboard.isDown('right') then
+                cursor.action = 4
+            else
+                cursor.action = 0
+            end
         else
-            cursor.action = 0
-        end
-    else
-        if SelectedMode==true then
             if love.keyboard.isDown('up') then
                 cursor.dy = -1
             elseif love.keyboard.isDown('down') then
@@ -90,9 +93,9 @@ function updateInputPlayingGame(key)
                 cursor.dx = 1
             end
         end
-    end
-    if (love.keyboard.isDown('k')) then
-        print("rotate input")
-        cursor.rotate = 1
+        if (love.keyboard.isDown('k')) then
+            print("rotate input")
+            cursor.rotate = 1
+        end
     end
 end

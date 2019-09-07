@@ -39,17 +39,31 @@ function MoveCamera(isSelectMode,dt)
         --camera_bias_y=cursor_coord.y
     end
 end
-function ZoomCamera(dt)
+function ZoomCamera(isSelectMode,dt)
+if isSelectMode==false then
     if ZoomFactor<=2 then
-        if love.keyboard.isDown("y") then
+        if love.keyboard.isDown("j") then
             ZoomFactor=ZoomFactor*(1+0.4*dt)
         end
     end
 
     if ZoomFactor>=0.5 then
-        if love.keyboard.isDown("o")then
+        if love.keyboard.isDown("k")then
             ZoomFactor=ZoomFactor*(1-0.4*dt)
         end
     end
+else
+    if ZoomFactor<=2 then
+        if love.keyboard.isDown("h") then
+            ZoomFactor=ZoomFactor*(1+0.4*dt)
+        end
+    end
+
+    if ZoomFactor>=0.5 then
+        if love.keyboard.isDown("l")then
+            ZoomFactor=ZoomFactor*(1-0.4*dt)
+        end
+    end
+end
     
 end

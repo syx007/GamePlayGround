@@ -1,6 +1,7 @@
 -- currently, it only finish a very simple job--just load some image and wav
 -- in future, we could do path management, auto loading, or even strip during packaging
 require("Code/DesignerConfigs/DesignerConf")
+require("Code/Resource/TileMgr")
 function GetValuesfromCSVFormat(myString)
     num = 0
     values = {}
@@ -106,7 +107,6 @@ function loadResource()
         end
         local tid = tonumber(coreFileDataList[1]) + 1
         local id = tonumber(coreFileDataList[1])
-
         coreTable[tid] = {}
         coreTable[tid].name = getCoreNameByID(coreFileDataList[1]) -- TODO
         coreTable[tid].id = id
@@ -114,6 +114,7 @@ function loadResource()
                                      ArtCoreSpritePath .. coreFiles[f])
         coreTable[tid].fCount = tonumber(coreFileDataList[2]) -- TODO
         coreTableCount = coreTableCount + 1
+        --print(coreTable[tid].id,coreTable[tid].name,coreTable[tid].id,coreTable[tid].fCount)
     end
 
     for f in pairs(sideFiles) do
@@ -133,5 +134,7 @@ function loadResource()
         sideTable[tid].fCount = tonumber(sideFileDataList[2]) -- TODO
         -- fighter0:setFilter("nearest", "nearest")
         sideTableCount = sideTableCount + 1
+        --print(sideTable[tid].name,sideTable[tid].id,sideTable[tid].fCount)
     end
+    LoadCore2SideMap(ArtSpritePath.."Core2SideMap.map")
 end

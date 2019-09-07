@@ -2,10 +2,10 @@ require("Code/GameCore/InputMgr");
 require("Code/Graphic/AnimationSheet");
 --all info and operation relate to player here
 
-function initCursor()
+function initCursor(init_pos_x,init_pos_y)
     cursor = {}
-    cursor.cx = 0
-    cursor.cy = 0
+    cursor.cx = init_pos_x
+    cursor.cy = init_pos_y
     cursor.dx = 0
     cursor.dy = 0
     cursor.action = 0

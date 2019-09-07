@@ -7,7 +7,7 @@ require("Code/GameStateSwh")
 function love.load()
     
     loadResource()
-
+    initTiles()
     gameState = 0
 
     -- debug_directGame = true
@@ -45,11 +45,12 @@ function love.load()
     select_x=0
     select_y=0
     SelectedMode=true
+    Help=false
     ZoomFactor=1;
 
     initMainMenuCursor()
 
-    initCursor()
+    initCursor(mapWidthCount/2,mapHeightCount/2)
     initMap()
     setTileMap()
 

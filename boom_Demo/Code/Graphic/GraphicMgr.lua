@@ -3,6 +3,7 @@ require("Code/Utils")
 require("Code/Graphic/AnimationSheet")
 require("Code/Graphic/UiGraphicMgr")
 require("Code/Graphic/Camera")
+require("Code/Resource/TileMgr")
 --[[function initArtAsset()
     -- we force the sampler here.
     -- don't like any interpolation, just use point filter is good.
@@ -124,7 +125,12 @@ function updateMap()
         end
     end
 end
-
+function drawTile(grid_x,grid_y,core_id,side_id,rot)
+    love.graphics.setColor( 1, 1, 1, 1)
+    local coord=getWorldCoordfromGrid(grid_x,grid_y,camera_bias_x,camera_bias_y)
+    love.graphics.draw(Tiles[core_id][side_id].Side.content,coord.x+16,coord.y+16,(rot-1)*(3.141592654/2),ZoomFactor*0.95,ZoomFactor*0.95,16,16)
+    love.graphics.draw(Tiles[core_id][side_id].Core.content,coord.x+16,coord.y+16,0,ZoomFactor*0.95,ZoomFactor*0.95,16,16)
+end
 function updateTileMap()
     for i = 1, mapLineCount do
         for j = 1, mapLineCount do
@@ -154,14 +160,17 @@ function updateTileMap()
                 -- northID=getRotatedSide_Single(northID,mapData[i][j].rotation);
                 -- southID=getRotatedSide_Single(southID,mapData[i][j].rotation);
                 -- eastID=getRotatedSide_Single(eastID,mapData[i][j].rotation);
-                
+                --print(westID,northID,southID,eastID)
+                --drawTile(grid_coord.x,grid_coord.y,1,1,westID)
+                --drawTile(grid_coord.x,grid_coord.y,1,1,northID)
+                --drawTile(grid_coord.x,grid_coord.y,1,1,southID)
+                --drawTile(grid_coord.x,grid_coord.y,1,1,eastID)
                 CoreColor(coreID)
                 love.graphics.setColor(coreColor[1], coreColor[2], coreColor[3]) -- Core    
                 love.graphics.rectangle("fill", cPosX + tileOffset,
                                         cPosY + tileOffset, tileCoreSize,
                                         tileCoreSize, 3, 3, 5)
-
-                -- print(westID);
+                --print(westID);
                 SubTileColor(westID)
                 love.graphics.setColor(subTileColor[1], subTileColor[2],
                                        subTileColor[3]) -- subtile-1     
@@ -243,6 +252,7 @@ end
 function updateUI()
     -- TODO
     printScore()
+    printButtonTips()
 end
 
 function drawMainMenu()
@@ -272,6 +282,7 @@ function drawPlayingGame()
     --drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
     updateTileMap()
     print(cursor.cx,cursor.cy)
+    drawTile(3,3,1,1,0)
     local grid_coord=MapIdx2GridCoord(cursor.cx,cursor.cy)
     drawCursor(grid_coord.x,grid_coord.y,1,0,0,0.5*math.sin(0.1*t)+1)
     --updateAnimation()

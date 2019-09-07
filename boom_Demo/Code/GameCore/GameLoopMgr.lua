@@ -26,8 +26,8 @@ end
 function GameLoopUpdatePlayingGame(dt)
     t=t+1
     cellSize=baseCellSize*ZoomFactor
-    MoveCamera(SelectedMode)
-    ZoomCamera(dt)
+    MoveCamera(SelectedMode,dt)
+    ZoomCamera(SelectedMode,dt)
     updateTileMap_Cursor()
     updateScore()
     local tragetPosX = cursor.cx + cursor.dx
