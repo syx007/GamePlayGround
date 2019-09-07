@@ -21,6 +21,7 @@ function love.load()
     initCursor()
     initMap()
     setTileMap()
+    loadResource()
     timer = 0.0
     tiker = 0.0
     frameCounter = 0
