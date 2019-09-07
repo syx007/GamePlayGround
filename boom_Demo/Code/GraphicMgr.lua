@@ -178,38 +178,39 @@ function updateTileMap()
 end
 
 function updateAnimation()
-    --TODO
+    -- TODO
 end
 
 function drawShop()
-    --TODO
+    -- TODO
 end
 
 function applyPP()
-    --TODO
+    -- TODO
 end
 
 function updateUI()
     -- TODO
-    printScore();
+    printScore()
 end
 
 function printScore()
     love.graphics.setColor(0.5, 1.0, 0.5)
     local font = love.graphics.newFont(14)
-	love.graphics.print("CPU scr:"..greenScore, 240, 50)
-	
+    love.graphics.print("CPU scr:" .. greenScore, 240, 50)
+
     love.graphics.setColor(0.5, 1, 1)
     local font = love.graphics.newFont(14)
-	love.graphics.print("Net scr:"..blueScore, 240, 100)
-	
-	love.graphics.setColor(1, 0.5, 1)
+    love.graphics.print("Net scr:" .. blueScore, 240, 100)
+
+    love.graphics.setColor(1, 0.5, 1)
     local font = love.graphics.newFont(14)
-	love.graphics.print("FRW scr:"..edgeScore, 240, 150)
-	
+    love.graphics.print("FRW scr:" .. edgeScore, 240, 150)
+
     love.graphics.setColor(1, 1, 0.5)
     local font = love.graphics.newFont(14)
-    love.graphics.print("TTL scr:"..(greenScore + blueScore + edgeScore) , 240, 200)
+    love.graphics.print("TTL scr:" .. (greenScore + blueScore + edgeScore), 240,
+                        200)
 end
 
 function printWin()
@@ -219,3 +220,25 @@ function printWin()
     end
 end
 
+function shaderTest()
+    lambertShader = love.graphics.newShader [[
+        uniform float time;
+        uniform Image diffuse;
+
+        vec4 position(mat4 transform_projection, vec4 vertex_position)
+        {
+            // The order of operations matters when doing matrix multiplication.
+            return transform_projection * vertex_position;
+        }
+
+        vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords){
+            vec3 _MainLight=vec3(sin(time*3),cos(time*3),1.0);
+            vec4 bgColor=Texel(texture,texture_coords);
+            vec3 diffuseColor=Texel(diffuse,texture_coords).rgb;
+            bgColor.rg=(bgColor.rg*2.0)-1.0;
+            vec3 res=vec3(1.0,1.0,1.0);
+            float ndl=dot(_MainLight,bgColor.rgb);
+            return vec4(diffuseColor*ndl,1.0);
+        }
+    ]]
+end
