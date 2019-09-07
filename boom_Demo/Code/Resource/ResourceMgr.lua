@@ -1,6 +1,6 @@
 -- currently, it only finish a very simple job--just load some image and wav
 -- in future, we could do path management, auto loading, or even strip during packaging
-require("Code/DesignerConf")
+require("Code/DesignerConfigs/DesignerConf")
 -- body
 -- Sprite Name Format:
 -- Core:
@@ -31,6 +31,8 @@ function initfilePathConstant()
 
     CoreFolderName = "Core/"
     SideFolderName = "Side/"
+
+    GameLogoName = "GameLogo.png"
 end
 
 function extractDataFromName(name)
@@ -40,8 +42,15 @@ end
 
 function discardExtensionName(name) return string.match(name, "[^.]+") end
 
+function loadUIResource()
+    -- this is relative fix path UI image
+    -- so, just write here as fix loading
+    mainGameLogo = love.graphics.newImage(ArtLogoPath .. GameLogoName)
+end
+
 function loadResource()
     initfilePathConstant()
+    loadUIResource()
     local ArtCoreSpritePath = ArtSpritePath .. CoreFolderName
     local ArtSideSpritePath = ArtSpritePath .. SideFolderName
 
@@ -86,6 +95,7 @@ function loadResource()
         sideTable[tid].content = love.graphics.newImage(
                                      ArtSideSpritePath .. sideFiles[f])
         sideTable[tid].fCount = tonumber(sideFileDataList[2]) -- TODO
+        -- fighter0:setFilter("nearest", "nearest")
         sideTableCount = sideTableCount + 1
     end
 end

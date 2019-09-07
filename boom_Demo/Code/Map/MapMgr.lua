@@ -1,6 +1,6 @@
-require("Code/ElementLib")
+require("Code/DesignerConfigs/ElementConf")
 require("Code/Utils")
-require("Code/MapUtils")
+require("Code/Map/MapUtils")
 
 -- connectivity:
 -- [  2  ]

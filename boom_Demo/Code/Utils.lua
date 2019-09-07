@@ -13,6 +13,8 @@ function getNextRotate(rotate)
     end
 end
 
+function mathClamp(x, min, max) return math.min(math.max(x, min), max) end
+
 function extractDataByPtr(data, ptr)
     return math.floor((data / math.pow(10, 4 - ptr))) % 10
 end

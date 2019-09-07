@@ -1,6 +1,24 @@
 -- we upadate all input data here
+function updateInputMainMenu(key)
+    if love.keyboard.isDown('up') then
+        mmCursor.dx = -1
+    elseif love.keyboard.isDown('down') then
+        mmCursor.dx = 1
+    end
+    if (love.keyboard.isDown('z') or love.keyboard.isDown('j')) then
+        mmCursor.action = 1
+    end
+end
 
-function updateInput_DemoVI(key)
+function updateInputRegisterScore(key)
+    -- TODO
+end
+
+function updateInputViewScore(key)
+    -- TODO
+end
+
+function updateInputPlayingGame(key)
     if (love.keyboard.isDown('z') or love.keyboard.isDown('j')) then
         if love.keyboard.isDown('up') then
             cursor.action = 2
@@ -28,15 +46,4 @@ function updateInput_DemoVI(key)
         print("rotate input")
         cursor.rotate = 1
     end
-end
-
-function updateInput()
-    if love.keyboard.isDown('up') then player.dy = -player.speed end
-    if love.keyboard.isDown('down') then player.dy = player.speed end
-    if love.keyboard.isDown('left') then player.dx = -player.speed end
-    if love.keyboard.isDown('right') then player.dx = player.speed end
-
-    -- for demo VI, udlu to move cursor
-    -- hold A+udlu to slide tile
-    -- press B to rotate
 end

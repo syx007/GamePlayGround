@@ -1,6 +1,7 @@
-require("Code/ElementLib")
+require("Code/DesignerConfigs/ElementConf")
 require("Code/Utils")
-require("Code/AnimationSheet")
+require("Code/Graphic/AnimationSheet")
+require("Code/Graphic/UiGraphicMgr")
 
 function initArtAsset()
     -- we force the sampler here.
@@ -35,12 +36,6 @@ function drawGrid(count, pX, pY, sX, sY)
         love.graphics.line(pX + i * (sX / count), pY, pX + i * (sX / count),
                            pY + sY)
     end
-end
-
-function updateTimer()
-    local timerCol = frametiker / 60
-    love.graphics.setColor(timerCol, timerCol, timerCol)
-    love.graphics.rectangle("fill", 250, 180, 50, 50, 3, 3, 5)
 end
 
 function drawBond(_connectivity, _cPosX, _cPosY, colorR)
@@ -194,48 +189,38 @@ function updateUI()
     printScore()
 end
 
-function printScore()
-    love.graphics.setColor(0.5, 1.0, 0.5)
-    local font = love.graphics.newFont(14)
-    love.graphics.print("CPU scr:"..driverScore, 240, 50)
-    love.graphics.setColor(0.5, 1, 1)
-    local font = love.graphics.newFont(14)
-    love.graphics.print("Net scr:" .. blueScore, 240, 100)
+function drawMainMenu()
+    -- TODO
+    local hWindowWidth = windowWidth / 2.0
+    local hWindowHeight = windowHeight / 2.0
 
-    love.graphics.setColor(1, 0.5, 1)
-    local font = love.graphics.newFont(14)
-    love.graphics.print("FRW scr:" .. edgeScore, 240, 150)
+    local mainLogoWidth = mainGameLogo:getWidth()
+    local mainLogoHeight = mainGameLogo:getHeight()
+    local mainLogoX = (windowWidth / 2) - (mainLogoWidth / 2)
+    local mainLogoY = (windowHeight / 2) - (mainLogoHeight / 2) - 25
+    love.graphics.draw(mainGameLogo, mainLogoX, mainLogoY)
 
-    love.graphics.setColor(1, 1, 0.5)
-    local font = love.graphics.newFont(14)love.graphics.print("TTL scr:"..(driverScore + blueScore + edgeScore) , 240, 200)
+    local font = love.graphics.newFont(14)
+    love.graphics.printf("Game Start", 0, hWindowHeight+20,windowWidth,"center")
+    
+    local font = love.graphics.newFont(14)
+    love.graphics.printf("...Pending", 0, hWindowHeight+45,windowWidth,"center")
+
+    love.graphics.rectangle("line",hWindowWidth-40,hWindowHeight+20-2+24*mmCursor.x,80,20,3,5);
 end
 
-function printWin()
-    if win then
-        local font = love.graphics.newFont(14)
-        love.graphics.print("WIN", 265, 100)
-    end
+function drawPlayingGame()
+    drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
+    updateTileMap()
+    drawCursor()
+    updateAnimation()
+    updateUI()
+    drawShop()
+    applyPP()
 end
-
-function shaderTest()
-    lambertShader = love.graphics.newShader [[
-        uniform float time;
-        uniform Image diffuse;
-
-        vec4 position(mat4 transform_projection, vec4 vertex_position)
-        {
-            // The order of operations matters when doing matrix multiplication.
-            return transform_projection * vertex_position;
-        }
-
-        vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords){
-            vec3 _MainLight=vec3(sin(time*3),cos(time*3),1.0);
-            vec4 bgColor=Texel(texture,texture_coords);
-            vec3 diffuseColor=Texel(diffuse,texture_coords).rgb;
-            bgColor.rg=(bgColor.rg*2.0)-1.0;
-            vec3 res=vec3(1.0,1.0,1.0);
-            float ndl=dot(_MainLight,bgColor.rgb);
-            return vec4(diffuseColor*ndl,1.0);
-        }
-    ]]
+function drawRegisterScore()
+    -- TODO 
+end
+function drawViewScore()
+    -- TODO 
 end

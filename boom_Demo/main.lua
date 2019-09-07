@@ -1,27 +1,36 @@
-require("Code/ResourceMgr")
-require("Code/PlayerMgr")
-require("Code/InputMgr")
-require("Code/GraphicMgr")
-require("Code/MapMgr")
-require("Code/Utils")
+require("Code/Resource/ResourceMgr")
+require("Code/GameCore/PlayerMgr")
+require("Code/GameStateSwh")
 -- tmd on DEOT we can't use Chinese comment
 -- DON'T write Chinese comment.
 
 function love.load()
-    playDemo_2 = false
+    loadResource()
 
-    counter = 0
-    love.window.setMode(320, 240, {resizable = false})
+    gameState = 0
+
+    -- debug_directGame = true
+    debug_directGame = false
+    if debug_directGame then gameState = 1 end
+
+    windowWidth = 320
+    windowHeight = 240
+
+    love.window.setMode(windowWidth, windowHeight, {resizable = false})
     mapULoffsetX = 10
     mapULoffsetY = 10
-	mapLineCount = 6
-	mapWidthCount = 6
-	mapHeightCount = 6
+    mapLineCount = 6
+    mapWidthCount = 6
+    mapHeightCount = 6
     mapSize = 220
+
+    initMainMenuCursor()
+
     initCursor()
     initMap()
     setTileMap()
-    loadResource()
+
+    counter = 0
     timer = 0.0
     tiker = 0.0
     frameCounter = 0
@@ -33,47 +42,33 @@ function love.load()
     cellSize = mapSize / mapLineCount - 10
 
     win = false
+
+    --init Score here, or get nil val
+    driverScore=0.0;
+    blueScore=0.0;
+    edgeScore=0.0;
+
+    -- we also have split load for different screen, for reloading screen to init.
 end
 
 function love.keypressed(key, scancode, isrepeat)
     if key == "escape" then love.event.quit() end
     --[[ABXY=JKUI DEOT]] --
-    -- if key == "j" or key == "z" then _Fire() end
-    updateInput_DemoVI(key)
+    mainUpdateInputSwitch(gameState, key)
 end
 
 function love.update(dt)
-    updateTileMap_Cursor()
-    updateScore()
-    local tragetPosX = cursor.cx + cursor.dx
-    local tragetPosY = cursor.cy + cursor.dy
-    -- cursor and map coodinate and +1 +1 offset
-    if isTargetMovable_Cursor(tragetPosX + 1, tragetPosY + 1) then
-        cursor.cx = tragetPosX
-        cursor.cy = tragetPosY
-    end
-    cursor.dx = 0
-    cursor.dy = 0
-
+    
     timer = timer + dt
     tiker = timer - math.floor(timer)
-    tiker = tiker * tiker
-
+        
     frameCounter = frameCounter + 1
     frametiker = frameCounter % 60
-end
 
-function mainGraphicUpdate()
-    drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
-    updateTileMap()
-    drawCursor()
-    updateAnimation()
-    updateUI()
-    drawShop()
-    applyPP()
+    mainGameLoopSwitch(gameState, dt)
 end
 
 function love.draw()
-    -- initArtAsset()//only use once for loading asset
-    mainGraphicUpdate()
+    -- Return Blocker
+    mainDrawingSwitch(gameState)
 end
