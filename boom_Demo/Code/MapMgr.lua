@@ -1,6 +1,6 @@
 require("Code/ElementLib")
 require("Code/Utils")
-require("Code/mapUtils")
+require("Code/MapUtils")
 
 -- connectivity:
 -- [  2  ]

@@ -1,6 +1,26 @@
 -- currently, it only finish a very simple job--just load some image and wav
 -- in future, we could do path management, auto loading, or even strip during packaging
 require("Code/DesignerConf")
+-- body
+-- Sprite Name Format:
+-- Core:
+-- sp_Core[ID]_[fCount]
+-- Side:
+-- sp_Side[ID]_[fCount]
+
+-- same for Tile and Side
+-- .id
+-- .name
+-- .content//Actual Image Object
+-- .fCount
+function getCoreResByID(id) return coreTable[id + 1] end
+function getSideResByID(id) return sideTable[id + 1] end
+
+function getCoreResCount() return coreTableCount end
+function getSideResCount() return sideTableCount end
+
+-- Function about this line are all API, uploaded API don't get deleted.
+
 function initfilePathConstant()
     ArtSpritePath = "Art/Sprite/"
     ArtMapPath = "Art/Map/"
@@ -13,38 +33,59 @@ function initfilePathConstant()
     SideFolderName = "Side/"
 end
 
+function extractDataFromName(name)
+    local data = name:sub(8)
+    return string.gmatch(data, "[^_]+")
+end
+
+function discardExtensionName(name) return string.match(name, "[^.]+") end
+
 function loadResource()
     initfilePathConstant()
     local ArtCoreSpritePath = ArtSpritePath .. CoreFolderName
     local ArtSideSpritePath = ArtSpritePath .. SideFolderName
-    -- body
-    -- Sprite Name Format:
-    -- Core:
-    -- sp_Core[ID]
-    -- Side:
-    -- sp_Side[ID]
-    -- fighter0=love.graphics.newImage(ArtSpitePath..CoreFolderName.."Fighter0_0.png");
 
-    local files = love.filesystem.getDirectoryItems(ArtCoreSpritePath)
+    local coreFiles = love.filesystem.getDirectoryItems(ArtCoreSpritePath)
+    local sideFiles = love.filesystem.getDirectoryItems(ArtSideSpritePath)
 
     coreTable = {}
+    sideTable = {}
+    coreTableCount = 0
+    sideTableCount = 0
 
-    for f in pairs(files) do
-        fileName = files[f]
-        coreTable[f] = {}
-        coreTable[f].name = getCoreNameByID(0) -- TODO
-        coreTable[f].id = f - 1
-        coreTable[f].content = love.graphics.newImage(
-                                   ArtCoreSpritePath .. fileName)
-        coreTable[f].fCount = 0 -- TODO
+    for f in pairs(coreFiles) do
+        coreFileName = discardExtensionName(coreFiles[f])
+        local coreFileDataList = {}
+        for word in extractDataFromName(coreFileName) do
+            coreFileDataList[#coreFileDataList + 1] = word
+        end
+        local tid = tonumber(coreFileDataList[1]) + 1
+        local id = tonumber(coreFileDataList[1])
+
+        coreTable[tid] = {}
+        coreTable[tid].name = getCoreNameByID(coreFileDataList[1]) -- TODO
+        coreTable[tid].id = id
+        coreTable[tid].content = love.graphics.newImage(
+                                     ArtCoreSpritePath .. coreFiles[f])
+        coreTable[tid].fCount = tonumber(coreFileDataList[2]) -- TODO
+        coreTableCount = coreTableCount + 1
+    end
+
+    for f in pairs(sideFiles) do
+        sideFileName = discardExtensionName(sideFiles[f])
+        local sideFileDataList = {}
+        for word in extractDataFromName(sideFileName) do
+            sideFileDataList[#sideFileDataList + 1] = word
+        end
+        local tid = tonumber(sideFileDataList[1]) + 1
+        local id = tonumber(sideFileDataList[1])
+
+        sideTable[tid] = {}
+        sideTable[tid].name = getCoreNameByID(sideFileDataList[1]) -- TODO
+        sideTable[tid].id = id
+        sideTable[tid].content = love.graphics.newImage(
+                                     ArtSideSpritePath .. sideFiles[f])
+        sideTable[tid].fCount = tonumber(sideFileDataList[2]) -- TODO
+        sideTableCount = sideTableCount + 1
     end
 end
-
--- function loadResource()
--- 	fighter0=love.graphics.newImage("Art/Sprite/Fighter0_0.png");
--- 	bullet0=love.graphics.newImage("Art/Sprite/Bullet0_0.png");
--- 	emptybullet0=love.graphics.newImage("Art/Sprite/Bullet0_1.png");
--- 	shootSFX = love.audio.newSource("Music/SFX/Hit_00.wav", "static");
--- 	noBulletSFX = love.audio.newSource("Music/SFX/Open_01.wav", "static");
--- 	ship = love.graphics.newImage("Art/Sprite/ship.png");
--- end

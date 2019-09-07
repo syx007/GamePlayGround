@@ -2,12 +2,13 @@ function getCoreNameByID( id )
     local CoreNameID={
         "PCB",
         "Server",
+        "NetworkCable",
         "Bridge",
         "Driver",
         "Processor"
     }
-    return CoreNameID[id];
-    --have to decide use 0-index or 1-index on this kind of ID.
+    return CoreNameID[id+1];
+    --use 0 based index
 end
 
 function getSideNameByID( id )
@@ -17,6 +18,6 @@ function getSideNameByID( id )
         "ParallelConnector",
         "Firewall"
     }
-    return SideNameID[id];
-    --have to decide use 0-index or 1-index on this kind of ID.
+    return SideNameID[id+1];
+    ----use 0 based index
 end
