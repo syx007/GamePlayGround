@@ -1,6 +1,41 @@
 -- currently, it only finish a very simple job--just load some image and wav
 -- in future, we could do path management, auto loading, or even strip during packaging
 require("Code/DesignerConfigs/DesignerConf")
+function GetValuesfromCSVFormat(myString)
+    num = 0
+    values = {}
+    if myString ~= nil then
+        while string.find(myString, ",") ~= nil do
+            i, j =string.find(myString, ",");
+            num =num + 1;
+            values[num] = string.sub(myString, 1, j-1);
+            myString = string.sub(myString, j+1, string.len(myString))
+        end
+        num = num + 1
+        values[num] = myString
+    end
+    return values
+end
+function LoadMap(Mapfile)
+    map_size={w,h}
+    map={}
+    file1=io.open(Mapfile,"r")
+    if file1~=nil then
+    io.input(file1)
+    map_size.w=tonumber(file1:read())
+    map_size.h=tonumber(file1:read())
+    for  i=1, map_size.h do
+        map[i]={}
+        map_row_str=file1:read()
+        strtable=GetValuesfromCSVFormat(map_row_str)
+        for j=1,map_size.w do
+            map[i][j]=tonumber(strtable[j])
+        end
+    end
+    else
+        love.graphics.print("file1 is nil",10,10)
+    end
+end
 -- body
 -- Sprite Name Format:
 -- Core:
@@ -51,6 +86,7 @@ end
 function loadResource()
     initfilePathConstant()
     loadUIResource()
+    LoadMap(ArtMapPath.."Sence01.map")
     local ArtCoreSpritePath = ArtSpritePath .. CoreFolderName
     local ArtSideSpritePath = ArtSpritePath .. SideFolderName
 

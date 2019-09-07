@@ -5,6 +5,7 @@ require("Code/GameStateSwh")
 -- DON'T write Chinese comment.
 
 function love.load()
+    
     loadResource()
 
     gameState = 0
@@ -19,10 +20,32 @@ function love.load()
     love.window.setMode(windowWidth, windowHeight, {resizable = false})
     mapULoffsetX = 10
     mapULoffsetY = 10
-    mapLineCount = 6
-    mapWidthCount = 6
-    mapHeightCount = 6
-    mapSize = 220
+    mapLineCount = map_size.w
+    mapWidthCount = map_size.w
+    mapHeightCount = map_size.h
+    --mapSize = 220
+    camera_width=windowWidth
+    camera_height=windowHeight
+    baseCellSize=32
+    cellSize=32;
+    MaxGridWidth=10;
+    MaxGridHeight=10;
+    --InitBoundWidth=6;
+    --InitBoundHeight=6;
+    world_origin_x=camera_width/2
+    world_origin_y=camera_height/2
+    --world_origin_x=camera_width/2-MaxGridWidth*cellSize/2
+    --world_origin_y=camera_height/2-MaxGridHeight*cellSize/2
+    world_bound_x_min=world_origin_x-MaxGridWidth*baseCellSize/2;
+    world_bound_x_max=world_origin_x+MaxGridWidth*baseCellSize/2;
+    world_bound_y_min=world_origin_y-MaxGridHeight*baseCellSize/2;
+    world_bound_y_max=world_origin_y+MaxGridHeight*baseCellSize/2;
+    camera_bias_x=0;
+    camera_bias_y=0;
+    select_x=0
+    select_y=0
+    SelectedMode=true
+    ZoomFactor=1;
 
     initMainMenuCursor()
 
@@ -30,6 +53,7 @@ function love.load()
     initMap()
     setTileMap()
 
+    t=0
     counter = 0
     timer = 0.0
     tiker = 0.0
@@ -37,9 +61,9 @@ function love.load()
     frametiker = 0
 
     score = 0
-
-    gridSize = mapSize / mapLineCount
-    cellSize = mapSize / mapLineCount - 10
+    gridSize=cellSize
+    --gridSize = mapSize / mapLineCount
+    --cellSize = mapSize / mapLineCount - 10
 
     win = false
 
