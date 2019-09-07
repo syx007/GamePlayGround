@@ -272,16 +272,20 @@ function updateScore()
     initMapCalculation()
 
     -- calculate green
-    processor = getGreenCore()
+    processor = getProcessor()
     if not( processor == nil ) then
-        calculateGreen(processor.indexX,processor.indexY,1)
+        -- start the BFS from the procesor,
+        -- there is only one processor now, so mark it as 1
+        local processorID = 1
+        BFS_Driver(processor.indexX,processor.indexY,processorID)
     end
-    greenScore = sumGreen()
+    driverScore = evaluateDriver()
+    
+    -- calculate edge
+    edgeScore = evaluateEdge()
 
     -- calculate blue
-    calculateBlue()
-    blueScore = sumBlue()
+    preDFSNetwork()
+    blueScore = evaluateNetwork()
 
-    -- calculate edge
-    edgeScore = sumEdge()
 end

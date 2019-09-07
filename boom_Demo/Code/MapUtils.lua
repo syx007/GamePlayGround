@@ -1,23 +1,22 @@
+-- initalize the flag used in the BFS and DFS
 function initMapCalculation()
+    driverScore = 100
+    networkScores = {50,75,100,125,150,175,200,200}
+    edgeScore = 50
+
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
-            -- print('init map %d %d',i,j)
             if not(mapData[i][j] == nil) then
-                mapData[i][j].greenFlag = 0
-                mapData[i][j].blueFlag = 0
+                mapData[i][j].FlagProcessor = 0
+                mapData[i][j].FlagNetwork = 0
             end
         end
     end
 end
 
-
--- local coreID=extractDataByPtr(mapData[i][j].id,0);
--- local westID=getRotatedSide_Single(1,mapData[i][j].id,mapData[i][j].rotation);
--- local northID=getRotatedSide_Single(2,mapData[i][j].id,mapData[i][j].rotation);
--- local southID=getRotatedSide_Single(3,mapData[i][j].id,mapData[i][j].rotation);
--- local eastID=getRotatedSide_Single(4,mapData[i][j].id,mapData[i][j].rotation);
-
-function getGreenCore()
+-- get the position of the processor
+-- return : mapData, with indexX and indexY set to x,y
+function getProcessor()
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
@@ -34,6 +33,8 @@ function getGreenCore()
     return nil
 end
 
+-- get the coreID of the neighbour
+-- return -1 if the index overflow or the mapData is nil
 function getNeighbourCoreID(x,y,rotation)
 
     local xx , yy
@@ -67,18 +68,9 @@ function getNeighbourCoreID(x,y,rotation)
     return coreID
 end
 
-function checkConnection(x,y,rotation)
-    if x < 1 or x > mapWidthCount then
-        return false
-    end
-    if y < 1 or y > mapHeightCount then
-        return false
-    end
+function checkConnectionOverNetwork(x,y,rotation)
     
-    if mapData[x][y] == nil then
-        return false
-    end
-
+    -- calculate the (xx,yy) of the neighbour 
     local xx , yy
     if rotation == 1 then -- west 
         xx = x - 1
@@ -94,6 +86,44 @@ function checkConnection(x,y,rotation)
         yy = y
     end
 
+    local networkCoreID = 1
+
+    return getNeighbourCoreID(x,y,rotation) == networkCoreID and checkConnection(x,y,rotation) and checkConnection(xx,yy,rotation)
+end
+
+-- check if the connection between two tile is succcessful
+-- notice that the grass (2) can connect with load(3)
+function checkConnection(x,y,rotation)
+
+    -- validate the (x,y)
+    if x < 1 or x > mapWidthCount then
+        return false
+    end
+    if y < 1 or y > mapHeightCount then
+        return false
+    end
+    
+    if mapData[x][y] == nil then
+        return false
+    end
+
+    -- calculate the (xx,yy) of the neighbour 
+    local xx , yy
+    if rotation == 1 then -- west 
+        xx = x - 1
+        yy = y
+    elseif rotation == 2 then -- north
+        xx = x
+        yy = y - 1
+    elseif rotation == 3 then -- south
+        xx = x 
+        yy = y + 1
+    else -- east
+        xx = x + 1
+        yy = y
+    end
+
+    -- validate the (xx,yy)
     if xx < 1 or xx > mapWidthCount then
         return false
     end
@@ -105,6 +135,7 @@ function checkConnection(x,y,rotation)
         return false
     end
 
+    -- find the connected rotation of the neighbour
     local selfRot , nextRot 
     if rotation == 1 then -- west 
         selfRot = 1
@@ -125,11 +156,20 @@ function checkConnection(x,y,rotation)
     local nextSide = getRotatedSide_Single(nextRot,mapData[xx][yy].id,mapData[xx][yy].rotation);
     -- print(x,y,xx,yy,mapData[x][y].id, mapData[x][y].rotation,selfSide,mapData[xx][yy].id, mapData[xx][yy].rotation,nextSide)
     
-    return selfSide == nextSide
+    return (selfSide == nextSide) or ( selfSide + nextSide == 5)
 
 end
 
-function calculateGreen(x,y,processorID)
+function IsSpreadableDriverSide(sideID)
+    local SideGrass = 2
+    local SideLoad = 3
+    return (sideID == SideGrass) or (sideID == SideLoad)
+end
+
+-- make a BFS on the Drivers 
+-- mark the FlagProcessor as the target processorID
+-- (now the processorID is always 1, there can be multiply processors in the game)
+function BFS_Driver(x,y,processorID)
     if x < 1 or x > mapWidthCount then
         return 
     end
@@ -139,12 +179,13 @@ function calculateGreen(x,y,processorID)
     if mapData[x][y] == nil then
         return 
     end
-    if mapData[x][y].greenFlag > 0 then 
+    if mapData[x][y].FlagProcessor > 0 then 
         return
     end
 
     local targetCore = 3
-    local targetSide = 2
+    local SideGrass = 2
+    local SideLoad = 3
 
     local coreID=extractDataByPtr(mapData[x][y].id,0);
     if coreID == 4 or coreID == targetCore then
@@ -154,31 +195,61 @@ function calculateGreen(x,y,processorID)
         local southID=getRotatedSide_Single(3,mapData[x][y].id,mapData[x][y].rotation);
         local eastID=getRotatedSide_Single(4,mapData[x][y].id,mapData[x][y].rotation);
     
-        mapData[x][y].greenFlag = processorID
+        mapData[x][y].FlagProcessor = processorID
 
-        if westID == targetSide and checkConnection(x,y,1) then
-            calculateGreen(x-1,y,processorID);
+        if IsSpreadableDriverSide(westID) then 
+            if checkConnection(x,y,1) then
+                BFS_Driver(x-1,y,processorID);
+            end
+            if checkConnectionOverNetwork(x,y,1) then
+                BFS_Driver(x-2,y,processorID);
+            end
         end
-        if northID == targetSide and checkConnection(x,y,2) then
-            calculateGreen(x,y-1,processorID);
+        if IsSpreadableDriverSide(northID) then 
+            if checkConnection(x,y,2) then
+                BFS_Driver(x,y-1,processorID);
+            end
+            if checkConnectionOverNetwork(x,y,2) then
+                BFS_Driver(x,y-2,processorID);
+            end
         end
-        if southID == targetSide and checkConnection(x,y,3) then
-            calculateGreen(x,y+1,processorID);
+        if IsSpreadableDriverSide(southID) then 
+            if checkConnection(x,y,3) then
+                BFS_Driver(x,y+1,processorID);
+            end
+            if checkConnectionOverNetwork(x,y,3) then
+                BFS_Driver(x,y+2,processorID);
+            end
         end
-        if eastID == targetSide and checkConnection(x,y,4) then
-            calculateGreen(x+1,y,processorID);
+        if IsSpreadableDriverSide(eastID) then 
+            if checkConnection(x,y,4) then
+                BFS_Driver(x+1,y,processorID);
+            end
+            if checkConnectionOverNetwork(x,y,4) then
+                BFS_Driver(x+2,y,processorID);
+            end
         end
+        -- if IsSpreadableDriverSide(northID) and checkConnection(x,y,2) then
+        --     BFS_Driver(x,y-1,processorID);
+        -- end
+        -- if IsSpreadableDriverSide(southID) and checkConnection(x,y,3) then
+        --     BFS_Driver(x,y+1,processorID);
+        -- end
+        -- if IsSpreadableDriverSide(eastID) and checkConnection(x,y,4) then
+        --     BFS_Driver(x+1,y,processorID);
+        -- end
     end
 
 end
 
-function calculateBlue()
+-- pre calculate network
+function preDFSNetwork()
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
                 local coreID=extractDataByPtr(mapData[i][j].id,0);
-                if coreID == 1 and mapData[i][j].blueFlag == 0 then
-                    DFS_Blue(i,j,-1,0)
+                if coreID == 1 and mapData[i][j].FlagNetwork == 0 then
+                    DFS_Network(i,j,-1,0)
                 end
             end
         end
@@ -201,7 +272,16 @@ function min(x,y)
     end
 end
 
-function DFS_Blue(x,y,lastStep,total)
+
+function IsSpreadableNetworkSide(sideID)
+    local SideWater = 1
+    return (sideID == SideWater)
+end
+-- DFS the network tiles
+-- FlagNetwork == 0  => this tile is not searched
+-- FlagNetwork == -1 => this tile is being searched, but has no result
+-- FlagNetwork >0 => this tile has been searched, the number equals to the total number of connected tile
+function DFS_Network(x,y,lastStep,total)
     if x < 1 or x > mapWidthCount then
         return total
     end
@@ -216,31 +296,30 @@ function DFS_Blue(x,y,lastStep,total)
     local targetSide = 1 -- water
 
     local coreID=extractDataByPtr(mapData[x][y].id,0);
-    if coreID == targetCore and mapData[x][y].blueFlag == 0 then
+    if coreID == targetCore and mapData[x][y].FlagNetwork == 0 then
 
-        
         local westID=getRotatedSide_Single(1,mapData[x][y].id,mapData[x][y].rotation);
         local northID=getRotatedSide_Single(2,mapData[x][y].id,mapData[x][y].rotation);
         local southID=getRotatedSide_Single(3,mapData[x][y].id,mapData[x][y].rotation);
         local eastID=getRotatedSide_Single(4,mapData[x][y].id,mapData[x][y].rotation);
     
-        mapData[x][y].blueFlag = -1
+        mapData[x][y].FlagNetwork = -1
 
         local res = total+1;
-        if westID == targetSide and checkConnection(x,y,1) and not(lastStep==4) then
-            res = max(DFS_Blue(x-1,y,1,total+1),res);
+        if IsSpreadableNetworkSide(westID) and checkConnection(x,y,1) and not(lastStep==4) then
+            res = max(DFS_Network(x-1,y,1,total+1),res);
         end
-        if northID == targetSide and checkConnection(x,y,2) and not(lastStep==3) then
-            res = max(DFS_Blue(x,y-1,2,total+1),res);
+        if IsSpreadableNetworkSide(northID) and checkConnection(x,y,2) and not(lastStep==3) then
+            res = max(DFS_Network(x,y-1,2,total+1),res);
         end
-        if southID == targetSide and checkConnection(x,y,3) and not(lastStep==2) then
-            res = max(DFS_Blue(x,y+1,3,total+1),res);
+        if IsSpreadableNetworkSide(southID) and checkConnection(x,y,3) and not(lastStep==2) then
+            res = max(DFS_Network(x,y+1,3,total+1),res);
         end
-        if eastID == targetSide and checkConnection(x,y,4) and not(lastStep==1) then
-            res = max(DFS_Blue(x+1,y,4,total+1),res);
+        if IsSpreadableNetworkSide(eastID) and checkConnection(x,y,4) and not(lastStep==1) then
+            res = max(DFS_Network(x+1,y,4,total+1),res);
         end
 
-        mapData[x][y].blueFlag = res;
+        mapData[x][y].FlagNetwork = res;
 
 
         return res
@@ -263,31 +342,32 @@ function calculateEdge(x,y)
         return 0
     end
 
-    local targetCore = 1 -- lake
-    local neighbourCore = 3 -- mill
-    local targetSide = 2 -- grass
+    local targetCore = 3 -- driver
+    local neighbourCore = 1 -- network
+    -- local targetSide = 2 -- grass
 
-
-    local coreID=extractDataByPtr(mapData[x][y].id,0);
+    local data = mapData[x][y]
+    local coreID=extractDataByPtr(data.id,0);
 
     local res = 0
 
-    if coreID == targetCore then
-        local westID=getRotatedSide_Single(1,mapData[x][y].id,mapData[x][y].rotation);
-        local northID=getRotatedSide_Single(2,mapData[x][y].id,mapData[x][y].rotation);
-        local southID=getRotatedSide_Single(3,mapData[x][y].id,mapData[x][y].rotation);
-        local eastID=getRotatedSide_Single(4,mapData[x][y].id,mapData[x][y].rotation);
+    if coreID == targetCore and data.FlagProcessor > 0 then
+
+        local westID=getRotatedSide_Single(1,data.id,data.rotation);
+        local northID=getRotatedSide_Single(2,data.id,data.rotation);
+        local southID=getRotatedSide_Single(3,data.id,data.rotation);
+        local eastID=getRotatedSide_Single(4,data.id,data.rotation);
     
-        if westID == targetSide and checkConnection(x,y,1) and getNeighbourCoreID(x,y,1) == neighbourCore then
+        if IsSpreadableDriverSide(westID) and checkConnection(x,y,1) and getNeighbourCoreID(x,y,1) == neighbourCore  then
             res = res + 1
         end
-        if northID == targetSide and checkConnection(x,y,2) and getNeighbourCoreID(x,y,2) == neighbourCore then
+        if IsSpreadableDriverSide(northID) and checkConnection(x,y,2) and getNeighbourCoreID(x,y,2) == neighbourCore then
             res = res + 1
         end
-        if southID == targetSide and checkConnection(x,y,3) and getNeighbourCoreID(x,y,3) == neighbourCore then
+        if IsSpreadableDriverSide(southID) and checkConnection(x,y,3) and getNeighbourCoreID(x,y,3) == neighbourCore then
             res = res + 1
         end
-        if eastID == targetSide and checkConnection(x,y,4) and getNeighbourCoreID(x,y,4) == neighbourCore then
+        if IsSpreadableDriverSide(eastID) and checkConnection(x,y,4) and getNeighbourCoreID(x,y,4) == neighbourCore then
             res = res + 1
         end
     end
@@ -295,15 +375,15 @@ function calculateEdge(x,y)
 end
 
 
-
-function sumGreen()
+-- calculate the total score of the drive based on the FlagProcessor
+function evaluateDriver()
     local count = 0
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
                 local coreID=extractDataByPtr(mapData[i][j].id,0);
-                if coreID == 3 and mapData[i][j].greenFlag > 0 then
-                    count = count + 100
+                if coreID == 3 and mapData[i][j].FlagProcessor > 0 then
+                    count = count + driverScore 
                 end
             end
         end
@@ -311,15 +391,14 @@ function sumGreen()
     return count
 end
 
-function sumBlue()
+function evaluateNetwork()
     local count = 0
-    local blueScores = {50,75,100,125,150,175,200,200}
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not(mapData[i][j] == nil) then
                 local coreID=extractDataByPtr(mapData[i][j].id,0);
-                if coreID == 1 and mapData[i][j].blueFlag > 0 then
-                    count = count + blueScores[min(8,mapData[i][j].blueFlag)]
+                if coreID == 1 and mapData[i][j].FlagNetwork > 0 then
+                    count = count + networkScores[min(table.getn(networkScores),mapData[i][j].FlagNetwork)]
                 end
             end
         end
@@ -327,11 +406,11 @@ function sumBlue()
     return count
 end
 
-function sumEdge()
+function evaluateEdge()
     local count = 0
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
-            count = count + calculateEdge(i,j) * 50
+            count = count + calculateEdge(i,j) * edgeScore
         end
     end
 
