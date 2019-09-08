@@ -15,7 +15,7 @@ function reloadScreenPlayingGame()
     -- now we need reset these val
     totalCash = 1000.0
 
-    stepCounterMax = 30
+    stepCounterMax = 99
     stepCounter = stepCounterMax
 end
 

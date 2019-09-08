@@ -10,38 +10,31 @@ function love.load()
     initTiles()
     gameState = 0
 
-    -- debug_directGame = true
-    debug_directGame = false
+    debug_direc tGame = true
+    -- debug_directGame = false
     if debug_directGame then gameState = 1 end
 
     windowWidth = 320
     windowHeight = 240
 
     love.window.setMode(windowWidth, windowHeight, {resizable = false})
-    -- mapULoffsetX = 12 -- this is now lock to gameplayBG
-    -- mapULoffsetY = 23 -- this is now lock to gameplayBG
-    -- mapLineCount = 6
-    -- mapWidthCount = 6
-    -- mapHeightCount = 6
-    -- mapSize = 192
+
     mapULoffsetX = 52
     mapULoffsetY = 1
     mapLineCount = map_size.w
     mapWidthCount = map_size.w
     mapHeightCount = map_size.h
-    --mapSize = 220
+
     camera_width=windowWidth
     camera_height=windowHeight
     baseCellSize=32
     cellSize=32;
     MaxGridWidth=6;
     MaxGridHeight=6;
-    --InitBoundWidth=6;
-    --InitBoundHeight=6;
+
     world_origin_x=camera_width/2-mapULoffsetX
     world_origin_y=camera_height/2-mapULoffsetY
-    --world_origin_x=camera_width/2-MaxGridWidth*cellSize/2
-    --world_origin_y=camera_height/2-MaxGridHeight*cellSize/2
+
     world_bound_x_min=world_origin_x-MaxGridWidth*baseCellSize/2;
     world_bound_x_max=world_origin_x+MaxGridWidth*baseCellSize/2;
     world_bound_y_min=world_origin_y-MaxGridHeight*baseCellSize/2;
@@ -54,12 +47,6 @@ function love.load()
     Help=false
     ZoomFactor=1;
 
-    -- initMainMenuCursor()
-
-    -- initCursor(mapWidthCount/2,mapHeightCount/2)
-    -- initMap()
-    -- setTileMap()
-
     t=0
     counter = 0
     timer = 0.0
@@ -67,12 +54,7 @@ function love.load()
     frameCounter = 0
     frametiker = 0
 
-    -- gridSize = mapSize / mapLineCount
-    -- cellSize = mapSize / mapLineCount - 10
-    -- score = 0
     gridSize=cellSize
-    --gridSize = mapSize / mapLineCount
-    --cellSize = mapSize / mapLineCount - 10
 
     win = false
     -- haveSetRandomSeed = false
@@ -86,7 +68,7 @@ function love.load()
 
     -- cost system should implement
     -- shop system should implement
-    destoryInterval = 5
+    destoryInterval = 99
     destoryCount =2
     destoryCounter = destoryInterval
     nextDestoryPosX = nil
@@ -96,18 +78,22 @@ function love.load()
     
     love.math.setRandomSeed(love.timer.getTime())
     changeGameStateTo(gameState)
+
+    processorCoreID=5
+    driverCoreID=4
+    brigeCoreID=3
+    serverCoreID=2
+    networkCableCoreID=1
+    PCBCoreID=0
+    
+    PCBSideID=0
+    SerialCSideID=1
+    ParllelCSideID=2
+    fenceSideID=3
 end
 
 function love.keypressed(key, scancode, isrepeat)
     if key == "escape" then love.event.quit() end
-    -- if not haveSetRandomSeed then
-    --     if love.keyboard.isDown('down') then
-    --         --use first 'down' press time for random
-    --         haveSetRandomSeed=true
-    --         -- print(frameCounter)
-    --         love.math.setRandomSeed(frameCounter)
-    --     end
-    -- end
     --[[ABXY=JKUI DEOT]] --
     mainUpdateInputSwitch(gameState, key)
 end

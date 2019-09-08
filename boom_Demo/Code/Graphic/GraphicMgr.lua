@@ -126,20 +126,26 @@ function updateMap()
         end
     end
 end
-function drawTile(grid_x, grid_y, core_id, side_id, rot)
+function drawTileCore(grid_x, grid_y, core_id)
+    love.graphics.setColor(1, 1, 1, 1)
+    local coord = getWorldCoordfromGrid(grid_x, grid_y, camera_bias_x,
+                                        camera_bias_y)
+    Tiles[core_id + 1][1].Core.content:setFilter("nearest", "nearest")
+    love.graphics.draw(Tiles[core_id + 1][1].Core.content,
+                       coord.x + ZoomFactor * 16, coord.y + ZoomFactor * 16, 0,
+                       0.95 * ZoomFactor, 0.95 * ZoomFactor, 16, 16)
+end
+
+function drawTilSide(grid_x, grid_y, core_id, side_id, rot)
     love.graphics.setColor(1, 1, 1, 1)
     -- print(core_id,side_id)
     local coord = getWorldCoordfromGrid(grid_x, grid_y, camera_bias_x,
                                         camera_bias_y)
     Tiles[core_id + 1][side_id + 1].Side.content:setFilter("nearest", "nearest")
-    Tiles[core_id + 1][side_id + 1].Core.content:setFilter("nearest", "nearest")
     love.graphics.draw(Tiles[core_id + 1][side_id + 1].Side.content,
                        coord.x + ZoomFactor * 16, coord.y + ZoomFactor * 16,
-                       -(rot - 2) * (3.141592654 / 2), 0.95 * ZoomFactor,
+                       (rot - 2) * (3.141592654 / 2), 0.95 * ZoomFactor,
                        0.95 * ZoomFactor, 16, 16)
-    love.graphics.draw(Tiles[core_id + 1][side_id + 1].Core.content,
-                       coord.x + ZoomFactor * 16, coord.y + ZoomFactor * 16, 0,
-                       0.95 * ZoomFactor, 0.95 * ZoomFactor, 16, 16)
 end
 function updateTileMap()
     for i = 1, mapLineCount do
@@ -174,10 +180,11 @@ function updateTileMap()
                 -- print(westID,northID,southID,eastID)
 
                 -- How it rotate Here?
-                drawTile(grid_coord.x, grid_coord.y, coreID, westID, 1)
-                drawTile(grid_coord.x, grid_coord.y, coreID, northID, 2)
-                drawTile(grid_coord.x, grid_coord.y, coreID, southID, 4)
-                drawTile(grid_coord.x, grid_coord.y, coreID, eastID, 3)
+                drawTileCore(grid_coord.x, grid_coord.y, coreID)
+                drawTilSide(grid_coord.x, grid_coord.y, coreID, westID, 1)
+                drawTilSide(grid_coord.x, grid_coord.y, coreID, northID, 2)
+                drawTilSide(grid_coord.x, grid_coord.y, coreID, southID, 4)
+                drawTilSide(grid_coord.x, grid_coord.y, coreID, eastID, 3)
 
                 --[[
                 CoreColor(coreID)
@@ -311,7 +318,7 @@ function drawPlayingGame()
     -- print(cursor.cx,cursor.cy)
 
     local grid_coord = MapIdx2GridCoord(cursor.cx, cursor.cy)
-    drawCursor(grid_coord.x, grid_coord.y, 0, 1.0, 1.0, 0.5 * math.sin(0.1 * t) + 1)
+    drawCursor(grid_coord.x, grid_coord.y, 0, 1.0, 0, 0.5 * math.sin(0.1 * t) + 1)
     -- updateAnimation()
 
     if stepDrawSwch then

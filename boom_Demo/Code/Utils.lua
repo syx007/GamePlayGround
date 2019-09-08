@@ -140,8 +140,10 @@ end
 function setTileMapByCount()
     -- local source = {nil, 00000, 10110}
     -- local sourceCount = {6, 24, 6}
-    local source = {nil, 00000, 11001, 11221, 33131, 31131, 42222, 52222}
-    local sourceCount = {16, 3, 2, 4, 5, 4, 1, 1}
+    -- local source = {nil, 00000, 11001, 11221, 33131, 31131, 42222, 52222}
+    -- local sourceCount = {16, 3, 2, 4, 5, 4, 1, 1}
+    local source = {nil, 00001, 41202, 51021, 11221, 12121, 20011}
+    local sourceCount = {26, 2, 2, 1, 2, 3, 1}
     mapData = {}
     for i = 1, mapLineCount do
         mapData[i] = {}

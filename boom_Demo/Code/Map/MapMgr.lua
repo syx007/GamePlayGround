@@ -79,7 +79,7 @@ function updateScore()
     if not( processor == nil ) then
         -- start the BFS from the procesor,
         -- there is only one processor now, so mark it as 1
-        local processorID = 1
+        local processorID = 1--this is not ID as kind is #of instanced tile
         BFS_Driver(processor.indexX,processor.indexY,processorID)
     end
     driverIncome = evaluateDriver()
