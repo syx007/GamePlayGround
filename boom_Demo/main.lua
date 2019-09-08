@@ -10,8 +10,8 @@ function love.load()
     initTiles()
     gameState = 0
 
-    debug_direc tGame = true
-    -- debug_directGame = false
+    -- debug_directGame = true
+    debug_directGame = false
     if debug_directGame then gameState = 1 end
 
     windowWidth = 320
