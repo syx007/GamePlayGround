@@ -1,13 +1,24 @@
+require("Code/DesignerConfigs/DesignerConf")
 -- initalize the flag used in the BFS and DFS
 function initMapCalculation()
     driverIncome = 100
+    networkIncome = 100
     networkScores = {50, 75, 100, 125, 150, 175, 200, 200}
     edgeIncome = 50
+
+    PCBCost = 10
+    netCable = 100
+    bridgeCost = 300
+    serverCost = 200
+    dirverCost = 75
+    processCost = 300
+    heatSinkCost = 200
 
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not (mapData[i][j] == nil) then
                 mapData[i][j].FlagProcessor = 0
+                mapData[i][j].ProcessorVisited = 0
                 mapData[i][j].NetworkDepth = -1
             end
         end
@@ -95,23 +106,26 @@ function IsSpreadableDriverSide(sideID)
     return (sideID == SideGrass) or (sideID == SideLoad)
 end
 
-function IsSpreadableNetwork(sideID)
-    return (sideID == SerialCSideID)
-end
+function IsSpreadableNetwork(sideID) return (sideID == SerialCSideID) end
 
 -- make a BFS on the Drivers 
 -- mark the FlagProcessor as the target processorID
 -- (now the processorID is always 1, there can be multiply processors in the game)
 function BFS_Driver(x, y, processorID)
+    --have chance to STACKOVERFLOW
+    --will error out when involve with network disk combination
     if x < 1 or x > mapWidthCount then return end
     if y < 1 or y > mapHeightCount then return end
     if mapData[x][y] == nil then return end
     if mapData[x][y].FlagProcessor > 0 then return end
+    if mapData[x][y].ProcessorVisited > 0 then return end
 
     local coreID = extractDataByPtr(mapData[x][y].id, 0)
     if coreID == driverCoreID or coreID == processorCoreID then
         mapData[x][y].FlagProcessor = processorID
     end
+    
+    mapData[x][y].ProcessorVisited = 1
 
     local westID = getRotatedSide_Single(1, mapData[x][y].id,
                                          mapData[x][y].rotation)
@@ -123,7 +137,6 @@ function BFS_Driver(x, y, processorID)
                                          mapData[x][y].rotation)
 
     if IsSpreadableDriverSide(westID) then
-        -- print("Here")
         if checkConnection(x, y, 1) then
             BFS_Driver(x - 1, y, processorID)
         end
@@ -153,7 +166,7 @@ function preDFSNetwork()
                 local coreID = extractDataByPtr(mapData[i][j].id, 0)
                 if coreID == serverCoreID then
                     DFS_Network(i, j, -1)
-                    --assume only one server for now
+                    -- assume only one server for now
                     return
                 end
             end
@@ -190,7 +203,7 @@ function DFS_Network(x, y, depth)
     if x < 1 or x > mapWidthCount then return end
     if y < 1 or y > mapHeightCount then return end
     if mapData[x][y] == nil then return end
-    
+
     if mapData[x][y].NetworkDepth < 0 then
         mapData[x][y].NetworkDepth = currentdepth
     elseif mapData[x][y].NetworkDepth <= currentdepth then
@@ -198,7 +211,7 @@ function DFS_Network(x, y, depth)
     elseif mapData[x][y].NetworkDepth > currentdepth then
         mapData[x][y].NetworkDepth = currentdepth
     end
-    
+
     -- print(currentdepth)
     local coreID = extractDataByPtr(mapData[x][y].id, 0)
     if coreID == networkCableCoreID or coreID == serverCoreID then
@@ -210,7 +223,7 @@ function DFS_Network(x, y, depth)
                                               mapData[x][y].rotation)
         local eastID = getRotatedSide_Single(4, mapData[x][y].id,
                                              mapData[x][y].rotation)
-    
+
         if IsSpreadableNetwork(westID) then
             if checkConnection(x, y, 1) then
                 DFS_Network(x - 1, y, currentdepth)
@@ -293,21 +306,21 @@ function evaluateDriver()
 end
 
 function evaluateNetwork()
-    --this currently only calculate necessary longest path
-    --and havn't account for bridge
+    -- this currently only calculate necessary longest path
+    -- and havn't account for bridge
     local maxDepth = -1
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not (mapData[i][j] == nil) then
                 local coreID = extractDataByPtr(mapData[i][j].id, 0)
                 if coreID == networkCableCoreID then
-                    maxDepth=math.max(mapData[i][j].NetworkDepth,maxDepth)
+                    maxDepth = math.max(mapData[i][j].NetworkDepth, maxDepth)
                 end
             end
         end
     end
     -- print(count)
-    return maxDepth
+    return (maxDepth + 1) * networkIncome
 end
 
 function evaluateEdge()
@@ -317,8 +330,20 @@ function evaluateEdge()
             count = count + calculateEdge(i, j) * edgeIncome
         end
     end
-
-    return count
-
+    --TODO Redo
+    return 0
 end
 
+function evaluateCost()
+    local cost = 0
+    for i = 1, mapWidthCount do
+        for j = 1, mapHeightCount do
+            if not (mapData[i][j] == nil) then
+                local coreID = extractDataByPtr(mapData[i][j].id, 0)
+                -- print(coreID)
+                cost = cost + getCostByID(coreID)
+            end
+        end
+    end
+    return cost
+end

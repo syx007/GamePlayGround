@@ -1,6 +1,7 @@
 -- luabit = require"bit"
 function LoadCore2SideMap(Mapfile)
     Core2SideMap = {}
+    -- local f = love.filesystem.read(Mapfile, "r")
     local f = io.open(Mapfile, "r")
     if f ~= nil then
         io.input(f)
@@ -14,7 +15,7 @@ function LoadCore2SideMap(Mapfile)
     else
         love.graphics.print("file1 is nil", 10, 10)
     end
-    print(Core2SideMap[1][1]);
+    -- print(Core2SideMap[1][1]);
 end
 -- key of Cores:CorePCB,CoreServer,CoreNetwork,CoreBridge,CoreDriver,CoreProcessor
 -- key of Sides:SidePCB,SideSerialConnector,SideParllelConnector,SideFirewall

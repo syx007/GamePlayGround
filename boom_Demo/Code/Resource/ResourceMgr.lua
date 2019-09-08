@@ -115,6 +115,7 @@ function loadResource()
         coreTable[tid].content = love.graphics.newImage(
                                      ArtCoreSpritePath .. coreFiles[f])
         coreTable[tid].fCount = tonumber(coreFileDataList[2]) -- TODO
+        --this core also counts frames
         coreTableCount = coreTableCount + 1
         --print(coreTable[tid].id,coreTable[tid].name,coreTable[tid].id,coreTable[tid].fCount)
     end

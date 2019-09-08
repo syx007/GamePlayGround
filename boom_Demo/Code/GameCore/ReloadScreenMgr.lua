@@ -1,21 +1,23 @@
 function reloadScreenPlayingGame()
+    shopContent = {00000, 00000, 00000, 00000}
+    shopPrice = {150, 160, 170, 180}
     -- body
-    initCursor(mapWidthCount/2,mapHeightCount/2)
+    initCursor(mapWidthCount / 2, mapHeightCount / 2)
     initMap()
     setTileMap()
-
+    refreshShop()
     -- init Score here, or get nil val
     driverIncome = 0.0
     blueIncome = 0.0
     edgeIncome = 0.0
     totalIncome = 0.0
 
-    totalCost=0.0 --should be 0 or positive
+    totalCost = 0.0 -- should be 0 or positive
 
     -- now we need reset these val
-    totalCash = 1000.0
+    totalCash = 10000.0
 
-    stepCounterMax = 99
+    stepCounterMax = 30
     stepCounter = stepCounterMax
 end
 

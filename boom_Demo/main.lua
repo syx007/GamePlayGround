@@ -5,14 +5,16 @@ require("Code/GameStateSwh")
 -- DON'T write Chinese comment.
 
 function love.load()
-    
+
     loadResource()
     initTiles()
     gameState = 0
 
-    -- debug_directGame = true
-    debug_directGame = false
+    debug_directGame = true
+    -- debug_directGame = false
     if debug_directGame then gameState = 1 end
+
+    debug_view=false
 
     windowWidth = 320
     windowHeight = 240
@@ -25,38 +27,40 @@ function love.load()
     mapWidthCount = map_size.w
     mapHeightCount = map_size.h
 
-    camera_width=windowWidth
-    camera_height=windowHeight
-    baseCellSize=32
-    cellSize=32;
-    MaxGridWidth=6;
-    MaxGridHeight=6;
+    camera_width = windowWidth
+    camera_height = windowHeight
+    baseCellSize = 32
+    cellSize = 32
+    MaxGridWidth = 6
+    MaxGridHeight = 6
 
-    world_origin_x=camera_width/2-mapULoffsetX
-    world_origin_y=camera_height/2-mapULoffsetY
+    world_origin_x = camera_width / 2 - mapULoffsetX
+    world_origin_y = camera_height / 2 - mapULoffsetY
 
-    world_bound_x_min=world_origin_x-MaxGridWidth*baseCellSize/2;
-    world_bound_x_max=world_origin_x+MaxGridWidth*baseCellSize/2;
-    world_bound_y_min=world_origin_y-MaxGridHeight*baseCellSize/2;
-    world_bound_y_max=world_origin_y+MaxGridHeight*baseCellSize/2;
-    camera_bias_x=0;
-    camera_bias_y=0;
-    select_x=0
-    select_y=0
-    SelectedMode=true
-    Help=false
-    ZoomFactor=1;
+    world_bound_x_min = world_origin_x - MaxGridWidth * baseCellSize / 2
+    world_bound_x_max = world_origin_x + MaxGridWidth * baseCellSize / 2
+    world_bound_y_min = world_origin_y - MaxGridHeight * baseCellSize / 2
+    world_bound_y_max = world_origin_y + MaxGridHeight * baseCellSize / 2
+    camera_bias_x = 0
+    camera_bias_y = 0
+    select_x = 0
+    select_y = 0
+    SelectedMode = true
+    Help = false
+    ZoomFactor = 1
 
-    t=0
+    t = 0
     counter = 0
     timer = 0.0
     tiker = 0.0
     frameCounter = 0
     frametiker = 0
 
-    gridSize=cellSize
+    gridSize = cellSize
 
     win = false
+    hold_buying=false
+    buying_ptr=0
     -- haveSetRandomSeed = false
 
     -- now random destory should implement
@@ -68,28 +72,18 @@ function love.load()
 
     -- cost system should implement
     -- shop system should implement
-    destoryInterval = 99
-    destoryCount =2
+    destoryInterval = 4
+    destoryCount = 4
     destoryCounter = destoryInterval
     nextDestoryPosX = nil
     nextDestoryPosY = nil
     stepDrawSwch = false
     drawDestoryCursorSwch = false
-    
-    love.math.setRandomSeed(love.timer.getTime())
-    changeGameStateTo(gameState)
 
-    processorCoreID=5
-    driverCoreID=4
-    brigeCoreID=3
-    serverCoreID=2
-    networkCableCoreID=1
-    PCBCoreID=0
+    love.math.setRandomSeed(love.timer.getTime())
     
-    PCBSideID=0
-    SerialCSideID=1
-    ParllelCSideID=2
-    fenceSideID=3
+    changeGameStateTo(gameState)
+    initTileMetaData()
 end
 
 function love.keypressed(key, scancode, isrepeat)

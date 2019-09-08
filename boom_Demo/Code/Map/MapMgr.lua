@@ -2,8 +2,6 @@ require("Code/DesignerConfigs/ElementConf")
 require("Code/Utils")
 require("Code/Map/MapUtils")
 
-
-
 -- connectivity:
 -- [  2  ]
 -- [1 0 4]
@@ -11,9 +9,9 @@ require("Code/Map/MapUtils")
 
 -- s=1 r=1:
 function isTargetInMap(targetPosX, targetPosY)
-    --print(targetPosX,targetPosY,-MaxGridWidth/2,MaxGridWidth/2 - 1)
-    return (targetPosX > 0 and targetPosX < mapLineCount+1) and
-               (targetPosY >0 and targetPosY < mapLineCount+1)
+    -- print(targetPosX,targetPosY,-MaxGridWidth/2,MaxGridWidth/2 - 1)
+    return (targetPosX > 0 and targetPosX < mapLineCount + 1) and
+               (targetPosY > 0 and targetPosY < mapLineCount + 1)
 end
 
 function tileIsBlocked(targetPosX, targetPosY)
@@ -22,14 +20,14 @@ end
 
 function isTargetMovable_Cursor_withTile(targetPosX, targetPosY)
     if isTargetInMap(targetPosX, targetPosY) then
-            return not tileIsBlocked(targetPosX, targetPosY)
+        return not tileIsBlocked(targetPosX, targetPosY)
     else
         return false
     end
 end
 
 function isTargetMovable_Cursor(targetPosX, targetPosY)
-return isTargetInMap(targetPosX, targetPosY)
+    return isTargetInMap(targetPosX, targetPosY)
 end
 
 function isTargetMovable(targetPosX, targetPosY)
@@ -76,14 +74,14 @@ function updateScore()
 
     -- calculate green
     processor = getProcessor()
-    if not( processor == nil ) then
+    if not (processor == nil) then
         -- start the BFS from the procesor,
         -- there is only one processor now, so mark it as 1
-        local processorID = 1--this is not ID as kind is #of instanced tile
-        BFS_Driver(processor.indexX,processor.indexY,processorID)
+        local processorID = 1 -- this is not ID as kind is #of instanced tile
+        BFS_Driver(processor.indexX, processor.indexY, processorID)
     end
     driverIncome = evaluateDriver()
-    
+
     -- calculate edge
     edgeIncome = evaluateEdge()
 
@@ -91,4 +89,5 @@ function updateScore()
     preDFSNetwork()
     blueIncome = evaluateNetwork()
 
+    totalCost = evaluateCost()
 end

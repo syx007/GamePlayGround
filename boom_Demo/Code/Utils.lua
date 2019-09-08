@@ -110,7 +110,8 @@ function setTileMap()
     -- dig hole here
     -- mapData[1][1] = nil
     -- setTileMapByScramble()
-    setTileMapByCount()
+    -- setTileMapByCount()
+    setRealGamePlayMap()
 end
 
 function setTileMapByScramble()
@@ -161,4 +162,21 @@ function setTileMapByCount()
             sourceCount[rnd] = sourceCount[rnd] - 1
         end
     end
+end
+
+function setRealGamePlayMap()
+    mapData = {}
+    for i = 1, mapLineCount do
+        mapData[i] = {}
+        for j = 1, mapLineCount do
+            mapData[i][j] = BlankTile()
+            mapData[i][j].id = 00000
+        end
+    end
+    mapData[3][3] = nil
+    mapData[4][3] = nil
+    mapData[3][4] = nil
+    mapData[4][4] = nil
+    mapData[1][1].id = 52222
+    mapData[6][6].id = 21111
 end

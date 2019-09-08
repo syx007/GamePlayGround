@@ -63,39 +63,61 @@ end]]
     
 end]]
 function updateInputPlayingGame(key)
-    if key =="i" then
-        SelectedMode=not SelectedMode;
-    end
-    if key =="o" then
-        Help=not Help
-    end
-    if SelectedMode==true then
-        if (love.keyboard.isDown('z')) or(love.keyboard.isDown('j')) then
-            if love.keyboard.isDown('up') then
-                cursor.action = 2
-            elseif love.keyboard.isDown('down') then
-                cursor.action = 3
-            elseif love.keyboard.isDown('left') then
-                cursor.action = 1
-            elseif love.keyboard.isDown('right') then
-                cursor.action = 4
-            else
-                cursor.action = 0
-            end
+    -- if key =="i" then
+    --     SelectedMode=not SelectedMode;
+    -- end
+    if key == "o" then Help = not Help end
+    -- if (love.keyboard.isDown('i')) or(love.keyboard.isDown('s')) then
+    --    --toggle buying 
+    -- end
+    buying_ptr=0
+    if hold_buying then
+        -- hold buying
+        if love.keyboard.isDown('up') then
+            buying_ptr=1
+            print("buying up")
+        elseif love.keyboard.isDown('down') then
+            buying_ptr=2
+            print("buying down")
+        elseif love.keyboard.isDown('left') then
+            buying_ptr=3
+            print("buying left")
+        elseif love.keyboard.isDown('right') then
+            buying_ptr=4
+            print("buying right")
         else
-            if love.keyboard.isDown('up') then
-                cursor.dy = -1
-            elseif love.keyboard.isDown('down') then
-                cursor.dy = 1
-            elseif love.keyboard.isDown('left') then
-                cursor.dx = -1
-            elseif love.keyboard.isDown('right') then
-                cursor.dx = 1
-            end
+            -- not buying
         end
-        if (love.keyboard.isDown('x')) or(love.keyboard.isDown('k')) then
-            print("rotate input")
-            cursor.rotate = 1
+    else
+        --buying block normal cursor action
+        if SelectedMode == true then
+            if (love.keyboard.isDown('z')) or (love.keyboard.isDown('j')) then
+                if love.keyboard.isDown('up') then
+                    cursor.action = 2
+                elseif love.keyboard.isDown('down') then
+                    cursor.action = 3
+                elseif love.keyboard.isDown('left') then
+                    cursor.action = 1
+                elseif love.keyboard.isDown('right') then
+                    cursor.action = 4
+                else
+                    cursor.action = 0
+                end
+            else
+                if love.keyboard.isDown('up') then
+                    cursor.dy = -1
+                elseif love.keyboard.isDown('down') then
+                    cursor.dy = 1
+                elseif love.keyboard.isDown('left') then
+                    cursor.dx = -1
+                elseif love.keyboard.isDown('right') then
+                    cursor.dx = 1
+                end
+            end
+            if (love.keyboard.isDown('x')) or (love.keyboard.isDown('k')) then
+                print("rotate input")
+                cursor.rotate = 1
+            end
         end
     end
 end

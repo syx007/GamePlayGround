@@ -139,6 +139,7 @@ end
 function drawTilSide(grid_x, grid_y, core_id, side_id, rot)
     love.graphics.setColor(1, 1, 1, 1)
     -- print(core_id,side_id)
+    -- this ID should comply excel sheet or change Core2SideMap.map file
     local coord = getWorldCoordfromGrid(grid_x, grid_y, camera_bias_x,
                                         camera_bias_y)
     Tiles[core_id + 1][side_id + 1].Side.content:setFilter("nearest", "nearest")
@@ -275,6 +276,7 @@ end
 function updateUI()
     printScore()
     printTimeCounter()
+    drawShopUI()
     -- printButtonTips()
 end
 
