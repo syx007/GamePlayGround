@@ -127,9 +127,10 @@ function updateMap()
 end
 function drawTile(grid_x,grid_y,core_id,side_id,rot)
     love.graphics.setColor( 1, 1, 1, 1)
+    --print(core_id,side_id)
     local coord=getWorldCoordfromGrid(grid_x,grid_y,camera_bias_x,camera_bias_y)
-    love.graphics.draw(Tiles[core_id][side_id].Side.content,coord.x+ZoomFactor*16,coord.y+ZoomFactor*16,(rot-1)*(3.141592654/2),0.95*ZoomFactor,0.95*ZoomFactor,16,16)
-    love.graphics.draw(Tiles[core_id][side_id].Core.content,coord.x+ZoomFactor*16,coord.y+ZoomFactor*16,0,0.95*ZoomFactor,0.95*ZoomFactor,16,16)
+    love.graphics.draw(Tiles[core_id+1][side_id+1].Side.content,coord.x+ZoomFactor*16,coord.y+ZoomFactor*16,-(rot-2)*(3.141592654/2),0.95*ZoomFactor,0.95*ZoomFactor,16,16)
+    love.graphics.draw(Tiles[core_id+1][side_id+1].Core.content,coord.x+ZoomFactor*16,coord.y+ZoomFactor*16,0,0.95*ZoomFactor,0.95*ZoomFactor,16,16)
 end
 function updateTileMap()
     for i = 1, mapLineCount do
@@ -161,10 +162,14 @@ function updateTileMap()
                 -- southID=getRotatedSide_Single(southID,mapData[i][j].rotation);
                 -- eastID=getRotatedSide_Single(eastID,mapData[i][j].rotation);
                 --print(westID,northID,southID,eastID)
-                --drawTile(grid_coord.x,grid_coord.y,1,1,westID)
-                --drawTile(grid_coord.x,grid_coord.y,1,1,northID)
-                --drawTile(grid_coord.x,grid_coord.y,1,1,southID)
-                --drawTile(grid_coord.x,grid_coord.y,1,1,eastID)
+
+                -- How it rotate Here?
+                drawTile(grid_coord.x,grid_coord.y,coreID,westID,1)
+                drawTile(grid_coord.x,grid_coord.y,coreID,northID,2)
+                drawTile(grid_coord.x,grid_coord.y,coreID,southID,4)
+                drawTile(grid_coord.x,grid_coord.y,coreID,eastID,3)
+
+                --[[
                 CoreColor(coreID)
                 love.graphics.setColor(coreColor[1], coreColor[2], coreColor[3]) -- Core    
                 love.graphics.rectangle("fill", cPosX + tileOffset,
@@ -196,7 +201,7 @@ function updateTileMap()
                 love.graphics.rectangle("fill",
                                         cPosX + 1 + tileCoreSize + tileOffset,
                                         cPosY + tileOffset, tileOffset,
-                                        tileCoreSize, 3, 3, 5)
+                                        tileCoreSize, 3, 3, 5)]]
             end
         end
     end
@@ -282,8 +287,6 @@ function drawPlayingGame()
     --drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
     updateTileMap()
     --print(cursor.cx,cursor.cy)
-
-    drawTile(3,3,1,1,0)--Draw PCB Core with PCB connector in grid pos 3,3
 
     local grid_coord=MapIdx2GridCoord(cursor.cx,cursor.cy)
     drawCursor(grid_coord.x,grid_coord.y,1,0,0,0.5*math.sin(0.1*t)+1)

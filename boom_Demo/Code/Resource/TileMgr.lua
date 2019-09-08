@@ -34,13 +34,14 @@ function initTiles()
                 elseif Core2SideMap[i][j]==1 then
                     tile.optional=false
                 end
+                tile.direction=0;
                 Tiles[i][j]=tile
                 --print(i,j,Tiles[i][j].Core.name,Tiles[i][j].Side.name,Tiles[i][j].Core.f)
             end
         end
     end
 end
-function AddTile2TileMap(grid_x,grid_y,core,side,connected_sides)
+--[[function AddTile2TileMap(grid_x,grid_y,core,side,connected_sides)
     --connected_sides:use 4-bit binrary 8421 code,north=1000b=8,east=0100b=4,sorth=0010b=2,west=0001b=1
     --use left shift operation to check: i=1, i=i<<1,if (i and connected_sides)~=0 then sorth=true 
     TileShown={}
@@ -50,9 +51,9 @@ function AddTile2TileMap(grid_x,grid_y,core,side,connected_sides)
     TileShown.tile=Tiles[core][side]
     
     --TileMap[]
-end
+end]]
 
-function drawTileMap(grid_x,grid_y)
+--[[function drawTileMap(grid_x,grid_y)
 end
 function item_rot()
 end
@@ -61,4 +62,4 @@ function item_translate()
 end
 
 function item_set()
-end
+end]]
