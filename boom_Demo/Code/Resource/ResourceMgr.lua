@@ -30,6 +30,7 @@ function LoadMap(Mapfile)
         map_row_str=file1:read()
         strtable=GetValuesfromCSVFormat(map_row_str)
         for j=1,map_size.w do
+            -- print(strtable[j])
             map[i][j]=tonumber(strtable[j])
         end
     end

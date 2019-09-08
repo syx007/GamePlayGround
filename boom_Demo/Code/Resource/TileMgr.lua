@@ -1,42 +1,42 @@
---luabit = require"bit"
-
+-- luabit = require"bit"
 function LoadCore2SideMap(Mapfile)
-    Core2SideMap={}
-    local f=io.open(Mapfile,"r")
-    if f~=nil then
-    io.input(f)
-    for  i=1, #coreTable do
-        Core2SideMap[i]={}
-        local strtable=GetValuesfromCSVFormat(f:read())
-        for j=1,#sideTable do
-            Core2SideMap[i][j]=tonumber(strtable[j])
+    Core2SideMap = {}
+    local f = io.open(Mapfile, "r")
+    if f ~= nil then
+        io.input(f)
+        for i = 1, #coreTable do
+            Core2SideMap[i] = {}
+            local strtable = GetValuesfromCSVFormat(f:read())
+            for j = 1, #sideTable do
+                Core2SideMap[i][j] = tonumber(strtable[j])
+            end
         end
-    end
     else
-        love.graphics.print("file1 is nil",10,10)
+        love.graphics.print("file1 is nil", 10, 10)
     end
+    print(Core2SideMap[1][1]);
 end
---key of Cores:CorePCB,CoreServer,CoreNetwork,CoreBridge,CoreDriver,CoreProcessor
---key of Sides:SidePCB,SideSerialConnector,SideParllelConnector,SideFirewall
+-- key of Cores:CorePCB,CoreServer,CoreNetwork,CoreBridge,CoreDriver,CoreProcessor
+-- key of Sides:SidePCB,SideSerialConnector,SideParllelConnector,SideFirewall
 function initTiles()
-    Tiles={}
-    --LoadCore2SideMap("Assets\\Art\\Sprite\\Core2SideMap.map")
-    for i=1,#coreTable do
-        Tiles[i]={}
-        for j=1,#sideTable do
-            --print(coreTable[i].id,sideTable[j].id)
-            if Core2SideMap[i][j]>=0 then
-                tile={}
-                tile.Core=coreTable[i]
-                tile.Side=sideTable[j]
-                if Core2SideMap[i][j]==0 then
-                    tile.optional=true
-                elseif Core2SideMap[i][j]==1 then
-                    tile.optional=false
+    Tiles = {}
+    -- LoadCore2SideMap("Assets\\Art\\Sprite\\Core2SideMap.map")
+    for i = 1, #coreTable do
+        Tiles[i] = {}
+        for j = 1, #sideTable do
+            if Core2SideMap[i][j] >= 0 then
+                -- print(Core2SideMap[i][j])
+                tile = {}
+                tile.Core = coreTable[i]
+                tile.Side = sideTable[j]
+                if Core2SideMap[i][j] == 0 then
+                    tile.optional = true
+                elseif Core2SideMap[i][j] == 1 then
+                    tile.optional = false
                 end
-                tile.direction=0;
-                Tiles[i][j]=tile
-                --print(i,j,Tiles[i][j].Core.name,Tiles[i][j].Side.name,Tiles[i][j].Core.f)
+                tile.direction = 0
+                Tiles[i][j] = tile
+                -- print(i,j,Tiles[i][j].Core.name,Tiles[i][j].Side.name,Tiles[i][j].Core.f)
             end
         end
     end
