@@ -1,6 +1,42 @@
 -- currently, it only finish a very simple job--just load some image and wav
 -- in future, we could do path management, auto loading, or even strip during packaging
 require("Code/DesignerConfigs/DesignerConf")
+require("Code/Resource/TileMgr")
+function GetValuesfromCSVFormat(myString)
+    num = 0
+    values = {}
+    if myString ~= nil then
+        while string.find(myString, ",") ~= nil do
+            i, j =string.find(myString, ",");
+            num =num + 1;
+            values[num] = string.sub(myString, 1, j-1);
+            myString = string.sub(myString, j+1, string.len(myString))
+        end
+        num = num + 1
+        values[num] = myString
+    end
+    return values
+end
+function LoadMap(Mapfile)
+    map_size={w,h}
+    map={}
+    file1=io.open(Mapfile,"r")
+    if file1~=nil then
+    io.input(file1)
+    map_size.w=tonumber(file1:read())
+    map_size.h=tonumber(file1:read())
+    for  i=1, map_size.h do
+        map[i]={}
+        map_row_str=file1:read()
+        strtable=GetValuesfromCSVFormat(map_row_str)
+        for j=1,map_size.w do
+            map[i][j]=tonumber(strtable[j])
+        end
+    end
+    else
+        love.graphics.print("file1 is nil",10,10)
+    end
+end
 -- body
 -- Sprite Name Format:
 -- Core:
@@ -52,6 +88,7 @@ end
 function loadResource()
     initfilePathConstant()
     loadUIResource()
+    LoadMap(ArtMapPath.."Sence01.map")
     local ArtCoreSpritePath = ArtSpritePath .. CoreFolderName
     local ArtSideSpritePath = ArtSpritePath .. SideFolderName
 
@@ -71,7 +108,6 @@ function loadResource()
         end
         local tid = tonumber(coreFileDataList[1]) + 1
         local id = tonumber(coreFileDataList[1])
-
         coreTable[tid] = {}
         coreTable[tid].name = getCoreNameByID(coreFileDataList[1]) -- TODO
         coreTable[tid].id = id
@@ -79,6 +115,7 @@ function loadResource()
                                      ArtCoreSpritePath .. coreFiles[f])
         coreTable[tid].fCount = tonumber(coreFileDataList[2]) -- TODO
         coreTableCount = coreTableCount + 1
+        --print(coreTable[tid].id,coreTable[tid].name,coreTable[tid].id,coreTable[tid].fCount)
     end
 
     for f in pairs(sideFiles) do
@@ -98,5 +135,7 @@ function loadResource()
         sideTable[tid].fCount = tonumber(sideFileDataList[2]) -- TODO
         -- fighter0:setFilter("nearest", "nearest")
         sideTableCount = sideTableCount + 1
+        --print(sideTable[tid].name,sideTable[tid].id,sideTable[tid].fCount)
     end
+    LoadCore2SideMap(ArtSpritePath.."Core2SideMap.map")
 end

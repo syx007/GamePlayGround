@@ -2,60 +2,74 @@ require("Code/DesignerConfigs/ElementConf")
 require("Code/Utils")
 require("Code/Map/MapUtils")
 
+
+
 -- connectivity:
 -- [  2  ]
 -- [1 0 4]
 -- [  3  ]
 
 -- s=1 r=1:
+function isTargetInMap(targetPosX, targetPosY)
+    --print(targetPosX,targetPosY,-MaxGridWidth/2,MaxGridWidth/2 - 1)
+    return (targetPosX > 0 and targetPosX < mapLineCount+1) and
+               (targetPosY >0 and targetPosY < mapLineCount+1)
+end
+--[[function isTargetInActiveArea(targetPosX,targetPosY)
+    --return (targetPosX > -MaxGridWidth/2 and targetPosX < MaxGridWidth/2 - 1) and
+    --(targetPosY > -MaxGridHeight/2 and targetPosY < MaxGridHeight/2 - 1)
+    if map[targetPosX+MaxGridWidth/2][targetPosY+MaxGridHeight]==1 then 
+        return true 
+    else 
+        return false 
+    end
+end]]
+--function isTargetInMap(targetPosX,targetPosY)
+--    return true
+--end
 
-function isTargetInMap(tragetPosX, tragetPosY)
-    return (tragetPosX > 0 and tragetPosX < mapLineCount + 1) and
-               (tragetPosY > 0 and tragetPosY < mapLineCount + 1)
+function tileIsBlocked(targetPosX, targetPosY)
+    return not (mapData[targetPosX][targetPosY] == nil)
 end
 
-function tileIsBlocked(tragetPosX, tragetPosY)
-    return not (mapData[tragetPosX][tragetPosY] == nil)
-end
-
-function isTargetMovable_Cursor_withTile(tragetPosX, tragetPosY)
-    if isTargetInMap(tragetPosX, tragetPosY) then
-        return not tileIsBlocked(tragetPosX, tragetPosY)
+function isTargetMovable_Cursor_withTile(targetPosX, targetPosY)
+    if isTargetInMap(targetPosX, targetPosY) then
+            return not tileIsBlocked(targetPosX, targetPosY)
     else
         return false
     end
 end
 
-function isTargetMovable_Cursor(tragetPosX, tragetPosY)
-return isTargetInMap(tragetPosX, tragetPosY)
+function isTargetMovable_Cursor(targetPosX, targetPosY)
+return isTargetInMap(targetPosX, targetPosY)
 end
 
-function isTargetMovable(tragetPosX, tragetPosY)
-    if not isTargetInMap(tragetPosX, tragetPosY) then
+function isTargetMovable(targetPosX, targetPosY)
+    if not isTargetInMap(targetPosX, targetPosY) then
         return false
     else
-        return (mapData[tragetPosX][tragetPosY].id <= 0) and
-                   (not (mapStructData[tragetPosX][tragetPosY].id == 5))
+        return (mapData[targetPosX][targetPosY].id <= 0) and
+                   (not (mapStructData[targetPosX][targetPosY].id == 5))
     end
 end
 
-function connectivityMoveCheck(tragetPosX, tragetPosY, i, j, fromDir)
+function connectivityMoveCheck(targetPosX, targetPosY, i, j, fromDir)
     -- print("connectivityMoveCheck");
     local total = mapData[i][j].connectivity
     if total == 0 then
         -- have really nothing else connected.
-        return isTargetMovable(tragetPosX, tragetPosY)
+        return isTargetMovable(targetPosX, targetPosY)
     else
         local localMovable = false
         local remoteMovable = true
         for idx = 0, 3 do
             local cctvty = math.floor(total / math.pow(10, idx) % 10)
             local offset = posOffsetByConnectivity(cctvty)
-            local localMovableTmp = isTargetMovable(tragetPosX, tragetPosY)
+            local localMovableTmp = isTargetMovable(targetPosX, targetPosY)
 
             if not localMovableTmp then
-                if (offset[1] == tragetPosX - i) and
-                    (offset[2] == tragetPosY - j) then
+                if (offset[1] == targetPosX - i) and
+                    (offset[2] == targetPosY - j) then
                     -- print("fliped")
                     localMovableTmp = true
                 end
@@ -63,8 +77,8 @@ function connectivityMoveCheck(tragetPosX, tragetPosY, i, j, fromDir)
             localMovable = localMovable or localMovableTmp
             if not (cctvty + fromDir == 5) and (not (cctvty == 0)) then
                 local localMovableTmp = connectivityMoveCheck(
-                                            tragetPosX + offset[1],
-                                            tragetPosY + offset[2],
+                                            targetPosX + offset[1],
+                                            targetPosY + offset[2],
                                             i + offset[1], j + offset[2], cctvty)
                 remoteMovable = remoteMovable and localMovableTmp
             end
@@ -79,19 +93,19 @@ function connectivityMoveCheck(tragetPosX, tragetPosY, i, j, fromDir)
     end
 end
 
-function moveSingleElement(newMapData, mapData, i, j, tragetPosX, tragetPosY)
-    displaceData[i][j] = dispToOffset(tragetPosX - i, tragetPosY - j)
-    -- print(tragetPosX - i, tragetPosY - j)
+function moveSingleElement(newMapData, mapData, i, j, targetPosX, targetPosY)
+    displaceData[i][j] = dispToOffset(targetPosX - i, targetPosY - j)
+    -- print(targetPosX - i, targetPosY - j)
     -- print(displaceData[i][j])
 end
 
-function moveElement(newMapData, mapData, i, j, tragetPosX, tragetPosY, fromDir)
+function moveElement(newMapData, mapData, i, j, targetPosX, targetPosY, fromDir)
     -- print("moveElement")
     local total = mapData[i][j].connectivity
     if total == 0 then
         -- have really nothing else connected.
         -- print("moveElementOnly")
-        moveSingleElement(newMapData, mapData, i, j, tragetPosX, tragetPosY)
+        moveSingleElement(newMapData, mapData, i, j, targetPosX, targetPosY)
     else
         -- print("moveElementConnected")
         for idx = 0, 3 do
@@ -100,11 +114,11 @@ function moveElement(newMapData, mapData, i, j, tragetPosX, tragetPosY, fromDir)
                 -- print(cctvty)
                 local offset = posOffsetByConnectivity(cctvty)
                 moveElement(newMapData, mapData, i + offset[1], j + offset[2],
-                            tragetPosX + offset[1], tragetPosY + offset[2],
+                            targetPosX + offset[1], targetPosY + offset[2],
                             cctvty)
             end
         end
-        moveSingleElement(newMapData, mapData, i, j, tragetPosX, tragetPosY)
+        moveSingleElement(newMapData, mapData, i, j, targetPosX, targetPosY)
     end
 end
 
@@ -114,9 +128,9 @@ function pushElement(cCX, cCY, i, j, cascadePush, newMapData)
     isPushingY = (cCX == i and cCY == j + 1 and cursor.dy == -1) or
                      (cCX == i and cCY == j - 1 and cursor.dy == 1)
     if (not isPushingY) and (not isPushingX) then return end
-    local tragetPos = {i + cursor.dx, j + cursor.dy}
-    if connectivityMoveCheck(tragetPos[1], tragetPos[2], i, j, 0) then
-        moveElement(newMapData, mapData, i, j, tragetPos[1], tragetPos[2], 0)
+    local targetPos = {i + cursor.dx, j + cursor.dy}
+    if connectivityMoveCheck(targetPos[1], targetPos[2], i, j, 0) then
+        moveElement(newMapData, mapData, i, j, targetPos[1], targetPos[2], 0)
         -- print("====")
     else
         if isPushingY then cursor.dy = 0 end

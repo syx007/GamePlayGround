@@ -2,16 +2,35 @@ require("Code/DesignerConfigs/ElementConf")
 require("Code/Utils")
 require("Code/Graphic/AnimationSheet")
 require("Code/Graphic/UiGraphicMgr")
-
-function initArtAsset()
+require("Code/Graphic/Camera")
+require("Code/Resource/TileMgr")
+--[[function initArtAsset()
     -- we force the sampler here.
     -- don't like any interpolation, just use point filter is good.
     -- however, setting sampler have to do every draw.
     fighter0:setFilter("nearest", "nearest")
     bullet0:setFilter("nearest", "nearest")
     emptybullet0:setFilter("nearest", "nearest")
+end]]
+function getWorldCoordfromGrid(grid_x,grid_y,camera_bias_x,camera_bias_y)
+    local coord={x,y}
+    coord.x=grid_x*cellSize+world_origin_x-camera_bias_x
+    coord.y=grid_y*cellSize+world_origin_y-camera_bias_y
+    return coord
 end
-
+function MapIdx2GridCoord(MapIdx_x,MapIdx_y)
+    local grid_coord={x,y}
+    grid_coord.x=MapIdx_x-mapLineCount/2
+    grid_coord.y=MapIdx_y-mapLineCount/2
+    return grid_coord
+end
+function GridCoord2MapIdx(grid_x,grid_y)
+    local MapIdx={x,y}
+    mapIdx.x=grid_x+mapLineCount/2+1
+    mapIdx.y=grid_y+mapLineCount/2+1
+    return mapIdx
+end
+--[[
 function drawCursor()
     local gsize = mapSize / mapLineCount
     -- local csize = mapSize / mapLineCount - 10
@@ -56,16 +75,18 @@ function drawBond(_connectivity, _cPosX, _cPosY, colorR)
         end
     end
 end
-
+]]
 function updateMap()
     for i = 1, mapLineCount do
         for j = 1, mapLineCount do
+            local grid_coord=MapIdx2GridCoord(i-1,j-1)
+            local cPos=getWorldCoordfromGrid(grid_coord.x,grid_coord.y,camera_bias_x,camera_bias_y)
             ElementData = getElementByID(mapData[i][j].id)
             ElementGoalData = getElementByID(mapGoalData[i][j].id)
             StructDataID = (mapStructData[i][j].id)
 
-            local cPosX = mapULoffsetX + i * gridSize
-            local cPosY = mapULoffsetY + j * gridSize
+            local cPosX = cPos.x
+            local cPosY = cPos.y
 
             local cCirPosX = cPosX - gridSize / 2.0
             local cCirPosY = cPosY - gridSize / 2.0
@@ -90,7 +111,7 @@ function updateMap()
                 love.graphics.setColor(ElementGoalData.color[1] / 255,
                                        ElementGoalData.color[2] / 255,
                                        ElementGoalData.color[3] / 255)
-                love.graphics.circle("line", cCirPosX, cCirPosY, hCellSize)
+                --love.graphics.circle("line", cCirPosX, cCirPosY, hCellSize)
                 love.graphics.setColor(0.0, 0.0, 0.0)
                 love.graphics.circle("fill", cCirPosX, cCirPosY, hCellSize - 1)
             end
@@ -104,14 +125,21 @@ function updateMap()
         end
     end
 end
-
+function drawTile(grid_x,grid_y,core_id,side_id,rot)
+    love.graphics.setColor( 1, 1, 1, 1)
+    --print(core_id,side_id)
+    local coord=getWorldCoordfromGrid(grid_x,grid_y,camera_bias_x,camera_bias_y)
+    love.graphics.draw(Tiles[core_id+1][side_id+1].Side.content,coord.x+ZoomFactor*16,coord.y+ZoomFactor*16,-(rot-2)*(3.141592654/2),0.95*ZoomFactor,0.95*ZoomFactor,16,16)
+    love.graphics.draw(Tiles[core_id+1][side_id+1].Core.content,coord.x+ZoomFactor*16,coord.y+ZoomFactor*16,0,0.95*ZoomFactor,0.95*ZoomFactor,16,16)
+end
 function updateTileMap()
     for i = 1, mapLineCount do
         for j = 1, mapLineCount do
+            local grid_coord=MapIdx2GridCoord(i-1,j-1)
+            local cPos=getWorldCoordfromGrid(grid_coord.x,grid_coord.y,camera_bias_x,camera_bias_y)
             -- ElementData = getElementByID(mapData[i][j].id)
-
-            local cPosX = mapULoffsetX + (i - 1) * gridSize + 5
-            local cPosY = mapULoffsetY + (j - 1) * gridSize + 5
+            local cPosX = cPos.x
+            local cPosY = cPos.y
 
             local cCirPosX = cPosX - gridSize / 2.0
             local cCirPosY = cPosY - gridSize / 2.0
@@ -133,14 +161,21 @@ function updateTileMap()
                 -- northID=getRotatedSide_Single(northID,mapData[i][j].rotation);
                 -- southID=getRotatedSide_Single(southID,mapData[i][j].rotation);
                 -- eastID=getRotatedSide_Single(eastID,mapData[i][j].rotation);
+                --print(westID,northID,southID,eastID)
 
+                -- How it rotate Here?
+                drawTile(grid_coord.x,grid_coord.y,coreID,westID,1)
+                drawTile(grid_coord.x,grid_coord.y,coreID,northID,2)
+                drawTile(grid_coord.x,grid_coord.y,coreID,southID,4)
+                drawTile(grid_coord.x,grid_coord.y,coreID,eastID,3)
+
+                --[[
                 CoreColor(coreID)
                 love.graphics.setColor(coreColor[1], coreColor[2], coreColor[3]) -- Core    
                 love.graphics.rectangle("fill", cPosX + tileOffset,
                                         cPosY + tileOffset, tileCoreSize,
                                         tileCoreSize, 3, 3, 5)
-
-                -- print(westID);
+                --print(westID);
                 SubTileColor(westID)
                 love.graphics.setColor(subTileColor[1], subTileColor[2],
                                        subTileColor[3]) -- subtile-1     
@@ -166,12 +201,47 @@ function updateTileMap()
                 love.graphics.rectangle("fill",
                                         cPosX + 1 + tileCoreSize + tileOffset,
                                         cPosY + tileOffset, tileOffset,
-                                        tileCoreSize, 3, 3, 5)
+                                        tileCoreSize, 3, 3, 5)]]
             end
         end
     end
 end
 
+function DrawMapUnit(grid_x,grid_y,camera_bias_x,camera_bias_y,r,g,b,a)
+    --getWorldCoord(grid_x,grid_y,world_coord_)
+    --math.randomseed(os.time()+grid_x*grid_y)
+    --r=math.random()
+    --g=math.random()
+    --b=math.random()
+
+    local coord=getWorldCoordfromGrid(grid_x,grid_y,camera_bias_x,camera_bias_y)
+    love.graphics.setColor(r,g,b,a)
+    love.graphics.rectangle("line",coord.x,coord.y,cellSize,cellSize)
+end
+function DrawMapLayer0(MaxGridWidth,MaxGridHeight,r,g,b,a)
+
+    --zoom_bias_x=camera_bias_x*(1-ZoomFactor)
+    --zoom_bias_y=camera_bias_y*(1-ZoomFactor)
+    for i=-MaxGridWidth/2,MaxGridWidth/2-1 do
+        for j=-MaxGridHeight/2,MaxGridHeight/2-1 do
+            DrawMapUnit(i,j,camera_bias_x,camera_bias_y,r,g,b,a)
+        end
+    end
+end
+function DrawMapLayer1(MapLimit_w,MapLimit_h,r,g,b,a)
+    for i=-map_size.w/2,map_size.w/2-1 do
+        for j=-map_size.h/2,map_size.h/2-1 do
+            --math.randomseed(os.time()+i*j)
+            --r=math.random()
+            --g=math.random()
+            --b=math.random()
+            DrawMapUnit(i,j,camera_bias_x,camera_bias_y,r,g,b,a)
+        end
+    end
+end
+function drawCursor(grid_x,grid_y,r,g,b,a)
+    DrawMapUnit(grid_x,grid_y,camera_bias_x,camera_bias_y,r,g,b,a)
+end
 function updateAnimation()
     -- TODO
 end
@@ -187,6 +257,7 @@ end
 function updateUI()
     printScore()
     printTimeCounter()
+    printButtonTips()
 end
 
 function drawMainMenu()
@@ -216,7 +287,7 @@ function drawPlayingGame()
     love.graphics.setColor(1.0, 1.0, 1.0)
     love.graphics.draw(gamePlayUIBG, 0, 0)
     drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
-    updateTileMap()
+    -- updateTileMap()
     drawCursor()
 
     if stepDrawSwch then
@@ -233,6 +304,17 @@ function drawPlayingGame()
     end
 
     updateAnimation()
+    -------------------------------------------------------------
+    --drawBackGroundGrid()
+    DrawMapLayer0(MaxGridWidth,MaxGridHeight,0.1,0.2,0.3,1)
+    DrawMapLayer1(map_size.w,map_size.h,0.4,0.4,0.4,1)
+    --drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
+    updateTileMap()
+    --print(cursor.cx,cursor.cy)
+
+    local grid_coord=MapIdx2GridCoord(cursor.cx,cursor.cy)
+    drawCursor(grid_coord.x,grid_coord.y,1,0,0,0.5*math.sin(0.1*t)+1)
+    --updateAnimation()
     updateUI()
     drawShop()
     applyPP()

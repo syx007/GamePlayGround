@@ -1,5 +1,6 @@
 require("Code/Map/MapMgr")
 require("Code/Utils")
+require("Code/Graphic/Camera")
 
 function changeGameStateTo(stateID)
     gameState = stateID
@@ -72,12 +73,16 @@ end
 
 function GameLoopUpdatePlayingGame(dt)
     local actionRec = cursor.action
+    t=t+1
+    cellSize=baseCellSize*ZoomFactor
+    MoveCamera(SelectedMode,dt)
+    ZoomCamera(SelectedMode,dt)
     updateTileMap_Cursor()
     updateScore()
     local tragetPosX = cursor.cx + cursor.dx
     local tragetPosY = cursor.cy + cursor.dy
     -- cursor and map coodinate and +1 +1 offset
-    if isTargetMovable_Cursor(tragetPosX + 1, tragetPosY + 1) then
+    if isTargetMovable_Cursor(tragetPosX+1, tragetPosY+1) then
         cursor.cx = tragetPosX
         cursor.cy = tragetPosY
         -- currently rotating doesn't count as step

@@ -6,8 +6,9 @@ function getGameStateName(id)
 end
 
 function getCoreNameByID(id)
+    --print("id=",id)
     local CoreNameID = {
-        "PCB", "Server", "NetworkCable", "Bridge", "Driver", "Processor"
+        "PCB", "NetworkCable","Server", "Bridge", "Driver", "Processor","Cooler"
     }
     return CoreNameID[id + 1]
     -- use 0 based index
@@ -20,3 +21,5 @@ function getSideNameByID(id)
     return SideNameID[id + 1]
     ----use 0 based index
 end
+
+
