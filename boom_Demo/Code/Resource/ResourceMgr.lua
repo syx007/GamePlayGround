@@ -18,25 +18,30 @@ function GetValuesfromCSVFormat(myString)
     return values
 end
 function LoadMap(Mapfile)
+    -- infact not usefull
+    -- map_size={w,h}
+    -- map={}
+    -- file1=io.open(Mapfile,"r")
+    -- if file1~=nil then
+    -- io.input(file1)
+    -- map_size.w=tonumber(file1:read())
+    -- map_size.h=tonumber(file1:read())
+    -- for  i=1, map_size.h do
+    --     map[i]={}
+    --     map_row_str=file1:read()
+    --     strtable=GetValuesfromCSVFormat(map_row_str)
+    --     for j=1,map_size.w do
+    --         -- print(strtable[j])
+    --         map[i][j]=tonumber(strtable[j])
+    --     end
+    -- end
+    -- else
+    --     love.graphics.print("file1 is nil",10,10)
+    -- end
     map_size={w,h}
     map={}
-    file1=io.open(Mapfile,"r")
-    if file1~=nil then
-    io.input(file1)
-    map_size.w=tonumber(file1:read())
-    map_size.h=tonumber(file1:read())
-    for  i=1, map_size.h do
-        map[i]={}
-        map_row_str=file1:read()
-        strtable=GetValuesfromCSVFormat(map_row_str)
-        for j=1,map_size.w do
-            -- print(strtable[j])
-            map[i][j]=tonumber(strtable[j])
-        end
-    end
-    else
-        love.graphics.print("file1 is nil",10,10)
-    end
+    map_size.w=6
+    map_size.h=6
 end
 -- body
 -- Sprite Name Format:

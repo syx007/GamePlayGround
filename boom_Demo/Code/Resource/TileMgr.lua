@@ -15,7 +15,10 @@ function LoadCore2SideMap(Mapfile)
     else
         love.graphics.print("file1 is nil", 10, 10)
     end
-    -- print(Core2SideMap[1][1]);
+    print(Core2SideMap[1][1]);
+    
+    --static loading for packaging
+    -- Core2SideMap={{1,0,0,-1},{0,1,0,0},{0,1,0,0},{0,1,0,0},{0,0,1,0},{0,0,1,0},{0,0,0,0},{0,0,0,0}}
 end
 -- key of Cores:CorePCB,CoreServer,CoreNetwork,CoreBridge,CoreDriver,CoreProcessor
 -- key of Sides:SidePCB,SideSerialConnector,SideParllelConnector,SideFirewall
