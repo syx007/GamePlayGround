@@ -10,8 +10,8 @@ function love.load()
     initTiles()
     gameState = 0
 
-    debug_directGame = true
-    -- debug_directGame = false
+    -- debug_directGame = true
+    debug_directGame = false
     if debug_directGame then gameState = 1 end
 
     windowWidth = 320
@@ -24,8 +24,8 @@ function love.load()
     -- mapWidthCount = 6
     -- mapHeightCount = 6
     -- mapSize = 192
-    mapULoffsetX = 10
-    mapULoffsetY = 10
+    mapULoffsetX = 52
+    mapULoffsetY = 1
     mapLineCount = map_size.w
     mapWidthCount = map_size.w
     mapHeightCount = map_size.h
@@ -34,12 +34,12 @@ function love.load()
     camera_height=windowHeight
     baseCellSize=32
     cellSize=32;
-    MaxGridWidth=10;
-    MaxGridHeight=10;
+    MaxGridWidth=6;
+    MaxGridHeight=6;
     --InitBoundWidth=6;
     --InitBoundHeight=6;
-    world_origin_x=camera_width/2
-    world_origin_y=camera_height/2
+    world_origin_x=camera_width/2-mapULoffsetX
+    world_origin_y=camera_height/2-mapULoffsetY
     --world_origin_x=camera_width/2-MaxGridWidth*cellSize/2
     --world_origin_y=camera_height/2-MaxGridHeight*cellSize/2
     world_bound_x_min=world_origin_x-MaxGridWidth*baseCellSize/2;
@@ -54,11 +54,11 @@ function love.load()
     Help=false
     ZoomFactor=1;
 
-    initMainMenuCursor()
+    -- initMainMenuCursor()
 
-    initCursor(mapWidthCount/2,mapHeightCount/2)
-    initMap()
-    setTileMap()
+    -- initCursor(mapWidthCount/2,mapHeightCount/2)
+    -- initMap()
+    -- setTileMap()
 
     t=0
     counter = 0
@@ -87,7 +87,7 @@ function love.load()
     -- cost system should implement
     -- shop system should implement
     destoryInterval = 5
-    destoryCount =8
+    destoryCount =2
     destoryCounter = destoryInterval
     nextDestoryPosX = nil
     nextDestoryPosY = nil

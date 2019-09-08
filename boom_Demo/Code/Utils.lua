@@ -140,16 +140,16 @@ end
 function setTileMapByCount()
     -- local source = {nil, 00000, 10110}
     -- local sourceCount = {6, 24, 6}
-    local source = {nil, 00000, 11001, 11221, 33232, 32232, 32222, 42222}
-    local sourceCount = {6, 13, 2, 4, 5, 4, 1, 1}
+    local source = {nil, 00000, 11001, 11221, 33131, 31131, 42222, 52222}
+    local sourceCount = {16, 3, 2, 4, 5, 4, 1, 1}
     mapData = {}
     for i = 1, mapLineCount do
         mapData[i] = {}
         for j = 1, mapLineCount do
             mapData[i][j] = BlankTile()
-            local rnd = math.random(#sourceCount)
+            local rnd = love.math.random(#sourceCount)
             while sourceCount[rnd] <= 0 do
-                rnd = math.random(#sourceCount)
+                rnd = love.math.random(#sourceCount)
             end
             if rnd == 1 then
                 mapData[i][j] = nil

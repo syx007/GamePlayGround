@@ -1,6 +1,6 @@
 function reloadScreenPlayingGame()
     -- body
-    initCursor()
+    initCursor(mapWidthCount/2,mapHeightCount/2)
     initMap()
     setTileMap()
 

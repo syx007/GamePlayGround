@@ -83,12 +83,6 @@ function connectivityMoveCheck(targetPosX, targetPosY, i, j, fromDir)
                 remoteMovable = remoteMovable and localMovableTmp
             end
         end
-        -- print((i .. j))
-        -- print(("localMovable"))
-        -- print((localMovable))
-        -- print(("remoteMovable"))
-        -- print((remoteMovable))
-        -- print((remoteMovable and localMovable))
         return (remoteMovable and localMovable)
     end
 end

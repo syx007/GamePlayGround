@@ -5,7 +5,7 @@ function updateInputMainMenu(key)
     elseif love.keyboard.isDown('down') then
         mmCursor.dx = 1
     end
-    if love.keyboard.isDown('j') then
+    if (love.keyboard.isDown('z') or love.keyboard.isDown('j')) then
         mmCursor.action = 1
     end
 end
@@ -70,7 +70,7 @@ function updateInputPlayingGame(key)
         Help=not Help
     end
     if SelectedMode==true then
-        if (love.keyboard.isDown('j')) then
+        if (love.keyboard.isDown('z')) or(love.keyboard.isDown('j')) then
             if love.keyboard.isDown('up') then
                 cursor.action = 2
             elseif love.keyboard.isDown('down') then
@@ -93,7 +93,7 @@ function updateInputPlayingGame(key)
                 cursor.dx = 1
             end
         end
-        if (love.keyboard.isDown('k')) then
+        if (love.keyboard.isDown('x')) or(love.keyboard.isDown('k')) then
             print("rotate input")
             cursor.rotate = 1
         end
