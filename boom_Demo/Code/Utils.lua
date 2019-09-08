@@ -13,6 +13,24 @@ function getNextRotate(rotate)
     end
 end
 
+function arrayFind(array, element)
+    for ele, content in ipairs(array) do
+        -- BODY
+        if content == element then
+            -- BODY
+            return ele
+        end
+    end
+    return -1
+end
+
+function arrayContain(array, element)
+    for ele, content in ipairs(array) do
+        if content == element then return true end
+    end
+    return false
+end
+
 function mathClamp(x, min, max) return math.min(math.max(x, min), max) end
 
 function extractDataByPtr(data, ptr)

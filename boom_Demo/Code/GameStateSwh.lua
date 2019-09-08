@@ -1,6 +1,29 @@
 require("Code/GameCore/InputMgr")
 require("Code/Graphic/GraphicMgr")
 require("Code/GameCore/GameLoopMgr")
+require("Code/GameCore/ReloadScreenMgr")
+
+function mainResetScreenSwitch(GameState)
+    local mainResetScreenSwch = {
+        [1] = function()
+            reloadScreenMainMenu()
+            -- print("DrawMenu")
+        end,
+        [2] = function()
+            reloadScreenPlayingGame()
+            -- print("Playing")
+        end,
+        [3] = function()
+            reloadScreenRegisterScore()
+            -- print("RScore")
+        end,
+        [4] = function()
+            reloadScreenViewScore()
+            -- print("VScore")
+        end
+    }
+    return mainResetScreenSwch[GameState + 1]()
+end
 
 function mainUpdateInputSwitch(GameState, key)
     local mainInputUpdateSwch = {

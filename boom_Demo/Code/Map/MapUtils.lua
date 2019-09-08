@@ -1,8 +1,8 @@
 -- initalize the flag used in the BFS and DFS
 function initMapCalculation()
-    driverScore = 100
+    driverIncome = 100
     networkScores = {50,75,100,125,150,175,200,200}
-    edgeScore = 50
+    edgeIncome = 50
 
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
@@ -383,7 +383,7 @@ function evaluateDriver()
             if not(mapData[i][j] == nil) then
                 local coreID=extractDataByPtr(mapData[i][j].id,0);
                 if coreID == 3 and mapData[i][j].FlagProcessor > 0 then
-                    count = count + driverScore 
+                    count = count + driverIncome 
                 end
             end
         end
@@ -410,7 +410,7 @@ function evaluateEdge()
     local count = 0
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
-            count = count + calculateEdge(i,j) * edgeScore
+            count = count + calculateEdge(i,j) * edgeIncome
         end
     end
 

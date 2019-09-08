@@ -17,7 +17,7 @@ function drawCursor()
     -- local csize = mapSize / mapLineCount - 10
     local cPosX = mapULoffsetX + cursor.cx * gsize + 5
     local cPosY = mapULoffsetY + cursor.cy * gsize + 5
-    love.graphics.setColor(1.0, 0.0, 0.0)
+    love.graphics.setColor(0.0, 1.0, 0.0)
     love.graphics.rectangle("line", cPosX, cPosY, cellSize, cellSize, 3, 3, 5)
 end
 
@@ -185,12 +185,11 @@ function applyPP()
 end
 
 function updateUI()
-    -- TODO
     printScore()
+    printTimeCounter()
 end
 
 function drawMainMenu()
-    -- TODO
     local hWindowWidth = windowWidth / 2.0
     local hWindowHeight = windowHeight / 2.0
 
@@ -201,18 +200,38 @@ function drawMainMenu()
     love.graphics.draw(mainGameLogo, mainLogoX, mainLogoY)
 
     local font = love.graphics.newFont(14)
-    love.graphics.printf("Game Start", 0, hWindowHeight+20,windowWidth,"center")
-    
-    local font = love.graphics.newFont(14)
-    love.graphics.printf("...Pending", 0, hWindowHeight+45,windowWidth,"center")
+    love.graphics.printf("Game Start", 0, hWindowHeight + 20, windowWidth,
+                         "center")
 
-    love.graphics.rectangle("line",hWindowWidth-40,hWindowHeight+20-2+24*mmCursor.x,80,20,3,5);
+    local font = love.graphics.newFont(14)
+    love.graphics.printf("...Pending", 0, hWindowHeight + 45, windowWidth,
+                         "center")
+
+    love.graphics.rectangle("line", hWindowWidth - 40,
+                            hWindowHeight + 20 - 2 + 24 * mmCursor.x, 80, 20, 3,
+                            5)
 end
 
 function drawPlayingGame()
+    love.graphics.setColor(1.0, 1.0, 1.0)
+    love.graphics.draw(gamePlayUIBG, 0, 0)
     drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
     updateTileMap()
     drawCursor()
+
+    if stepDrawSwch then
+        if drawDestoryCursorSwch then
+            love.graphics.setColor(1.0, 0.0, 0.0)
+            local gsize = mapSize / mapLineCount
+            for i = 0, destoryCount - 1 do
+                local cPosX = mapULoffsetX + (nextDestoryPosX[i+1] - 1) * gsize + 5
+                local cPosY = mapULoffsetY + (nextDestoryPosY[i+1] - 1) * gsize + 5
+                love.graphics.rectangle("line", cPosX + 2, cPosY + 2,
+                                        cellSize - 4, cellSize - 4, 3, 3, 5)
+            end
+        end
+    end
+
     updateAnimation()
     updateUI()
     drawShop()

@@ -279,13 +279,13 @@ function updateScore()
         local processorID = 1
         BFS_Driver(processor.indexX,processor.indexY,processorID)
     end
-    driverScore = evaluateDriver()
+    driverIncome = evaluateDriver()
     
     -- calculate edge
-    edgeScore = evaluateEdge()
+    edgeIncome = evaluateEdge()
 
     -- calculate blue
     preDFSNetwork()
-    blueScore = evaluateNetwork()
+    blueIncome = evaluateNetwork()
 
 end

@@ -46,6 +46,7 @@ function loadUIResource()
     -- this is relative fix path UI image
     -- so, just write here as fix loading
     mainGameLogo = love.graphics.newImage(ArtLogoPath .. GameLogoName)
+    gamePlayUIBG = love.graphics.newImage("Art/Map/gamePlayBG.png")
 end
 
 function loadResource()
