@@ -70,9 +70,15 @@ function love.load()
     ---need presudo-random interval
     ----should be configurable
 
-    -- cost system should implement
-    -- shop system should implement
-    destoryInterval = 4
+    -- cost system should implement---DONE
+    ---should expose to designer
+    -- shop system should implement---DONE
+    ---should comply to core/side rules
+
+    --should implement FireWall
+    --should implement NetBridge
+    --should implement HeatSink
+    destoryInterval = 5
     destoryCount = 4
     destoryCounter = destoryInterval
     nextDestoryPosX = nil

@@ -63,8 +63,8 @@ function getCostByID(id)
     -- processCost = 30
     -- heatSinkCost = 20
     local CostID = {
-        1, 10, 20, 30, 75, 30,
-        20
+        10, 15, 25, 35, 75, 85,
+        65
     }
     return  CostID[id + 1]
 end

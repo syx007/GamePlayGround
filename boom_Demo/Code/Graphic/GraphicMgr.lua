@@ -320,16 +320,29 @@ function drawPlayingGame()
     -- print(cursor.cx,cursor.cy)
 
     local grid_coord = MapIdx2GridCoord(cursor.cx, cursor.cy)
-    drawCursor(grid_coord.x, grid_coord.y, 0, 1.0, 0, 0.5 * math.sin(0.1 * t) + 1)
+    drawCursor(grid_coord.x, grid_coord.y, 0, 1.0, 0,
+               0.5 * math.sin(0.1 * t) + 1)
     -- updateAnimation()
 
     if stepDrawSwch then
         if drawDestoryCursorSwch then
             -- love.graphics.setColor(1.0, 0.0, 0.0)
-            local gsize = map_size.w / MaxGridWidth
-            for i = 0, destoryCount - 1 do
-                local grid_coord = MapIdx2GridCoord(nextDestoryPosX[i + 1]-1, nextDestoryPosY[i + 1]-1)
-                drawCursor(grid_coord.x, grid_coord.y, 1.0, 0.0, 0.0, 1.0)
+            if destoryCounter == 1 then
+                local gsize = map_size.w / MaxGridWidth
+                for i = 0, destoryCount - 1 do
+                    local grid_coord = MapIdx2GridCoord(
+                                           nextDestoryPosX[i + 1] - 1,
+                                           nextDestoryPosY[i + 1] - 1)
+                    drawCursor(grid_coord.x, grid_coord.y, 1.0, 0.0, 0.0, 1.0)
+                end
+            elseif destoryCounter == 2 then
+                local gsize = map_size.w / MaxGridWidth
+                for i = 0, destoryCount - 1 do
+                    local grid_coord = MapIdx2GridCoord(
+                                           nextDestoryPosX[i + 1] - 1,
+                                           nextDestoryPosY[i + 1] - 1)
+                    drawCursor(grid_coord.x, grid_coord.y, 0.8, 0.5, 0.0, 1.0)
+                end
             end
         end
     end

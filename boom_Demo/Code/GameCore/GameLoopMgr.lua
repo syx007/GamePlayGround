@@ -43,7 +43,9 @@ function doDestory()
         nextDestoryPosX = nil
         nextDestoryPosY = nil
     elseif destoryCounter <= 1 then
-        print("draw now")
+        drawDestoryCursorSwch = true
+    elseif destoryCounter <= 2 then
+        -- print("draw now")
         drawDestoryCursorSwch = true
         nextDestoryPosX = {}
         nextDestoryPosY = {}
@@ -76,7 +78,7 @@ function genShopTile()
     repeat
         -- entry block
         randCore = love.math.random(getTotalCoreCount()) - 1
-    until ((randCore ~= 2) and (randCore ~= 5) and (randCore ~= 3))
+    until ((randCore ~= 2) and (randCore ~= 5))--allow bridge now
 
     local randSideA = love.math.random(getTotalSideCount()) - 1
     local randSideB = love.math.random(getTotalSideCount()) - 1
@@ -119,10 +121,10 @@ function refreshShop()
     shopContent[4] = genShopTile()
 
     shopPrice = {}
-    shopPrice[1] = getCostByID(extractDataByPtr(shopContent[1], 0))
-    shopPrice[2] = getCostByID(extractDataByPtr(shopContent[2], 0))
-    shopPrice[3] = getCostByID(extractDataByPtr(shopContent[3], 0))
-    shopPrice[4] = getCostByID(extractDataByPtr(shopContent[4], 0))
+    shopPrice[1] = getPriceByCore(extractDataByPtr(shopContent[1], 0))
+    shopPrice[2] = getPriceByCore(extractDataByPtr(shopContent[2], 0))
+    shopPrice[3] = getPriceByCore(extractDataByPtr(shopContent[3], 0))
+    shopPrice[4] = getPriceByCore(extractDataByPtr(shopContent[4], 0))
 end
 
 function PerStepUpdate()

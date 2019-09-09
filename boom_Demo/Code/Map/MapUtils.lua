@@ -20,6 +20,7 @@ function initMapCalculation()
                 mapData[i][j].FlagProcessor = 0
                 mapData[i][j].ProcessorVisited = 0
                 mapData[i][j].NetworkDepth = -1
+                mapData[i][j].NetworkQueue = -1
             end
         end
     end
@@ -112,8 +113,8 @@ function IsSpreadableNetwork(sideID) return (sideID == SerialCSideID) end
 -- mark the FlagProcessor as the target processorID
 -- (now the processorID is always 1, there can be multiply processors in the game)
 function BFS_Driver(x, y, processorID)
-    --have chance to STACKOVERFLOW
-    --will error out when involve with network disk combination
+    -- have chance to STACKOVERFLOW
+    -- will error out when involve with network disk combination
     if x < 1 or x > mapWidthCount then return end
     if y < 1 or y > mapHeightCount then return end
     if mapData[x][y] == nil then return end
@@ -124,7 +125,7 @@ function BFS_Driver(x, y, processorID)
     if coreID == driverCoreID or coreID == processorCoreID then
         mapData[x][y].FlagProcessor = processorID
     end
-    
+
     mapData[x][y].ProcessorVisited = 1
 
     local westID = getRotatedSide_Single(1, mapData[x][y].id,
@@ -165,7 +166,7 @@ function preDFSNetwork()
             if not (mapData[i][j] == nil) then
                 local coreID = extractDataByPtr(mapData[i][j].id, 0)
                 if coreID == serverCoreID then
-                    DFS_Network(i, j, -1)
+                    DFS_Network(i, j, -1, 0)
                     -- assume only one server for now
                     return
                 end
@@ -198,8 +199,11 @@ end
 -- NetworkDepth == 0  => this tile is not searched
 -- NetworkDepth == -1 => this tile is being searched, but has no result
 -- NetworkDepth >0 => this tile has been searched, the number equals to the total number of connected tile
-function DFS_Network(x, y, depth)
+function DFS_Network(x, y, depth, queue)
     local currentdepth = depth + 1
+
+    queue = queue * 100 + x * 10 + y
+
     if x < 1 or x > mapWidthCount then return end
     if y < 1 or y > mapHeightCount then return end
     if mapData[x][y] == nil then return end
@@ -212,9 +216,11 @@ function DFS_Network(x, y, depth)
         mapData[x][y].NetworkDepth = currentdepth
     end
 
+    mapData[x][y].NetworkQueue = queue
+
     -- print(currentdepth)
     local coreID = extractDataByPtr(mapData[x][y].id, 0)
-    if coreID == networkCableCoreID or coreID == serverCoreID then
+    if coreID == networkCableCoreID or coreID == serverCoreID or coreID == brigeCoreID then
         local westID = getRotatedSide_Single(1, mapData[x][y].id,
                                              mapData[x][y].rotation)
         local northID = getRotatedSide_Single(2, mapData[x][y].id,
@@ -226,22 +232,22 @@ function DFS_Network(x, y, depth)
 
         if IsSpreadableNetwork(westID) then
             if checkConnection(x, y, 1) then
-                DFS_Network(x - 1, y, currentdepth)
+                DFS_Network(x - 1, y, currentdepth, queue)
             end
         end
         if IsSpreadableNetwork(northID) then
             if checkConnection(x, y, 2) then
-                DFS_Network(x, y - 1, currentdepth)
+                DFS_Network(x, y - 1, currentdepth, queue)
             end
         end
         if IsSpreadableNetwork(southID) then
             if checkConnection(x, y, 3) then
-                DFS_Network(x, y + 1, currentdepth)
+                DFS_Network(x, y + 1, currentdepth, queue)
             end
         end
         if IsSpreadableNetwork(eastID) then
             if checkConnection(x, y, 4) then
-                DFS_Network(x + 1, y, currentdepth)
+                DFS_Network(x + 1, y, currentdepth, queue)
             end
         end
     end
@@ -309,18 +315,40 @@ function evaluateNetwork()
     -- this currently only calculate necessary longest path
     -- and havn't account for bridge
     local maxDepth = -1
+    local longestQueue = 0
     for i = 1, mapWidthCount do
         for j = 1, mapHeightCount do
             if not (mapData[i][j] == nil) then
                 local coreID = extractDataByPtr(mapData[i][j].id, 0)
-                if coreID == networkCableCoreID then
-                    maxDepth = math.max(mapData[i][j].NetworkDepth, maxDepth)
+                if coreID == networkCableCoreID or coreID == brigeCoreID then
+                    if mapData[i][j].NetworkDepth >= maxDepth then
+                        maxDepth = mapData[i][j].NetworkDepth
+                        longestQueue = mapData[i][j].NetworkQueue
+                    end
                 end
             end
         end
     end
-    -- print(count)
-    return (maxDepth + 1) * networkIncome
+    print(maxDepth)
+    -- print(longestQueue)--queue length= maxDepth + 1
+    local queueTmp = longestQueue
+    local bgdmultiplier = 1
+    for i = 0, maxDepth do
+        local xy = queueTmp % 100
+        local y = xy % 10
+        local x = math.floor(xy / 10)
+        queueTmp = math.floor(queueTmp / 100)
+
+        -- x,y on longest path
+        -- could also turn on animation of network here
+        if brigeCoreID == extractDataByPtr(mapData[x][y].id, 0) then
+            bgdmultiplier = bgdmultiplier * 2
+        end
+    end
+    maxDepth=math.max(maxDepth,0)
+    -- server doesn't count as score in chain of network
+    -- however muliple same longest path select if has bridge is by random 
+    return (maxDepth) * networkIncome * bgdmultiplier
 end
 
 function evaluateEdge()
@@ -330,7 +358,7 @@ function evaluateEdge()
             count = count + calculateEdge(i, j) * edgeIncome
         end
     end
-    --TODO Redo
+    -- TODO Redo
     return 0
 end
 

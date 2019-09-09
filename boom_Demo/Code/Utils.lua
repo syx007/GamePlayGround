@@ -143,8 +143,8 @@ function setTileMapByCount()
     -- local sourceCount = {6, 24, 6}
     -- local source = {nil, 00000, 11001, 11221, 33131, 31131, 42222, 52222}
     -- local sourceCount = {16, 3, 2, 4, 5, 4, 1, 1}
-    local source = {nil, 00001, 41202, 51021, 11221, 12121, 20011}
-    local sourceCount = {26, 2, 2, 1, 2, 3, 1}
+    local source = {nil, 00001, 41202, 51021, 11221, 31221, 12121, 20011}
+    local sourceCount = {26, 2, 2, 1, 1, 1, 3, 1}
     mapData = {}
     for i = 1, mapLineCount do
         mapData[i] = {}
@@ -177,6 +177,19 @@ function setRealGamePlayMap()
     mapData[4][3] = nil
     mapData[3][4] = nil
     mapData[4][4] = nil
+    
+    mapData[2][3] = nil
+    mapData[2][4] = nil
+    mapData[5][3] = nil
+    mapData[5][4] = nil
+
+    mapData[3][2] = nil
+    mapData[4][2] = nil
+    mapData[3][5] = nil
+    mapData[4][5] = nil
+
     mapData[1][1].id = 52222
     mapData[6][6].id = 21111
+    -- mapData[1][6].id = 52222
+    -- mapData[6][1].id = 21111
 end
