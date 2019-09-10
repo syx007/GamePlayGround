@@ -19,6 +19,10 @@ function reloadScreenPlayingGame()
 
     stepCounterMax = 100
     stepCounter = stepCounterMax
+
+    destoryInterval = 5
+    destoryCount = 4
+    destoryCounter = destoryInterval
 end
 
 function reloadScreenMainMenu()

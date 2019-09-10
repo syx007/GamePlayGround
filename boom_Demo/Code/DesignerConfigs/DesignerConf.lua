@@ -48,10 +48,21 @@ function getPriceByCore(id)
     -- processPrice = 250
     -- heatSinkPrice = 400
     local CostID = {
-        10, 50, 100, 150, 50, 250,
-        400
+        10, 50, 100, 130, 50, 230,
+        200
     }
     return  CostID[id + 1]
+end
+
+function getPriceBySide(id)
+    -- PCBSideID = 0
+    -- SerialCSideID = 1
+    -- ParllelCSideID = 2
+    -- fenceSideID = 3
+    local SideID = {
+        0,25,15,45
+    }
+    return  SideID[id + 1]
 end
 
 function getCostByID(id)

@@ -3,6 +3,8 @@ require("Code/Utils")
 require("Code/Graphic/Camera")
 require("Code/Resource/ResourceMgr")
 require("Code/DesignerConfigs/DesignerConf")
+require("Code/Map/MapUtils")
+
 
 function changeGameStateTo(stateID)
     gameState = stateID
@@ -34,7 +36,7 @@ end
 function doDestory()
     -- infact destory after actual moving, so player able to move tile away.
     destoryCounter = destoryCounter - 1
-    print(destoryCounter)
+    -- print(destoryCounter)
     if destoryCounter <= 0 then
         destoryCounter = destoryInterval
         for i = 0, destoryCount - 1 do
@@ -75,42 +77,70 @@ function genShopTile()
     local resID = 0
     local randCore = 0
 
+    local cpuBlock=processorCoreID
+    local serverBlock=serverCoreID
+
     repeat
         -- entry block
         randCore = love.math.random(getTotalCoreCount()) - 1
-    until ((randCore ~= 2) and (randCore ~= 5))--allow bridge now
+        --could not prevent from buying multiple cpu/server, so not allow buying CPU/SERVER
+    until ((randCore ~= cpuBlock) and (randCore ~= serverBlock))
+    -- local randCore = 0
 
-    local randSideA = love.math.random(getTotalSideCount()) - 1
-    local randSideB = love.math.random(getTotalSideCount()) - 1
-    local randSideC = love.math.random(getTotalSideCount()) - 1
-    local randSideD = love.math.random(getTotalSideCount()) - 1
+    local sideData = Core2SideMap[randCore + 1]
 
-    -- randCore should not get 2,5--should implement bridge
-    -- could allow play buy 2 or 5 is 2 or 5 destoryed
+    local randSideA = 0
+    local randSideB = 0
+    local randSideC = 0
+    local randSideD = 0
 
-    if randCore == 0 then
-        -- should not clamp but reset
-        repeat
-            -- entry block
-            randSideA = love.math.random(getTotalSideCount()) - 1
-        until (randSideA ~= 3)
-        repeat
-            -- entry block
-            randSideB = love.math.random(getTotalSideCount()) - 1
-        until (randSideB ~= 3)
-        repeat
-            -- entry block
-            randSideC = love.math.random(getTotalSideCount()) - 1
-        until (randSideC ~= 3)
-        repeat
-            -- entry block
-            randSideD = love.math.random(getTotalSideCount()) - 1
-        until (randSideD ~= 3)
+    repeat
+        -- entry block
+        randSideA = love.math.random(getTotalSideCount()) - 1
+    until (sideData[randSideA + 1] ~= -1)
+    repeat
+        -- entry block
+        randSideB = love.math.random(getTotalSideCount()) - 1
+    until (sideData[randSideB + 1] ~= -1)
+    repeat
+        -- entry block
+        randSideC = love.math.random(getTotalSideCount()) - 1
+    until (sideData[randSideC + 1] ~= -1)
+    repeat
+        -- entry block
+        randSideD = love.math.random(getTotalSideCount()) - 1
+    until (sideData[randSideD + 1] ~= -1)
+
+    local hasNecessarySide = false
+
+    for i, data in pairs(sideData) do
+        -- if randCore == 0 then print(data) end
+        if data == 1 then
+            hasNecessarySide = hasNecessarySide or (randSideA == (i - 1))
+            hasNecessarySide = hasNecessarySide or (randSideB == (i - 1))
+            hasNecessarySide = hasNecessarySide or (randSideC == (i - 1))
+            hasNecessarySide = hasNecessarySide or (randSideD == (i - 1))
+            if not hasNecessarySide then
+                -- print(data)
+                -- print(i)
+                -- just settle for now.
+                randSideA = (i - 1)
+            end
+        end
     end
     resID = 10000 * randCore + 1000 * randSideA + 100 * randSideB + 10 *
                 randSideC + randSideD
-    -- print(resID)
     return resID
+end
+
+function caculateTilePrice(id)
+    local corePrice = getPriceByCore(extractDataByPtr(id, 0))
+    local sidePrice = 0
+    sidePrice = sidePrice + getPriceBySide(extractDataByPtr(id, 1))
+    sidePrice = sidePrice + getPriceBySide(extractDataByPtr(id, 2))
+    sidePrice = sidePrice + getPriceBySide(extractDataByPtr(id, 3))
+    sidePrice = sidePrice + getPriceBySide(extractDataByPtr(id, 4))
+    return corePrice + sidePrice
 end
 
 function refreshShop()
@@ -121,10 +151,10 @@ function refreshShop()
     shopContent[4] = genShopTile()
 
     shopPrice = {}
-    shopPrice[1] = getPriceByCore(extractDataByPtr(shopContent[1], 0))
-    shopPrice[2] = getPriceByCore(extractDataByPtr(shopContent[2], 0))
-    shopPrice[3] = getPriceByCore(extractDataByPtr(shopContent[3], 0))
-    shopPrice[4] = getPriceByCore(extractDataByPtr(shopContent[4], 0))
+    shopPrice[1] = caculateTilePrice(shopContent[1], 0)
+    shopPrice[2] = caculateTilePrice(shopContent[2], 0)
+    shopPrice[3] = caculateTilePrice(shopContent[3], 0)
+    shopPrice[4] = caculateTilePrice(shopContent[4], 0)
 end
 
 function PerStepUpdate()

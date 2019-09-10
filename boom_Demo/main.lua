@@ -5,8 +5,9 @@ require("Code/GameStateSwh")
 -- DON'T write Chinese comment.
 
 function love.load()
-
+    
     loadResource()
+    initTileMetaData()
     initTiles()
     gameState = 0
 
@@ -63,24 +64,22 @@ function love.load()
     buying_ptr=0
     -- haveSetRandomSeed = false
 
-    -- now random destory should implement
+    --now random destory should implement
     ---need update random seed per game---DONE
     ---need mutiple random destory---DONE
     ----should be configurable---DONE
     ---need presudo-random interval
     ----should be configurable
 
-    -- cost system should implement---DONE
+    --cost system should implement---DONE
     ---should expose to designer
-    -- shop system should implement---DONE
-    ---should comply to core/side rules
+    --shop system should implement---DONE
+    ---should comply to core/side rules---DONE
 
     --should implement FireWall
     --should implement NetBridge
     --should implement HeatSink
-    destoryInterval = 5
-    destoryCount = 4
-    destoryCounter = destoryInterval
+
     nextDestoryPosX = nil
     nextDestoryPosY = nil
     stepDrawSwch = false
@@ -89,7 +88,6 @@ function love.load()
     love.math.setRandomSeed(love.timer.getTime())
     
     changeGameStateTo(gameState)
-    initTileMetaData()
 end
 
 function love.keypressed(key, scancode, isrepeat)

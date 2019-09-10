@@ -1,24 +1,24 @@
 -- luabit = require"bit"
 function LoadCore2SideMap(Mapfile)
-    Core2SideMap = {}
-    -- local f = love.filesystem.read(Mapfile, "r")
-    local f = io.open(Mapfile, "r")
-    if f ~= nil then
-        io.input(f)
-        for i = 1, #coreTable do
-            Core2SideMap[i] = {}
-            local strtable = GetValuesfromCSVFormat(f:read())
-            for j = 1, #sideTable do
-                Core2SideMap[i][j] = tonumber(strtable[j])
-            end
-        end
-    else
-        love.graphics.print("file1 is nil", 10, 10)
-    end
-    print(Core2SideMap[1][1]);
+    -- Core2SideMap = {}
+    -- -- local f = love.filesystem.read(Mapfile, "r")
+    -- local f = io.open(Mapfile, "r")
+    -- if f ~= nil then
+    --     io.input(f)
+    --     for i = 1, #coreTable do
+    --         Core2SideMap[i] = {}
+    --         local strtable = GetValuesfromCSVFormat(f:read())
+    --         for j = 1, #sideTable do
+    --             Core2SideMap[i][j] = tonumber(strtable[j])
+    --         end
+    --     end
+    -- else
+    --     love.graphics.print("file1 is nil", 10, 10)
+    -- end
+    -- print(Core2SideMap[1][1]);
     
     --static loading for packaging
-    -- Core2SideMap={{1,0,0,-1},{0,1,0,0},{0,1,0,0},{0,1,0,0},{0,0,1,0},{0,0,1,0},{0,0,0,0},{0,0,0,0}}
+    Core2SideMap={{1,0,0,-1},{0,1,0,0},{0,1,0,0},{0,1,0,0},{0,0,1,0},{0,0,1,0},{0,0,0,0},{0,0,0,0}}
 end
 -- key of Cores:CorePCB,CoreServer,CoreNetwork,CoreBridge,CoreDriver,CoreProcessor
 -- key of Sides:SidePCB,SideSerialConnector,SideParllelConnector,SideFirewall

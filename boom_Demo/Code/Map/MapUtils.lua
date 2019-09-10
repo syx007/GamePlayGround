@@ -329,7 +329,7 @@ function evaluateNetwork()
             end
         end
     end
-    print(maxDepth)
+    -- print(maxDepth)
     -- print(longestQueue)--queue length= maxDepth + 1
     local queueTmp = longestQueue
     local bgdmultiplier = 1
@@ -374,4 +374,30 @@ function evaluateCost()
         end
     end
     return cost
+end
+
+function hasAnyCPU()
+    for i = 1, mapWidthCount do
+        for j = 1, mapHeightCount do
+            if not (mapData[i][j] == nil) then
+                local coreID = extractDataByPtr(mapData[i][j].id, 0)
+                if coreID==processorCoreID then
+                    return true
+                end
+            end
+        end
+    end
+end
+
+function hasAnyServer()
+    for i = 1, mapWidthCount do
+        for j = 1, mapHeightCount do
+            if not (mapData[i][j] == nil) then
+                local coreID = extractDataByPtr(mapData[i][j].id, 0)
+                if coreID==serverCoreID then
+                    return true
+                end
+            end
+        end
+    end
 end
