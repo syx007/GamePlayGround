@@ -183,7 +183,7 @@ function BFS_Driver(x, y, processorID)
         end
     end
 
-    if coreID == processorCoreID then print(mapData[x][y].idOnOff) end
+    -- if coreID == processorCoreID then print(mapData[x][y].idOnOff) end
 end
 
 -- pre calculate network
