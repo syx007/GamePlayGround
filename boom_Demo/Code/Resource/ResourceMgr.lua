@@ -114,15 +114,22 @@ function loadResource()
         end
         local tid = tonumber(coreFileDataList[1]) + 1
         local id = tonumber(coreFileDataList[1])
-        coreTable[tid] = {}
+        local fCount = tonumber(coreFileDataList[2])
+        if fCount==0 then
+            coreTable[tid] = {}
+        end
         coreTable[tid].name = getCoreNameByID(coreFileDataList[1]) -- TODO
         coreTable[tid].id = id
-        coreTable[tid].content = love.graphics.newImage(
-                                     ArtCoreSpritePath .. coreFiles[f])
         coreTable[tid].fCount = tonumber(coreFileDataList[2]) -- TODO
+        if fCount==0 then
+            coreTable[tid].content = {}
+        end
+        coreTable[tid].content[coreTable[tid].fCount] = love.graphics.newImage(
+                                     ArtCoreSpritePath .. coreFiles[f])
+        print(coreTable[tid].id,coreTable[tid].name,coreTable[tid].id,coreTable[tid].fCount)
         --this core also counts frames
         coreTableCount = coreTableCount + 1
-        --print(coreTable[tid].id,coreTable[tid].name,coreTable[tid].id,coreTable[tid].fCount)
+        
     end
 
     for f in pairs(sideFiles) do
@@ -133,16 +140,22 @@ function loadResource()
         end
         local tid = tonumber(sideFileDataList[1]) + 1
         local id = tonumber(sideFileDataList[1])
-
-        sideTable[tid] = {}
-        sideTable[tid].name = getCoreNameByID(sideFileDataList[1]) -- TODO
+        local fCount=tonumber(sideFileDataList[2])
+        if fCount==0 then
+            sideTable[tid] = {}
+        end
+        sideTable[tid].name = getSideNameByID(sideFileDataList[1]) -- TODO
         sideTable[tid].id = id
-        sideTable[tid].content = love.graphics.newImage(
-                                     ArtSideSpritePath .. sideFiles[f])
         sideTable[tid].fCount = tonumber(sideFileDataList[2]) -- TODO
+        if sideTable[tid].fCount==0 then
+            sideTable[tid].content={}
+        end
+        sideTable[tid].content[sideTable[tid].fCount] = love.graphics.newImage(
+                                     ArtSideSpritePath .. sideFiles[f])
+        print(sideTable[tid].name,sideTable[tid].id,sideTable[tid].fCount)
         -- fighter0:setFilter("nearest", "nearest")
         sideTableCount = sideTableCount + 1
-        --print(sideTable[tid].name,sideTable[tid].id,sideTable[tid].fCount)
+        
     end
     LoadCore2SideMap(ArtSpritePath.."Core2SideMap.map")
 end

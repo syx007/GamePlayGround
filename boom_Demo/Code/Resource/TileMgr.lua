@@ -31,6 +31,7 @@ function initTiles()
             if Core2SideMap[i][j] >= 0 then
                 -- print(Core2SideMap[i][j])
                 tile = {}
+                tile.is_playing=false
                 tile.Core = coreTable[i]
                 tile.Side = sideTable[j]
                 if Core2SideMap[i][j] == 0 then

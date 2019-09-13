@@ -126,12 +126,34 @@ function updateMap()
         end
     end
 end
+function playCoreAnimation(core_id,t)
+    local fCount=Tiles[core_id+1][1].Core.fCount+1;
+    --print("fcount=",fCount)
+    if Tiles[core_id + 1][1].is_playing==true then
+        Tiles[core_id + 1][1].Core.content[t%fCount]:setFilter("nearest","nearest")
+        return Tiles[core_id + 1][1].Core.content[t%fCount]
+    else
+        Tiles[core_id + 1][1].Core.content[0]:setFilter("nearest","nearest")
+        return Tiles[core_id + 1][1].Core.content[0]
+    end
+end
+function playSideAnimation(core_id,side_id,t)
+    local fCount=Tiles[core_id+1][side_id+1].Side.fCount+1;
+    --print("fcount=",fCount)
+    if Tiles[core_id + 1][1].is_playing==true then
+        Tiles[core_id + 1][side_id + 1].Side.content[t%fCount]:setFilter("nearest","nearest")
+        return Tiles[core_id + 1][side_id + 1].Side.content[t%fCount]
+    else
+        Tiles[core_id + 1][side_id + 1].Side.content[0]:setFilter("nearest","nearest")
+        return Tiles[core_id + 1][side_id + 1].Side.content[0]
+    end
+end
 function drawTileCore(grid_x, grid_y, core_id)
     love.graphics.setColor(1, 1, 1, 1)
     local coord = getWorldCoordfromGrid(grid_x, grid_y, camera_bias_x,
                                         camera_bias_y)
-    Tiles[core_id + 1][1].Core.content:setFilter("nearest", "nearest")
-    love.graphics.draw(Tiles[core_id + 1][1].Core.content,
+    --Tiles[core_id + 1][1].Core.content[0]:setFilter("nearest", "nearest")
+    love.graphics.draw(playCoreAnimation(core_id,t),
                        coord.x + ZoomFactor * 16, coord.y + ZoomFactor * 16, 0,
                        0.95 * ZoomFactor, 0.95 * ZoomFactor, 16, 16)
 end
@@ -142,8 +164,8 @@ function drawTilSide(grid_x, grid_y, core_id, side_id, rot)
     -- this ID should comply excel sheet or change Core2SideMap.map file
     local coord = getWorldCoordfromGrid(grid_x, grid_y, camera_bias_x,
                                         camera_bias_y)
-    Tiles[core_id + 1][side_id + 1].Side.content:setFilter("nearest", "nearest")
-    love.graphics.draw(Tiles[core_id + 1][side_id + 1].Side.content,
+    Tiles[core_id + 1][side_id + 1].Side.content[0]:setFilter("nearest", "nearest")
+    love.graphics.draw(playSideAnimation(core_id,side_id,t),
                        coord.x + ZoomFactor * 16, coord.y + ZoomFactor * 16,
                        (rot - 2) * (3.141592654 / 2), 0.95 * ZoomFactor,
                        0.95 * ZoomFactor, 16, 16)
