@@ -93,13 +93,14 @@ end
 
 function loadSFX()
     SFX={}
-    --SFX.move_cursor=
-    --SFX.move_item=
+    SFX.move_cursor=love.audio.newSource(MusicSFXPath.."move_cursor"..".wav","static")
+    SFX.move_item=love.audio.newSource(MusicSFXPath.."move_item"..".wav","static")
     SFX.move_denied=love.audio.newSource(MusicSFXPath.."move_denied"..".wav","static")
-    --SFX.rot=
-    --SFX.connect_success=
-    --SFX.alarm=
-    --SFX.block_destroied=
+    SFX.rot=love.audio.newSource(MusicSFXPath.."rot"..".wav","static")
+    SFX.build_connect=love.audio.newSource(MusicSFXPath.."build_connect"..".wav","static")
+    SFX.break_connect=love.audio.newSource(MusicSFXPath.."break_connect"..".wav","static")
+    SFX.alarm=love.audio.newSource(MusicSFXPath.."alarm"..".wav","static")
+    SFX.destroied=love.audio.newSource(MusicSFXPath.."destroied"..".wav","static")
     --SFX.failed=
     --SFX.success=
     SFX.menu_OK=love.audio.newSource(MusicSFXPath.."menu_OK"..".wav","static")
@@ -109,7 +110,8 @@ function loadSFX()
 end
 function loadMusic()
     Music={}
-    --Music.menu=
+    Music.menu=love.audio.newSource(MusicSFXPath.."DataFlow"..".ogg","stream")
+    Music.menu:play()
     --Music.playing=
 
 end
