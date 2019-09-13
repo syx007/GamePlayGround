@@ -69,18 +69,16 @@ end
 function SetSideOnOff(data, ptr, onoff)
     local orgOnOff = GetSideOnOff(data, ptr)
     if onoff ~= orgOnOff then
-        data = data - math.pow(10, 4 - ptr) * orgOnOff
-        data = data + math.pow(10, 4 - ptr) * onoff
-        -- -- if onoff == 1 then
-        -- --     data = data + math.pow(10, 4 - ptr)
-        -- -- elseif onoff == 0 then
-        -- --     data = data - math.pow(10, 4 - ptr)
-        -- -- end
-        -- if onoff ~=0 then
-        --     data = data - math.pow(10, 4 - ptr) * orgOnOff
-        -- else
-
-        -- end
+        if orgOnOff == 3 then
+            if orgOnOff ~= 0 then
+                return
+            else
+                data = data - math.pow(10, 4 - ptr) * orgOnOff
+            end
+        else
+            -- data = data - math.pow(10, 4 - ptr) * orgOnOff
+            data = data + math.pow(10, 4 - ptr) * onoff
+        end
     end
     return data
 end
