@@ -82,4 +82,4 @@ end
 
 function getTotalCoreCount() return 6 end
 
-function getTotalSideCount() return 4 end
+function getTotalSideCount() return 2 end

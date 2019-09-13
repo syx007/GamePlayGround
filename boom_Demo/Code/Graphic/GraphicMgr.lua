@@ -138,9 +138,10 @@ function playCoreAnimation(core_id,t)
     end
 end
 function playSideAnimation(core_id,side_id,t)
+    --print("coreid",core_id,"sideid",side_id)
     local fCount=Tiles[core_id+1][side_id+1].Side.fCount+1;
     --print("fcount=",fCount)
-    if Tiles[core_id + 1][1].is_playing==true then
+    if Tiles[core_id + 1][side_id + 1].is_playing==true then
         Tiles[core_id + 1][side_id + 1].Side.content[t%fCount]:setFilter("nearest","nearest")
         return Tiles[core_id + 1][side_id + 1].Side.content[t%fCount]
     else
@@ -164,7 +165,7 @@ function drawTilSide(grid_x, grid_y, core_id, side_id, rot)
     -- this ID should comply excel sheet or change Core2SideMap.map file
     local coord = getWorldCoordfromGrid(grid_x, grid_y, camera_bias_x,
                                         camera_bias_y)
-    Tiles[core_id + 1][side_id + 1].Side.content[0]:setFilter("nearest", "nearest")
+    --Tiles[core_id + 1][side_id + 1].Side.content[0]:setFilter("nearest", "nearest")
     love.graphics.draw(playSideAnimation(core_id,side_id,t),
                        coord.x + ZoomFactor * 16, coord.y + ZoomFactor * 16,
                        (rot - 2) * (3.141592654 / 2), 0.95 * ZoomFactor,
