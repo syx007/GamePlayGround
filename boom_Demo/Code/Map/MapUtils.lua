@@ -21,6 +21,8 @@ function initMapCalculation()
                 mapData[i][j].ProcessorVisited = 0
                 mapData[i][j].NetworkDepth = -1
                 mapData[i][j].NetworkQueue = -1
+                -- resetOnOff
+                mapData[i][j].idOnOff = 0000
             end
         end
     end
@@ -102,9 +104,10 @@ function checkConnection(x, y, rotation)
 end
 
 function IsSpreadableDriverSide(sideID)
-    local SideGrass = ParllelCSideID
-    local SideLoad = fenceSideID
-    return (sideID == SideGrass) or (sideID == SideLoad)
+    -- local SideGrass = ParllelCSideID
+    -- local SideLoad = fenceSideID
+    -- return (sideID == SideGrass) or (sideID == SideLoad)
+    return (offSideID == sideID)
 end
 
 function IsSpreadableNetwork(sideID) return (sideID == SerialCSideID) end
@@ -115,6 +118,7 @@ function IsSpreadableNetwork(sideID) return (sideID == SerialCSideID) end
 function BFS_Driver(x, y, processorID)
     -- have chance to STACKOVERFLOW
     -- will error out when involve with network disk combination
+
     if x < 1 or x > mapWidthCount then return end
     if y < 1 or y > mapHeightCount then return end
     if mapData[x][y] == nil then return end
@@ -122,6 +126,7 @@ function BFS_Driver(x, y, processorID)
     if mapData[x][y].ProcessorVisited > 0 then return end
 
     local coreID = extractDataByPtr(mapData[x][y].id, 0)
+
     if coreID == driverCoreID or coreID == processorCoreID then
         mapData[x][y].FlagProcessor = processorID
     end
@@ -139,24 +144,46 @@ function BFS_Driver(x, y, processorID)
 
     if IsSpreadableDriverSide(westID) then
         if checkConnection(x, y, 1) then
+            -- if coreID == driverCoreID or coreID == processorCoreID then
+            mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                 rotatePtr(1, mapData[x][y]
+                                                               .rotation), 1)
+            -- end
             BFS_Driver(x - 1, y, processorID)
         end
     end
     if IsSpreadableDriverSide(northID) then
         if checkConnection(x, y, 2) then
+            -- if coreID == driverCoreID or coreID == processorCoreID then
+            mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                 rotatePtr(2, mapData[x][y]
+                                                               .rotation), 1)
+            -- end
             BFS_Driver(x, y - 1, processorID)
         end
     end
     if IsSpreadableDriverSide(southID) then
         if checkConnection(x, y, 3) then
+            -- if coreID == driverCoreID or coreID == processorCoreID then
+            mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                 rotatePtr(3, mapData[x][y]
+                                                               .rotation), 1)
+            -- end
             BFS_Driver(x, y + 1, processorID)
         end
     end
     if IsSpreadableDriverSide(eastID) then
         if checkConnection(x, y, 4) then
+            -- if coreID == driverCoreID or coreID == processorCoreID then
+            mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                 rotatePtr(4, mapData[x][y]
+                                                               .rotation), 1)
+            -- end
             BFS_Driver(x + 1, y, processorID)
         end
     end
+
+    if coreID == processorCoreID then print(mapData[x][y].idOnOff) end
 end
 
 -- pre calculate network
@@ -191,10 +218,7 @@ function min(x, y)
     end
 end
 
-function IsSpreadableNetworkSide(sideID)
-    local SideWater = SerialCSideID
-    return (sideID == SideWater)
-end
+function IsSpreadableNetworkSide(sideID) return (offSideID == sideID) end
 -- DFS the network tiles
 -- NetworkDepth == 0  => this tile is not searched
 -- NetworkDepth == -1 => this tile is being searched, but has no result
@@ -220,7 +244,8 @@ function DFS_Network(x, y, depth, queue)
 
     -- print(currentdepth)
     local coreID = extractDataByPtr(mapData[x][y].id, 0)
-    if coreID == networkCableCoreID or coreID == serverCoreID or coreID == brigeCoreID then
+    if coreID == networkCableCoreID or coreID == serverCoreID or coreID ==
+        brigeCoreID then
         local westID = getRotatedSide_Single(1, mapData[x][y].id,
                                              mapData[x][y].rotation)
         local northID = getRotatedSide_Single(2, mapData[x][y].id,
@@ -232,21 +257,33 @@ function DFS_Network(x, y, depth, queue)
 
         if IsSpreadableNetwork(westID) then
             if checkConnection(x, y, 1) then
+                mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                     rotatePtr(1, mapData[x][y]
+                                                                   .rotation), 2)
                 DFS_Network(x - 1, y, currentdepth, queue)
             end
         end
         if IsSpreadableNetwork(northID) then
             if checkConnection(x, y, 2) then
+                mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                     rotatePtr(2, mapData[x][y]
+                                                                   .rotation), 2)
                 DFS_Network(x, y - 1, currentdepth, queue)
             end
         end
         if IsSpreadableNetwork(southID) then
             if checkConnection(x, y, 3) then
+                mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                     rotatePtr(3, mapData[x][y]
+                                                                   .rotation), 2)
                 DFS_Network(x, y + 1, currentdepth, queue)
             end
         end
         if IsSpreadableNetwork(eastID) then
             if checkConnection(x, y, 4) then
+                mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                     rotatePtr(4, mapData[x][y]
+                                                                   .rotation), 2)
                 DFS_Network(x + 1, y, currentdepth, queue)
             end
         end
@@ -332,6 +369,7 @@ function evaluateNetwork()
     -- print(maxDepth)
     -- print(longestQueue)--queue length= maxDepth + 1
     local queueTmp = longestQueue
+    -- Here,use not longest Queue to turn off network side.
     local bgdmultiplier = 1
     for i = 0, maxDepth do
         local xy = queueTmp % 100
@@ -339,15 +377,43 @@ function evaluateNetwork()
         local x = math.floor(xy / 10)
         queueTmp = math.floor(queueTmp / 100)
 
-        -- x,y on longest path
-        -- could also turn on animation of network here
-        if brigeCoreID == extractDataByPtr(mapData[x][y].id, 0) then
-            bgdmultiplier = bgdmultiplier * 2
-        end
+        maxDepth = math.max(maxDepth, 0)
+        -- server doesn't count as score in chain of network
+        -- however muliple same longest path select if has bridge is by random 
     end
-    maxDepth=math.max(maxDepth,0)
-    -- server doesn't count as score in chain of network
-    -- however muliple same longest path select if has bridge is by random 
+
+    -- for i = 1, mapWidthCount do
+    --     for j = 1, mapHeightCount do
+    --         if not (mapData[i][j] == nil) then
+    --             for k = 0, maxDepth do
+    --                 local xy = queueTmp % 100
+    --                 local y = xy % 10
+    --                 local x = math.floor(xy / 10)
+    --                 queueTmp = math.floor(queueTmp / 100)
+
+    --                 -- could also turn on animation of network here
+    --                 if x == i and y == j then
+    --                     if brigeCoreID == extractDataByPtr(mapData[x][y].id, 0) then
+    --                         bgdmultiplier = bgdmultiplier * 2
+    --                     end
+    --                 else
+    --                     if GetSideOnOff(mapData[x][y].idOnOff,1)==2 then
+    --                         SetSideOnOff(mapData[x][y].idOnOff,1,0);
+    --                     end
+    --                     if GetSideOnOff(mapData[x][y].idOnOff,2)==2 then
+    --                         SetSideOnOff(mapData[x][y].idOnOff,2,0);
+    --                     end
+    --                     if GetSideOnOff(mapData[x][y].idOnOff,3)==2 then
+    --                         SetSideOnOff(mapData[x][y].idOnOff,3,0);
+    --                     end
+    --                     if GetSideOnOff(mapData[x][y].idOnOff,4)==2 then
+    --                         SetSideOnOff(mapData[x][y].idOnOff,4,0);
+    --                     end
+    --                 end
+    --             end
+    --         end
+    --     end
+
     return (maxDepth) * networkIncome * bgdmultiplier
 end
 
@@ -381,9 +447,7 @@ function hasAnyCPU()
         for j = 1, mapHeightCount do
             if not (mapData[i][j] == nil) then
                 local coreID = extractDataByPtr(mapData[i][j].id, 0)
-                if coreID==processorCoreID then
-                    return true
-                end
+                if coreID == processorCoreID then return true end
             end
         end
     end
@@ -394,9 +458,7 @@ function hasAnyServer()
         for j = 1, mapHeightCount do
             if not (mapData[i][j] == nil) then
                 local coreID = extractDataByPtr(mapData[i][j].id, 0)
-                if coreID==serverCoreID then
-                    return true
-                end
+                if coreID == serverCoreID then return true end
             end
         end
     end

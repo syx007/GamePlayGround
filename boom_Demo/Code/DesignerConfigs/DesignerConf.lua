@@ -39,6 +39,13 @@ function initTileMetaData()
     fenceSideID = 3
 end
 
+function initGamePlayData()
+    initCash = 10000.0
+    stepCounterMax = 100
+    destoryInterval = 99999
+    destoryCount = 4
+end
+
 function getPriceByCore(id)
     -- PCBPrice = 10
     -- netCablePrice = 50
@@ -47,11 +54,8 @@ function getPriceByCore(id)
     -- dirverPrice = 50
     -- processPrice = 250
     -- heatSinkPrice = 400
-    local CostID = {
-        10, 50, 100, 130, 50, 230,
-        200
-    }
-    return  CostID[id + 1]
+    local CostID = {10, 50, 100, 130, 50, 230, 200}
+    return CostID[id + 1]
 end
 
 function getPriceBySide(id)
@@ -59,10 +63,8 @@ function getPriceBySide(id)
     -- SerialCSideID = 1
     -- ParllelCSideID = 2
     -- fenceSideID = 3
-    local SideID = {
-        0,25,15,45
-    }
-    return  SideID[id + 1]
+    local SideID = {0, 25, 15, 45}
+    return SideID[id + 1]
 end
 
 function getCostByID(id)
@@ -73,13 +75,10 @@ function getCostByID(id)
     -- dirverCost = 75
     -- processCost = 30
     -- heatSinkCost = 20
-    local CostID = {
-        10, 15, 25, 35, 75, 85,
-        65
-    }
-    return  CostID[id + 1]
+    local CostID = {10, 15, 25, 35, 75, 85, 65}
+    return CostID[id + 1]
 end
 
 function getTotalCoreCount() return 6 end
 
-function getTotalSideCount() return 4 end
+function getTotalSideCount() return 2 end

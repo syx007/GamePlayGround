@@ -80,6 +80,11 @@ function love.load()
     --should implement NetBridge
     --should implement HeatSink
 
+
+    noSideID=0;
+    offSideID=1;
+    onSideID=2;--?
+
     nextDestoryPosX = nil
     nextDestoryPosY = nil
     stepDrawSwch = false

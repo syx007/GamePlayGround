@@ -79,12 +79,13 @@ function genShopTile()
 
     local cpuBlock=processorCoreID
     local serverBlock=serverCoreID
+    local blockerBlock=PCBCoreID
 
     repeat
         -- entry block
         randCore = love.math.random(getTotalCoreCount()) - 1
         --could not prevent from buying multiple cpu/server, so not allow buying CPU/SERVER
-    until ((randCore ~= cpuBlock) and (randCore ~= serverBlock))
+    until ((randCore ~= cpuBlock) and (randCore ~= serverBlock)and (randCore ~= blockerBlock))
     -- local randCore = 0
 
     local sideData = Core2SideMap[randCore + 1]

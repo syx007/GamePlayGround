@@ -6,22 +6,19 @@ function reloadScreenPlayingGame()
     initMap()
     setTileMap()
     refreshShop()
+    initGamePlayData()
+    -- initTileMetaData()
     -- init Score here, or get nil val
     driverIncome = 0.0
     blueIncome = 0.0
     edgeIncome = 0.0
     totalIncome = 0.0
-
+    
     totalCost = 0.0 -- should be 0 or positive
 
     -- now we need reset these val
-    totalCash = 10000.0
-
-    stepCounterMax = 100
+    totalCash = initCash
     stepCounter = stepCounterMax
-
-    destoryInterval = 5
-    destoryCount = 4
     destoryCounter = destoryInterval
 end
 

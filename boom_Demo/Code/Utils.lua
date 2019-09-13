@@ -13,6 +13,35 @@ function getNextRotate(rotate)
     end
 end
 
+function getNextRotate_Reverse(rotate)
+    -- this is ccw, need implement a cw
+    if rotate == 1 then
+        return 3
+    elseif rotate == 3 then
+        return 4
+    elseif rotate == 4 then
+        return 2
+    elseif rotate == 2 then
+        return 1
+    else
+        return 0
+    end
+end
+
+function rotatePtr(side, rotate)
+    local ptr = side
+    if rotate == 1 then
+        ptr = side
+    elseif rotate == 2 then
+        ptr = getNextRotate(side)
+    elseif rotate == 4 then
+        ptr = getNextRotate(getNextRotate(side))
+    elseif rotate == 3 then
+        ptr = getNextRotate(getNextRotate(getNextRotate(side)))
+    end
+    return ptr
+end
+
 function arrayFind(array, element)
     for ele, content in ipairs(array) do
         -- BODY
@@ -32,6 +61,40 @@ function arrayContain(array, element)
 end
 
 function mathClamp(x, min, max) return math.min(math.max(x, min), max) end
+
+function GetSideOnOff(data, ptr)
+    return math.floor((data / math.pow(10, 4 - ptr))) % 10
+end
+
+function SetSideOnOff(data, ptr, onoff)
+    local orgOnOff = GetSideOnOff(data, ptr)
+    if onoff ~= orgOnOff then
+        data=data-math.pow(10, 4 - ptr)*orgOnOff;
+        data=data+math.pow(10, 4 - ptr)*onoff;
+        -- if onoff == 1 then
+        --     data = data + math.pow(10, 4 - ptr)
+        -- elseif onoff == 0 then
+        --     data = data - math.pow(10, 4 - ptr)
+        -- end
+    end
+    return data
+end
+
+function getRotatedSideOnOff_Single(side, data, rotate)
+    -- side is a data!should re-read data.
+    -- this infact calculated new ptr.
+    local ptr = side
+    if rotate == 1 then
+        ptr = side
+    elseif rotate == 2 then
+        ptr = getNextRotate(side)
+    elseif rotate == 4 then
+        ptr = getNextRotate(getNextRotate(side))
+    elseif rotate == 3 then
+        ptr = getNextRotate(getNextRotate(getNextRotate(side)))
+    end
+    return GetSideOnOff(data, ptr)
+end
 
 function extractDataByPtr(data, ptr)
     return math.floor((data / math.pow(10, 4 - ptr))) % 10
@@ -110,8 +173,8 @@ function setTileMap()
     -- dig hole here
     -- mapData[1][1] = nil
     -- setTileMapByScramble()
-    -- setTileMapByCount()
-    setRealGamePlayMap()
+    setTileMapByCount()
+    -- setRealGamePlayMap()
 end
 
 function setTileMapByScramble()
@@ -143,8 +206,10 @@ function setTileMapByCount()
     -- local sourceCount = {6, 24, 6}
     -- local source = {nil, 00000, 11001, 11221, 33131, 31131, 42222, 52222}
     -- local sourceCount = {16, 3, 2, 4, 5, 4, 1, 1}
-    local source = {nil, 00001, 41202, 51021, 11221, 31221, 12121, 20011}
+    local source = {nil, 00001, 41101, 51011, 11111, 31111, 11111, 20011}
     local sourceCount = {26, 2, 2, 1, 1, 1, 3, 1}
+    -- local source = {nil, 41101, 51011}
+    -- local sourceCount = {34, 1, 1}
     mapData = {}
     for i = 1, mapLineCount do
         mapData[i] = {}
@@ -177,7 +242,7 @@ function setRealGamePlayMap()
     mapData[4][3] = nil
     mapData[3][4] = nil
     mapData[4][4] = nil
-    
+
     mapData[2][3] = nil
     mapData[2][4] = nil
     mapData[5][3] = nil
@@ -188,7 +253,7 @@ function setRealGamePlayMap()
     mapData[3][5] = nil
     mapData[4][5] = nil
 
-    mapData[1][1].id = 52222
+    mapData[1][1].id = 51111
     mapData[6][6].id = 21111
     -- mapData[1][6].id = 52222
     -- mapData[6][1].id = 21111
