@@ -168,7 +168,9 @@ end
 
 function GameLoopUpdatePlayingGame(dt)
     local actionRec = cursor.action
-    t = t + 1
+
+    animationFCounter = math.floor(frameCounter/2.0)
+    
     cellSize = baseCellSize * ZoomFactor
     MoveCamera(SelectedMode, dt)
     ZoomCamera(SelectedMode, dt)

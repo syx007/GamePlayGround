@@ -74,54 +74,58 @@ function updateMap()
         end
     end
 end
-function playCoreAnimation(core_id,t)
-    local fCount=Tiles[core_id+1][1].Core.fCount+1;
-    --print("fcount=",fCount)
-    if Tiles[core_id + 1][1].is_playing==true then
-        Tiles[core_id + 1][1].Core.content[t%fCount]:setFilter("nearest","nearest")
-        return Tiles[core_id + 1][1].Core.content[t%fCount]
+function playCoreAnimation(core_id, t, playAnimation)
+    local fCount = Tiles[core_id + 1][1].Core.fCount + 1
+    -- print("fcount=",fCount)
+    if playAnimation == true then
+        Tiles[core_id + 1][1].Core.content[animationFCounter % fCount]:setFilter(
+            "nearest", "nearest")
+        return Tiles[core_id + 1][1].Core.content[animationFCounter % fCount]
     else
-        Tiles[core_id + 1][1].Core.content[0]:setFilter("nearest","nearest")
+        Tiles[core_id + 1][1].Core.content[0]:setFilter("nearest", "nearest")
         return Tiles[core_id + 1][1].Core.content[0]
     end
 end
-function playSideAnimation(core_id,side_id,t)
-    --print("coreid",core_id,"sideid",side_id)
-    local fCount=Tiles[core_id+1][side_id+1].Side.fCount+1;
-    --print("fcount=",fCount)
-    if Tiles[core_id + 1][side_id + 1].is_playing==true then
-        Tiles[core_id + 1][side_id + 1].Side.content[t%fCount]:setFilter("nearest","nearest")
-        return Tiles[core_id + 1][side_id + 1].Side.content[t%fCount]
+function playSideAnimation(core_id, side_id, t, playAnimation)
+    -- print("coreid",core_id,"sideid",side_id)
+    local fCount = Tiles[core_id + 1][side_id + 1].Side.fCount + 1
+    -- print("fcount=",fCount)
+    if playAnimation == true then
+        Tiles[core_id + 1][side_id + 1].Side.content[animationFCounter % fCount]:setFilter(
+            "nearest", "nearest")
+        return Tiles[core_id + 1][side_id + 1].Side.content[animationFCounter %
+                   fCount]
     else
-        Tiles[core_id + 1][side_id + 1].Side.content[0]:setFilter("nearest","nearest")
+        Tiles[core_id + 1][side_id + 1].Side.content[0]:setFilter("nearest",
+                                                                  "nearest")
         return Tiles[core_id + 1][side_id + 1].Side.content[0]
     end
 end
-function drawTileCore(grid_x, grid_y, core_id)
+function drawTileCore(grid_x, grid_y, core_id, playAnimation)
     love.graphics.setColor(1, 1, 1, 1)
     local coord = getWorldCoordfromGrid(grid_x, grid_y, camera_bias_x,
                                         camera_bias_y)
-    --Tiles[core_id + 1][1].Core.content[0]:setFilter("nearest", "nearest")
-    love.graphics.draw(playCoreAnimation(core_id,t),
+    -- Tiles[core_id + 1][1].Core.content[0]:setFilter("nearest", "nearest")
+    love.graphics.draw(playCoreAnimation(core_id, t, playAnimation),
                        coord.x + ZoomFactor * 16, coord.y + ZoomFactor * 16, 0,
                        ZoomFactor, ZoomFactor, 16, 16)
 end
 
-function drawTilSide(grid_x, grid_y, core_id, side_id, rot)
+function drawTilSide(grid_x, grid_y, core_id, side_id, rot, playAnimation)
     -- if side_id == noSideID then return end
     love.graphics.setColor(1, 1, 1, 1)
     -- print(core_id,side_id)
     -- this ID should comply excel sheet or change Core2SideMap.map file
     local coord = getWorldCoordfromGrid(grid_x, grid_y, camera_bias_x,
                                         camera_bias_y)
-    --Tiles[core_id + 1][side_id + 1].Side.content[0]:setFilter("nearest", "nearest")
-    love.graphics.draw(playSideAnimation(core_id,side_id,t),
+    -- Tiles[core_id + 1][side_id + 1].Side.content[0]:setFilter("nearest", "nearest")
+    love.graphics.draw(playSideAnimation(core_id, side_id, t, playAnimation),
                        coord.x + ZoomFactor * 16, coord.y + ZoomFactor * 16,
                        (rot - 2) * (3.141592654 / 2), ZoomFactor, ZoomFactor,
                        16, 16)
 end
 
-function drawSingeTile(grid_coord, id, idOnOff, rotation)
+function drawSingeTile(grid_coord, id, idOnOff, rotation, playAnimation)
     local coreID = extractDataByPtr(id, 0)
     local westID = getRotatedSide_Single(1, id, rotation)
     local northID = getRotatedSide_Single(2, id, rotation)
@@ -137,11 +141,15 @@ function drawSingeTile(grid_coord, id, idOnOff, rotation)
     -- local southIDOnOff = 0
     -- local eastIDOnOff = 0
 
-    drawTileCore(grid_coord.x, grid_coord.y, coreID)
-    drawTilSide(grid_coord.x, grid_coord.y, coreID, westID + westIDOnOff, 1)
-    drawTilSide(grid_coord.x, grid_coord.y, coreID, northID + northIDOnOff, 2)
-    drawTilSide(grid_coord.x, grid_coord.y, coreID, southID + southIDOnOff, 4)
-    drawTilSide(grid_coord.x, grid_coord.y, coreID, eastID + eastIDOnOff, 3)
+    drawTileCore(grid_coord.x, grid_coord.y, coreID, playAnimation)
+    drawTilSide(grid_coord.x, grid_coord.y, coreID, westID + westIDOnOff, 1,
+                false)
+    drawTilSide(grid_coord.x, grid_coord.y, coreID, northID + northIDOnOff, 2,
+                false)
+    drawTilSide(grid_coord.x, grid_coord.y, coreID, southID + southIDOnOff, 4,
+                false)
+    drawTilSide(grid_coord.x, grid_coord.y, coreID, eastID + eastIDOnOff, 3,
+                false)
 end
 
 function updateTileMap()
@@ -161,7 +169,8 @@ function updateTileMap()
             local tileOffset = (cellSize - tileCoreSize) / 2.0
             if not (mapData[i][j] == nil) then
                 drawSingeTile(grid_coord, mapData[i][j].id,
-                              mapData[i][j].idOnOff, mapData[i][j].rotation)
+                              mapData[i][j].idOnOff, mapData[i][j].rotation,
+                              mapData[i][j].playAnimation)
             end
         end
     end
@@ -263,7 +272,7 @@ function drawPlayingGame()
 
     local grid_coord = MapIdx2GridCoord(cursor.cx, cursor.cy)
     drawCursor(grid_coord.x, grid_coord.y, 0, 1.0, 0,
-               0.5 * math.sin(0.1 * t) + 1)
+               0.5 * math.sin(0.1 * animationFCounter) + 1)
     -- updateAnimation()
 
     if stepDrawSwch then

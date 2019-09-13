@@ -23,6 +23,7 @@ function initMapCalculation()
                 mapData[i][j].NetworkQueue = -1
                 -- resetOnOff
                 mapData[i][j].idOnOff = 0000
+                mapData[i][j].playAnimation = false
             end
         end
     end
@@ -377,9 +378,11 @@ function evaluateNetwork()
         local x = math.floor(xy / 10)
         queueTmp = math.floor(queueTmp / 100)
 
-        maxDepth = math.max(maxDepth, 0)
-        -- server doesn't count as score in chain of network
-        -- however muliple same longest path select if has bridge is by random 
+        -- could also turn on animation of network here
+        mapData[x][y].playAnimation = true
+        if brigeCoreID == extractDataByPtr(mapData[x][y].id, 0) then
+            bgdmultiplier = bgdmultiplier * 2
+        end
     end
 
     -- for i = 1, mapWidthCount do

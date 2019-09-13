@@ -5,5 +5,6 @@ function BlankTile()
     e.rotation = 1
     e.connectivity = 0
     e.idOnOff = 0000
+    e.playAnimation = false
     return e
 end

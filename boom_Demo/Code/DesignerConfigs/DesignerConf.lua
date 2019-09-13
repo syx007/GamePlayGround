@@ -40,9 +40,13 @@ function initTileMetaData()
 end
 
 function initGamePlayData()
-    initCash = 10000.0
+    -- initCash = 10000.0
+    -- stepCounterMax = 100
+    -- destoryInterval = 5
+    -- destoryCount = 4
+    initCash = 1000000000.0
     stepCounterMax = 100
-    destoryInterval = 99999
+    destoryInterval = 9999999
     destoryCount = 4
 end
 

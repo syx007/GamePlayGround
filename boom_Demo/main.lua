@@ -50,7 +50,7 @@ function love.load()
     Help = false
     ZoomFactor = 1
 
-    t = 0
+    animationFCounter = 0
     counter = 0
     timer = 0.0
     tiker = 0.0
@@ -72,14 +72,15 @@ function love.load()
     ----should be configurable
 
     --cost system should implement---DONE
-    ---should expose to designer
+    ---should expose to designer---DONE
     --shop system should implement---DONE
     ---should comply to core/side rules---DONE
 
-    --should implement FireWall
-    --should implement NetBridge
+    --should implement NetBridge ---DONE
     --should implement HeatSink
 
+    --should deal with side with multipledata
+    --is okay to show all network connector
 
     noSideID=0;
     offSideID=1;

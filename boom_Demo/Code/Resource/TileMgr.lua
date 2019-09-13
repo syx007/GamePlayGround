@@ -16,10 +16,23 @@ function LoadCore2SideMap(Mapfile)
     --     love.graphics.print("file1 is nil", 10, 10)
     -- end
     -- print(Core2SideMap[1][1]);
-    
-    --static loading for packaging
-    Core2SideMap={{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}}
+
+    -- static loading for packaging
+    Core2SideMap = {
+        {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0},
+        {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}
+    }
 end
+
+function getCore2SideMap(i, j)
+    if Core2SideMap[i][j] ~= nil then
+        return Core2SideMap[i][j]
+    else
+        --add a guard
+        return 0
+    end
+end
+
 -- key of Cores:CorePCB,CoreServer,CoreNetwork,CoreBridge,CoreDriver,CoreProcessor
 -- key of Sides:SidePCB,SideSerialConnector,SideParllelConnector,SideFirewall
 function initTiles()
@@ -28,15 +41,16 @@ function initTiles()
     for i = 1, #coreTable do
         Tiles[i] = {}
         for j = 1, #sideTable do
-            if Core2SideMap[i][j] >= 0 then
+            local c2mData=getCore2SideMap(i, j)
+            if c2mData >= 0 then
                 -- print(Core2SideMap[i][j])
                 tile = {}
-                tile.is_playing=false
+                tile.is_playing = false
                 tile.Core = coreTable[i]
                 tile.Side = sideTable[j]
-                if Core2SideMap[i][j] == 0 then
+                if c2mData == 0 then
                     tile.optional = true
-                elseif Core2SideMap[i][j] == 1 then
+                elseif c2mData == 1 then
                     tile.optional = false
                 end
                 tile.direction = 0
