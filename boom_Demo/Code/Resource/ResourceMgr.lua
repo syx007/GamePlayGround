@@ -91,6 +91,29 @@ function loadUIResource()
     gamePlayUIBG = love.graphics.newImage("Art/Map/gamePlayBG.png")
 end
 
+function loadSFX()
+    SFX={}
+    --SFX.move_cursor=
+    --SFX.move_item=
+    SFX.move_denied=love.audio.newSource(MusicSFXPath.."move_denied"..".wav","static")
+    --SFX.rot=
+    --SFX.connect_success=
+    --SFX.alarm=
+    --SFX.block_destroied=
+    --SFX.failed=
+    --SFX.success=
+    SFX.menu_OK=love.audio.newSource(MusicSFXPath.."menu_OK"..".wav","static")
+    SFX.menu_change=love.audio.newSource(MusicSFXPath.."menu_change"..".wav","static")
+    --explodeSFX=love.audio.newSource("Music/SFX/boom.wav","static");
+	--bgm=love.audio.newSource("Music/music/music01.mp3","stream");
+end
+function loadMusic()
+    Music={}
+    --Music.menu=
+    --Music.playing=
+
+end
+
 function loadResource()
     initfilePathConstant()
     loadUIResource()
@@ -158,4 +181,6 @@ function loadResource()
         
     end
     LoadCore2SideMap(ArtSpritePath.."Core2SideMap.map")
+    loadSFX()
+    loadMusic()
 end
