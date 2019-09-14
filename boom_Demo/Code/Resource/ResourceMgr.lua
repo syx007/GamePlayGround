@@ -75,6 +75,7 @@ function initfilePathConstant()
     SideFolderName = "Side/"
 
     GameLogoName = "GameLogo.png"
+    StudioLogoName = "StudioLogo.png"
 end
 
 function extractDataFromName(name)
@@ -88,6 +89,7 @@ function loadUIResource()
     -- this is relative fix path UI image
     -- so, just write here as fix loading
     mainGameLogo = love.graphics.newImage(ArtLogoPath .. GameLogoName)
+    studioLogo = love.graphics.newImage(ArtLogoPath .. StudioLogoName)
     gamePlayUIBG = love.graphics.newImage("Art/Map/gamePlayBG.png")
 end
 

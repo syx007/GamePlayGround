@@ -37,17 +37,22 @@ function initTileMetaData()
     SerialCSideID = 1
     ParllelCSideID = 2
     fenceSideID = 3
+
+    shopSidePer = {40, 35, 15, 10}
+
+    autoQA = false
+    couldOnlyBuyInShopOnce = true
 end
 
 function initGamePlayData()
-    -- initCash = 10000.0
-    -- stepCounterMax = 100
-    -- destoryInterval = 5
-    -- destoryCount = 4
-    initCash = 1000000000.0
+    initCash = 10000.0
     stepCounterMax = 100
-    destoryInterval = 9999999
+    destoryInterval = 5
     destoryCount = 4
+    -- initCash = 1000000000.0
+    -- stepCounterMax = 100
+    -- destoryInterval = 9999999
+    -- destoryCount = 4
 end
 
 function getPriceByCore(id)
@@ -67,7 +72,7 @@ function getPriceBySide(id)
     -- SerialCSideID = 1
     -- ParllelCSideID = 2
     -- fenceSideID = 3
-    local SideID = {0, 25, 15, 45}
+    local SideID = {0, 75, 15, 45}
     return SideID[id + 1]
 end
 
