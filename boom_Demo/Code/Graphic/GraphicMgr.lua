@@ -239,7 +239,8 @@ function drawMainMenu()
     local mainLogoHeight = mainGameLogo:getHeight()
     local mainLogoX = (windowWidth / 2) - (mainLogoWidth / 2)
     local mainLogoY = (windowHeight / 2) - (mainLogoHeight / 2) - 25
-    love.graphics.draw(mainGameLogo, mainLogoX, mainLogoY)
+    love.graphics.draw(mainGameLogo, 0, 0)
+    -- love.graphics.draw(studioLogo, 160, 120, 0, 0.1, 0.1)
 
     local font = love.graphics.newFont(14)
     love.graphics.printf("Game Start", 0, hWindowHeight + 20, windowWidth,

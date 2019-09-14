@@ -384,39 +384,7 @@ function evaluateNetwork()
             bgdmultiplier = bgdmultiplier * 2
         end
     end
-
-    -- for i = 1, mapWidthCount do
-    --     for j = 1, mapHeightCount do
-    --         if not (mapData[i][j] == nil) then
-    --             for k = 0, maxDepth do
-    --                 local xy = queueTmp % 100
-    --                 local y = xy % 10
-    --                 local x = math.floor(xy / 10)
-    --                 queueTmp = math.floor(queueTmp / 100)
-
-    --                 -- could also turn on animation of network here
-    --                 if x == i and y == j then
-    --                     if brigeCoreID == extractDataByPtr(mapData[x][y].id, 0) then
-    --                         bgdmultiplier = bgdmultiplier * 2
-    --                     end
-    --                 else
-    --                     if GetSideOnOff(mapData[x][y].idOnOff,1)==2 then
-    --                         SetSideOnOff(mapData[x][y].idOnOff,1,0);
-    --                     end
-    --                     if GetSideOnOff(mapData[x][y].idOnOff,2)==2 then
-    --                         SetSideOnOff(mapData[x][y].idOnOff,2,0);
-    --                     end
-    --                     if GetSideOnOff(mapData[x][y].idOnOff,3)==2 then
-    --                         SetSideOnOff(mapData[x][y].idOnOff,3,0);
-    --                     end
-    --                     if GetSideOnOff(mapData[x][y].idOnOff,4)==2 then
-    --                         SetSideOnOff(mapData[x][y].idOnOff,4,0);
-    --                     end
-    --                 end
-    --             end
-    --         end
-    --     end
-
+    maxDepth = math.max(maxDepth, 0)
     return (maxDepth) * networkIncome * bgdmultiplier
 end
 

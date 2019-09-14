@@ -176,8 +176,8 @@ function setTileMap()
     -- dig hole here
     -- mapData[1][1] = nil
     -- setTileMapByScramble()
-    setTileMapByCount()
-    -- setRealGamePlayMap()
+    -- setTileMapByCount()
+    setRealGamePlayMap()
 end
 
 function setTileMapByScramble()

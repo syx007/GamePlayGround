@@ -70,26 +70,26 @@ function updateInputPlayingGame(key)
     -- if (love.keyboard.isDown('i')) or(love.keyboard.isDown('s')) then
     --    --toggle buying 
     -- end
-    buying_ptr=0
+    buying_ptr = 0
     if hold_buying then
         -- hold buying
         if love.keyboard.isDown('up') then
-            buying_ptr=1
+            buying_ptr = 1
             print("buying up")
         elseif love.keyboard.isDown('down') then
-            buying_ptr=2
+            buying_ptr = 2
             print("buying down")
         elseif love.keyboard.isDown('left') then
-            buying_ptr=3
+            buying_ptr = 3
             print("buying left")
         elseif love.keyboard.isDown('right') then
-            buying_ptr=4
+            buying_ptr = 4
             print("buying right")
         else
             -- not buying
         end
     else
-        --buying block normal cursor action
+        -- buying block normal cursor action
         if SelectedMode == true then
             if (love.keyboard.isDown('z')) or (love.keyboard.isDown('j')) then
                 if love.keyboard.isDown('up') then

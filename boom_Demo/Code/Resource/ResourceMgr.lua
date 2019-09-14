@@ -75,6 +75,7 @@ function initfilePathConstant()
     SideFolderName = "Side/"
 
     GameLogoName = "GameLogo.png"
+    StudioLogoName = "StudioLogo.png"
 end
 
 function extractDataFromName(name)
@@ -88,13 +89,17 @@ function loadUIResource()
     -- this is relative fix path UI image
     -- so, just write here as fix loading
     mainGameLogo = love.graphics.newImage(ArtLogoPath .. GameLogoName)
+    studioLogo = love.graphics.newImage(ArtLogoPath .. StudioLogoName)
     gamePlayUIBG = love.graphics.newImage("Art/Map/gamePlayBG.png")
+    clockUI = love.graphics.newImage("Art/UI/clock.png")
+    cashUI = love.graphics.newImage("Art/UI/cash.png")
+    incomeUI = love.graphics.newImage("Art/UI/Income.png")
 end
 
 function loadSFX()
     SFX={}
     SFX.move_cursor=love.audio.newSource(MusicSFXPath.."move_cursor"..".wav","static")
-    SFX.move_item=love.audio.newSource(MusicSFXPath.."move_item"..".wav","static")
+    SFX.move_item=love.audio.newSource(MusicSFXPath.."move_item2"..".wav","static")
     SFX.move_denied=love.audio.newSource(MusicSFXPath.."move_denied"..".wav","static")
     SFX.rot=love.audio.newSource(MusicSFXPath.."rot"..".wav","static")
     SFX.build_connect=love.audio.newSource(MusicSFXPath.."build_connect"..".wav","static")
@@ -111,7 +116,7 @@ end
 function loadMusic()
     Music={}
     Music.menu=love.audio.newSource(MusicSFXPath.."DataFlow"..".mp3","stream")
-    Music.menu:play()
+    -- Music.menu:play() -not yet
     --Music.playing=
 
 end

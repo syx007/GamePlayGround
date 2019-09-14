@@ -13,13 +13,15 @@ function reloadScreenPlayingGame()
     blueIncome = 0.0
     edgeIncome = 0.0
     totalIncome = 0.0
-    
+
     totalCost = 0.0 -- should be 0 or positive
 
     -- now we need reset these val
     totalCash = initCash
     stepCounter = stepCounterMax
-    destoryCounter = destoryInterval
+    destoryCounter = getRandomDestoryInterval()
+
+    haveBoughtInShop = false
 end
 
 function reloadScreenMainMenu()
