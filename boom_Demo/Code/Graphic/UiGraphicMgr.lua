@@ -29,8 +29,8 @@ end
 
 function printScore()
     local uiX = 230
-    local uiY = 15
-    local uiDY = 5
+    local uiY = 18
+    local uiDY = 7
 
     totalIncome = driverIncome + blueIncome + edgeIncome
     if debug_view then
@@ -58,18 +58,29 @@ function printScore()
         love.graphics.print("TTL cash:" .. (totalCash), uiX - 10,
                             uiY * 7.0 + uiDY)
     else
-        love.graphics.setColor(1, 1, 0.5)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(incomeUI, uiX - 3, uiY + uiDY - 2, 0, 1.0, 1.0)
         local font = love.graphics.newFont(14)
-        love.graphics.print("TTL scr:" .. (totalIncome), uiX, uiY + uiDY)
+        local totalBenefit = totalIncome - totalCost
+        if totalBenefit >= 0 then
+            love.graphics.setColor(0.2, 1.0, 0.1)
+        else
+            love.graphics.setColor(1.0, 0.2, 0.1)
+        end
+        love.graphics.print((totalBenefit), uiX + 20, uiY + uiDY)
 
-        love.graphics.setColor(1, 0, 0.3)
-        local font = love.graphics.newFont(14)
-        love.graphics.print("TTL cost:" .. (totalCost), uiX, uiY * 2.0 + uiDY)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(cashUI, uiX - 3, uiY * 2.0 + uiDY - 2, 0, 1.0, 1.0)
 
-        love.graphics.setColor(1, 1, 0.5)
+        if totalCash > initCash then
+            love.graphics.setColor(0.2, 1.0, 0.1)
+        elseif totalCash >= initCash / 5.0 then
+            love.graphics.setColor(1.0, 1.0, 1.0)
+        else
+            love.graphics.setColor(1.0, 0.2, 0.1)
+        end
         local font = love.graphics.newFont(14)
-        love.graphics.print("TTL cash:" .. (totalCash), uiX - 10,
-                            uiY * 3.0 + uiDY)
+        love.graphics.print((totalCash), uiX + 20, uiY * 2.0 + uiDY)
     end
 end
 
@@ -85,14 +96,24 @@ function printTimeCounter()
         love.graphics.print("Timer:" .. stepCounter .. "/" .. stepCounterMax,
                             uiX, uiY * 1.0 + uiDY)
     else
-        local uiX = 230
-        local uiY = 15
-        local uiDY = 5
+        local uiX = 250
+        local uiY = 18
+        local uiDY = 7
 
-        love.graphics.setColor(1.0, 1.0, 1.0)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(clockUI, uiX - 20, uiY * 3.0 + uiDY + 1, 0, 0.7, 0.7)
+
+        if stepCounter > stepCounterMax / 2.0 then
+            love.graphics.setColor(1.0, 1.0, 1.0)
+        elseif stepCounter > stepCounterMax / 5.0 then
+            love.graphics.setColor(1.0, 0.5, 0.1)
+        else
+            love.graphics.setColor(1.0, 0.2, 0.1)
+        end
+
         local font = love.graphics.newFont(14)
-        love.graphics.print("Timer:" .. stepCounter .. "/" .. stepCounterMax,
-                            uiX, uiY * 4.0 + uiDY)
+        love.graphics.print(stepCounter .. "/" .. stepCounterMax, uiX,
+                            uiY * 3.0 + uiDY)
     end
 end
 

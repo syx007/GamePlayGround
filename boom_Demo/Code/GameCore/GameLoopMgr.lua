@@ -13,13 +13,15 @@ end
 function GameLoopUpdateMainMenu(dt)
     local mainMenuEntryCount = 2
     mmCursor.x = mmCursor.x + mmCursor.dx
+    if mmCursor.dx ~= 0 then love.audio.play(SFX.move_cursor) end
     -- mmCursor.x = mmCursor.x % mainMenuEntryCount
-    mmCursor.x = mathClamp(mmCursor.x, 0, mainMenuEntryCount - 1)
+    mmCursor.x = mmCursor.x % 2
     mmCursor.dx = 0
     if mmCursor.action == 1 then
         mmCursor.action = 0
         if mmCursor.x == 0 then
             -- Entry Block
+            love.audio.play(SFX.move_cursor)
             changeGameStateTo(1)
         end
     end
@@ -112,7 +114,7 @@ function genShopTile()
         if hasAnyCPU() then cpuBlock = processorCoreID end
         if hasAnyServer() then serverBlock = serverCoreID end
     else
-        --in order to prevent have many server/cpu on field, shop could only sell them when player could only buy once
+        -- in order to prevent have many server/cpu on field, shop could only sell them when player could only buy once
         cpuBlock = processorCoreID
         serverBlock = serverCoreID
     end
@@ -223,10 +225,19 @@ function GameLoopUpdatePlayingGame(dt)
             -- and only success move tile count
             if (actionRec ~= 0) then
                 if (cursor.dx ~= 0) or (cursor.dy ~= 0) then
+                    love.audio.play(SFX.move_item)
                     stepDrawSwch = false
                     drawDestoryCursorSwch = false
                     PerStepUpdate()
                 end
+            elseif (cursor.dx ~= 0) or (cursor.dy ~= 0) then
+                -- juse moving cursor
+                love.audio.play(SFX.move_cursor)
+            end
+        else
+            if (cursor.dx ~= 0) or (cursor.dy ~= 0) then
+                -- juse moving cursor
+                love.audio.play(SFX.move_denied)
             end
         end
     else

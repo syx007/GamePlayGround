@@ -99,6 +99,8 @@ function love.load()
 
     love.math.setRandomSeed(love.timer.getTime())
 
+    love.audio.setVolume(0.6)
+
     changeGameStateTo(gameState)
 end
 

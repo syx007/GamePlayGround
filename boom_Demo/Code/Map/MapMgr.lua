@@ -54,6 +54,8 @@ function updateTileMap_Cursor()
                 mapData[covtCX][covtCY] = nil
                 cursor.dx = offset[1]
                 cursor.dy = offset[2]
+            else
+                love.audio.play(SFX.move_denied)
             end
         end
     end
