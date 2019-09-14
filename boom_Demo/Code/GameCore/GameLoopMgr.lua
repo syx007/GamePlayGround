@@ -197,6 +197,7 @@ function refreshShop()
     shopPrice[4] = caculateTilePrice(shopContent[4], 0)
 
     haveBoughtInShop = false
+    haveBoughtInShopWaring = false
 end
 
 function PerStepUpdate()
@@ -235,12 +236,12 @@ function GameLoopUpdatePlayingGame(dt)
                     PerStepUpdate()
                 end
             elseif (cursor.dx ~= 0) or (cursor.dy ~= 0) then
-                -- juse moving cursor
+                -- just moving cursor
                 love.audio.play(SFX.move_cursor)
             end
         else
             if (cursor.dx ~= 0) or (cursor.dy ~= 0) then
-                -- juse moving cursor
+                -- just moving cursor
                 love.audio.play(SFX.move_denied)
             end
         end
@@ -273,11 +274,15 @@ function GameLoopUpdatePlayingGame(dt)
                 end
             else
                 -- no cash
+                -- TODO
             end
         else
             -- have bought once
+            if buying_ptr > 0 then love.audio.play(SFX.move_denied) end
         end
     end
+
+    buying_ptr = 0
 
     if pendingGoods ~= nil then
         -- deliver good

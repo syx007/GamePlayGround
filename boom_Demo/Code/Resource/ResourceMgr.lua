@@ -7,10 +7,10 @@ function GetValuesfromCSVFormat(myString)
     values = {}
     if myString ~= nil then
         while string.find(myString, ",") ~= nil do
-            i, j =string.find(myString, ",");
-            num =num + 1;
-            values[num] = string.sub(myString, 1, j-1);
-            myString = string.sub(myString, j+1, string.len(myString))
+            i, j = string.find(myString, ",")
+            num = num + 1
+            values[num] = string.sub(myString, 1, j - 1)
+            myString = string.sub(myString, j + 1, string.len(myString))
         end
         num = num + 1
         values[num] = myString
@@ -38,10 +38,10 @@ function LoadMap(Mapfile)
     -- else
     --     love.graphics.print("file1 is nil",10,10)
     -- end
-    map_size={w,h}
-    map={}
-    map_size.w=6
-    map_size.h=6
+    map_size = {w, h}
+    map = {}
+    map_size.w = 6
+    map_size.h = 6
 end
 -- body
 -- Sprite Name Format:
@@ -94,37 +94,43 @@ function loadUIResource()
     clockUI = love.graphics.newImage("Art/UI/clock.png")
     cashUI = love.graphics.newImage("Art/UI/cash.png")
     incomeUI = love.graphics.newImage("Art/UI/Income.png")
+    arrowUI = love.graphics.newImage("Art/UI/arrow.png")
 end
 
 function loadSFX()
-    SFX={}
-    SFX.move_cursor=love.audio.newSource(MusicSFXPath.."move_cursor"..".wav","static")
-    SFX.move_item=love.audio.newSource(MusicSFXPath.."move_item2"..".wav","static")
-    SFX.move_denied=love.audio.newSource(MusicSFXPath.."move_denied"..".wav","static")
-    SFX.rot=love.audio.newSource(MusicSFXPath.."rot"..".wav","static")
-    SFX.build_connect=love.audio.newSource(MusicSFXPath.."build_connect"..".wav","static")
-    SFX.break_connect=love.audio.newSource(MusicSFXPath.."break_connect"..".wav","static")
-    SFX.alarm=love.audio.newSource(MusicSFXPath.."alarm"..".wav","static")
-    SFX.destroied=love.audio.newSource(MusicSFXPath.."destroied"..".wav","static")
-    --SFX.failed=
-    --SFX.success=
-    SFX.menu_OK=love.audio.newSource(MusicSFXPath.."menu_OK"..".wav","static")
-    SFX.menu_change=love.audio.newSource(MusicSFXPath.."menu_change"..".wav","static")
-    --explodeSFX=love.audio.newSource("Music/SFX/boom.wav","static");
-	--bgm=love.audio.newSource("Music/music/music01.mp3","stream");
+    SFX = {}
+    SFX.move_cursor = love.audio.newSource(
+                          MusicSFXPath .. "move_cursor" .. ".wav", "static")
+    SFX.move_item = love.audio.newSource(MusicSFXPath .. "move_item2" .. ".wav",
+                                         "static")
+    SFX.move_denied = love.audio.newSource(
+                          MusicSFXPath .. "move_denied" .. ".wav", "static")
+    SFX.rotate = love.audio.newSource(MusicSFXPath .. "rot" .. ".wav", "static")
+    -- not time for progamming
+    -- SFX.build_connect=love.audio.newSource(MusicSFXPath.."build_connect"..".wav","static")
+    -- SFX.break_connect=love.audio.newSource(MusicSFXPath.."break_connect"..".wav","static")
+    SFX.alarm = love.audio
+                    .newSource(MusicSFXPath .. "alarm" .. ".wav", "static")
+    SFX.destroied = love.audio.newSource(MusicSFXPath .. "destroied" .. ".wav",
+                                         "static")
+    -- SFX.failed=
+    -- SFX.success=
+    -- SFX.menu_OK=love.audio.newSource(MusicSFXPath.."menu_OK"..".wav","static")
+    -- SFX.menu_change=love.audio.newSource(MusicSFXPath.."menu_change"..".wav","static")
+    -- explodeSFX=love.audio.newSource("Music/SFX/boom.wav","static");
+    -- bgm=love.audio.newSource("Music/music/music01.mp3","stream");
 end
 function loadMusic()
-    Music={}
-    Music.menu=love.audio.newSource(MusicSFXPath.."DataFlow"..".mp3","stream")
-    -- Music.menu:play() -not yet
-    --Music.playing=
-
+    Music = {}
+    Music.menu = love.audio.newSource(MusicSFXPath .. "DataFlow" .. ".mp3",
+                                      "stream")
+    -- Music.playing=
 end
 
 function loadResource()
     initfilePathConstant()
     loadUIResource()
-    LoadMap(ArtMapPath.."Sence01.map")
+    LoadMap(ArtMapPath .. "Sence01.map")
     local ArtCoreSpritePath = ArtSpritePath .. CoreFolderName
     local ArtSideSpritePath = ArtSpritePath .. SideFolderName
 
@@ -145,21 +151,18 @@ function loadResource()
         local tid = tonumber(coreFileDataList[1]) + 1
         local id = tonumber(coreFileDataList[1])
         local fCount = tonumber(coreFileDataList[2])
-        if fCount==0 then
-            coreTable[tid] = {}
-        end
+        if fCount == 0 then coreTable[tid] = {} end
         coreTable[tid].name = getCoreNameByID(coreFileDataList[1]) -- TODO
         coreTable[tid].id = id
         coreTable[tid].fCount = tonumber(coreFileDataList[2]) -- TODO
-        if fCount==0 then
-            coreTable[tid].content = {}
-        end
-        coreTable[tid].content[coreTable[tid].fCount] = love.graphics.newImage(
-                                     ArtCoreSpritePath .. coreFiles[f])
-        print(coreTable[tid].id,coreTable[tid].name,coreTable[tid].id,coreTable[tid].fCount)
-        --this core also counts frames
+        if fCount == 0 then coreTable[tid].content = {} end
+        coreTable[tid].content[coreTable[tid].fCount] =
+            love.graphics.newImage(ArtCoreSpritePath .. coreFiles[f])
+        print(coreTable[tid].id, coreTable[tid].name, coreTable[tid].id,
+              coreTable[tid].fCount)
+        -- this core also counts frames
         coreTableCount = coreTableCount + 1
-        
+
     end
 
     for f in pairs(sideFiles) do
@@ -170,24 +173,32 @@ function loadResource()
         end
         local tid = tonumber(sideFileDataList[1]) + 1
         local id = tonumber(sideFileDataList[1])
-        local fCount=tonumber(sideFileDataList[2])
-        if fCount==0 then
-            sideTable[tid] = {}
-        end
+        local fCount = tonumber(sideFileDataList[2])
+        if fCount == 0 then sideTable[tid] = {} end
         sideTable[tid].name = getSideNameByID(sideFileDataList[1]) -- TODO
         sideTable[tid].id = id
         sideTable[tid].fCount = tonumber(sideFileDataList[2]) -- TODO
-        if sideTable[tid].fCount==0 then
-            sideTable[tid].content={}
-        end
-        sideTable[tid].content[sideTable[tid].fCount] = love.graphics.newImage(
-                                     ArtSideSpritePath .. sideFiles[f])
-        print(sideTable[tid].name,sideTable[tid].id,sideTable[tid].fCount)
+        if sideTable[tid].fCount == 0 then sideTable[tid].content = {} end
+        sideTable[tid].content[sideTable[tid].fCount] =
+            love.graphics.newImage(ArtSideSpritePath .. sideFiles[f])
+        print(sideTable[tid].name, sideTable[tid].id, sideTable[tid].fCount)
         -- fighter0:setFilter("nearest", "nearest")
         sideTableCount = sideTableCount + 1
-        
+
     end
-    LoadCore2SideMap(ArtSpritePath.."Core2SideMap.map")
+    LoadCore2SideMap(ArtSpritePath .. "Core2SideMap.map")
     loadSFX()
     loadMusic()
+    loadShader()
+end
+
+function loadShader()
+    bwShader = love.graphics.newShader [[
+        vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords){
+            vec4 bgColor=Texel(texture,texture_coords);
+            vec3 lum = vec3(0.299, 0.587, 0.114);
+            float greyScale=dot(bgColor.rgb,lum.rgb)*0.35;
+            return vec4(greyScale,greyScale,greyScale,bgColor.a);
+        }
+    ]]
 end

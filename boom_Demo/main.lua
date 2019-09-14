@@ -96,6 +96,7 @@ function love.load()
     drawDestoryCursorSwch = false
 
     haveBoughtInShop = false
+    haveBoughtInShopWaring = false
     inWarningState = false
 
     love.math.setRandomSeed(love.timer.getTime())

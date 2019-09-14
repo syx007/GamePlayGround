@@ -62,6 +62,7 @@ function updateTileMap_Cursor()
     if (cursor.rotate == 1) then
         if not (mapData[covtCX][covtCY] == nil) then
             -- print("rotate tile")
+            love.audio.play(SFX.rotate)
             mapData[covtCX][covtCY].rotation =
                 getNextRotate(mapData[covtCX][covtCY].rotation)
             -- print(mapData[covtCX][covtCY].rotation)

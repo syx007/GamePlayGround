@@ -160,15 +160,46 @@ function drawShopUI()
     local bgdx = 1.4
     local bgdy = 1.75
 
+    -- could do this, if have bought once, the shop interface gray out
+    -- if still try to buy, then overlay once.
+
+    if haveBoughtInShop then
+        love.graphics.setShader(bwShader)
+    else
+        love.graphics.setShader()
+    end
     drawUIByIDandPos(shopContent[1], bgx, bgy)
     drawUIByIDandPos(shopContent[2], bgx + bgdx, bgy)
     drawUIByIDandPos(shopContent[3], bgx, bgy + bgdy)
     drawUIByIDandPos(shopContent[4], bgx + bgdx, bgy + bgdy)
 
+    -- hold_buying = true
+
     if hold_buying then
-        love.graphics.print("U" .. shopPrice[1], 231, 135)
-        love.graphics.print("D" .. shopPrice[2], 231 + 44, 135)
-        love.graphics.print("L" .. shopPrice[3], 231, 135 + 55)
-        love.graphics.print("R" .. shopPrice[4], 231 + 44, 135 + 55)
+        love.graphics.setColor(0.2, 1.0, 0.1)
+    else
+        love.graphics.setColor(0.2, 0.2, 0.2)
     end
+    love.graphics.print(shopPrice[1], 240, 139)
+    love.graphics.print(shopPrice[2], 240 + 44, 139)
+    love.graphics.print(shopPrice[3], 240, 139 + 55)
+    love.graphics.print(shopPrice[4], 240 + 44, 139 + 55)
+
+    love.graphics.draw(arrowUI, 225, 139, 0, 0.8, 0.8)
+    love.graphics.draw(arrowUI, 225 + 44 + 17 * 0.8, 139 + 17 * 0.8, math.pi,
+                       0.8, 0.8)
+    love.graphics.draw(arrowUI, 225, 139 + 55 + 17 * 0.8, math.pi / 2 * 3, 0.8,
+                       0.8)
+    love.graphics.draw(arrowUI, 225 + 44 + 17 * 0.8, 139 + 55, math.pi / 2, 0.8,
+                       0.8)
+
+    love.graphics.setShader()
+
+
+
+    --pending
+    -- if haveBoughtInShopWaring then
+    --     love.graphics.setColor(0.0, 0.0, 0.0,1.0)
+    --     love.graphics.rectangle("fill", 160, 240, 160, 240)
+    -- end
 end

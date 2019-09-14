@@ -22,14 +22,20 @@ function reloadScreenPlayingGame()
     destoryCounter = getRandomDestoryInterval()
 
     haveBoughtInShop = false
+    haveBoughtInShopWaring = false
 
     endingData = {}
     endingData.endingCash = initCash
     endingData.endingTime = stepCounterMax
+
+    love.audio.stop()
+    -- Music.menu:play() --not yet PlayGameplayBGM
 end
 
 function reloadScreenMainMenu()
     -- body
+    love.audio.stop()
+    Music.menu:play() -- not yet
     initMainMenuCursor()
 end
 function reloadScreenRegisterScore()
