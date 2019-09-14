@@ -29,6 +29,10 @@ function GameLoopUpdateMainMenu(dt)
 end
 function GameLoopUpdateRegisterScore(dt)
     -- TODO
+    if goCursor.action == 1 then
+        goCursor.action = 0
+        changeGameStateTo(0)
+    end
 end
 function GameLoopUpdateViewScore(dt)
     -- TODO
@@ -290,11 +294,15 @@ function GameLoopUpdatePlayingGame(dt)
     -- TODO also check game end by cash
     if totalCash < 0 then
         -- Gameplay End by no cash
-        changeGameStateTo(0) -- current return to main menu
+        endingData.endingCash = totalCash
+        endingData.endingTime = stepCounter
+        changeGameStateTo(2) -- current return to main menu
     end
 
     if stepCounter <= 0 then
+        endingData.endingCash = totalCash
+        endingData.endingTime = stepCounter
         -- Gameplay End by no time
-        changeGameStateTo(0) -- current return to main menu
+        changeGameStateTo(2) -- current return to main menu
     end
 end

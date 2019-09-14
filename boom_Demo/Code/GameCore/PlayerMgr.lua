@@ -18,3 +18,10 @@ function initMainMenuCursor()
     mmCursor.dx=0
     mmCursor.action=0
 end
+
+function initGameOverCursor()
+    goCursor = {}
+    goCursor.x=0
+    goCursor.dx=0
+    goCursor.action=0
+end

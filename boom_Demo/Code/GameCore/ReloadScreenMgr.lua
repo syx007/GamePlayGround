@@ -22,6 +22,10 @@ function reloadScreenPlayingGame()
     destoryCounter = getRandomDestoryInterval()
 
     haveBoughtInShop = false
+
+    endingData = {}
+    endingData.endingCash = initCash
+    endingData.endingTime = stepCounterMax
 end
 
 function reloadScreenMainMenu()
@@ -29,7 +33,9 @@ function reloadScreenMainMenu()
     initMainMenuCursor()
 end
 function reloadScreenRegisterScore()
+    -- GameOver Screen
     -- body
+    initGameOverCursor()
 end
 function reloadScreenViewScore()
     -- body

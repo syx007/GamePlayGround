@@ -225,8 +225,17 @@ function applyPP()
 end
 
 function updateUI()
+    inWarningState = false
     printScore()
     printTimeCounter()
+    if inWarningState then
+        local uiX = 230
+        local uiY = 18
+
+        local waringTerm = math.sin(animationFCounter)
+        love.graphics.setColor(1.0, 0.2, 0.1, 0.2 * waringTerm)
+        love.graphics.rectangle("fill", uiX - 15, uiY - 5, 100, 70)
+    end
     drawShopUI()
     -- printButtonTips()
 end
@@ -256,25 +265,11 @@ function drawMainMenu()
 end
 
 function drawPlayingGame()
-    -- drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
-    -- updateTileMap()
-    -- drawCursor()
-    love.graphics.setColor(1.0, 1.0, 1.0)
-    love.graphics.draw(gamePlayUIBG, 0, 0)
-
-    -- updateAnimation()
-    -------------------------------------------------------------
-    -- drawBackGroundGrid()
-    -- DrawMapLayer0(MaxGridWidth, MaxGridHeight, 0.1, 0.2, 0.3, 1)
-    -- DrawMapLayer1(map_size.w, map_size.h, 0.4, 0.4, 0.4, 1)
-    -- drawGrid(mapLineCount, mapULoffsetX, mapULoffsetY, mapSize, mapSize)
     updateTileMap()
-    -- print(cursor.cx,cursor.cy)
 
     local grid_coord = MapIdx2GridCoord(cursor.cx, cursor.cy)
     drawCursor(grid_coord.x, grid_coord.y, 0, 1.0, 0,
                0.5 * math.sin(0.1 * animationFCounter) + 1)
-    -- updateAnimation()
 
     if stepDrawSwch then
         if drawDestoryCursorSwch then
@@ -302,8 +297,35 @@ function drawPlayingGame()
     updateUI()
     drawShop()
     applyPP()
+
+    -- to block UI warning
+    love.graphics.setColor(1.0, 1.0, 1.0)
+    love.graphics.draw(gamePlayUIBG, 0, 0)
 end
 function drawRegisterScore()
+    --     
+    local font = love.graphics.newFont(14)
+    love.graphics.print("GAMEOVER", 0, 40)
+
+    if endingData ~= nil then
+        if endingData.endingTime <= 0 then
+            love.graphics.print("You survived", 0, 60)
+            local earnedMoney = endingData.endingCash - initCash
+            if earnedMoney >= 0 then
+                love.graphics.print("And you have earned " .. earnedMoney ..
+                                        " money", 0, 80)
+            else
+                love.graphics.print("However, you lost " .. earnedMoney ..
+                                        " money", 0, 80)
+            end
+        else
+            local survivedTime = stepCounterMax - endingData.endingTime
+            love.graphics.print("You run out money", 0, 60)
+            love.graphics.print("You have survived " .. survivedTime ..
+                                    " rounds", 0, 80)
+        end
+        love.graphics.print("Press A to Return to Menu", 0, 100)
+    end
     -- TODO 
 end
 function drawViewScore()

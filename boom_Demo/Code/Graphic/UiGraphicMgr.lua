@@ -81,6 +81,8 @@ function printScore()
         end
         local font = love.graphics.newFont(14)
         love.graphics.print((totalCash), uiX + 20, uiY * 2.0 + uiDY)
+
+        inWarningState = inWarningState or (totalCash < initCash / 5.0)
     end
 end
 
@@ -114,6 +116,9 @@ function printTimeCounter()
         local font = love.graphics.newFont(14)
         love.graphics.print(stepCounter .. "/" .. stepCounterMax, uiX,
                             uiY * 3.0 + uiDY)
+
+        inWarningState = inWarningState or (stepCounter <= stepCounterMax / 5.0)
+
     end
 end
 

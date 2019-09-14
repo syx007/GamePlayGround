@@ -131,6 +131,7 @@ function BFS_Driver(x, y, processorID)
     if coreID == driverCoreID or coreID == processorCoreID then
         mapData[x][y].FlagProcessor = processorID
     end
+    if coreID == driverCoreID then mapData[x][y].playAnimation = true end
 
     mapData[x][y].ProcessorVisited = 1
 
@@ -346,7 +347,23 @@ function evaluateDriver()
             end
         end
     end
-    return count
+    if count > 0 then
+        for i = 1, mapWidthCount do
+            for j = 1, mapHeightCount do
+                if (mapData[i][j] ~= nil) then
+                    local coreID = extractDataByPtr(mapData[i][j].id, 0)
+                    if coreID == processorCoreID then
+                        -- print("foundCPU");
+                        mapData[i][j].playAnimation = true
+                        return count
+                    end
+                end
+            end
+        end
+        return count
+    else
+        return count
+    end
 end
 
 function evaluateNetwork()

@@ -11,8 +11,8 @@ function love.load()
     initTiles()
     gameState = 0
 
-    -- debug_directGame = true
-    debug_directGame = false
+    debug_directGame = true
+    -- debug_directGame = false
     if debug_directGame then gameState = 1 end
 
     debug_view = false
@@ -96,9 +96,9 @@ function love.load()
     drawDestoryCursorSwch = false
 
     haveBoughtInShop = false
+    inWarningState = false
 
     love.math.setRandomSeed(love.timer.getTime())
-
     love.audio.setVolume(0.6)
 
     changeGameStateTo(gameState)

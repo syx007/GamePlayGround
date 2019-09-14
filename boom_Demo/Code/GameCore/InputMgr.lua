@@ -12,6 +12,9 @@ end
 
 function updateInputRegisterScore(key)
     -- TODO
+    if (love.keyboard.isDown('z') or love.keyboard.isDown('j')) then
+        goCursor.action = 1
+    end
 end
 
 function updateInputViewScore(key)
