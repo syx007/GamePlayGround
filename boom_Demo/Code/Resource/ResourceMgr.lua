@@ -93,6 +93,31 @@ function loadUIResource()
     gamePlayUIBG = love.graphics.newImage("Art/Map/gamePlayBG.png")
 end
 
+function loadSFX()
+    SFX={}
+    SFX.move_cursor=love.audio.newSource(MusicSFXPath.."move_cursor"..".wav","static")
+    SFX.move_item=love.audio.newSource(MusicSFXPath.."move_item"..".wav","static")
+    SFX.move_denied=love.audio.newSource(MusicSFXPath.."move_denied"..".wav","static")
+    SFX.rot=love.audio.newSource(MusicSFXPath.."rot"..".wav","static")
+    SFX.build_connect=love.audio.newSource(MusicSFXPath.."build_connect"..".wav","static")
+    SFX.break_connect=love.audio.newSource(MusicSFXPath.."break_connect"..".wav","static")
+    SFX.alarm=love.audio.newSource(MusicSFXPath.."alarm"..".wav","static")
+    SFX.destroied=love.audio.newSource(MusicSFXPath.."destroied"..".wav","static")
+    --SFX.failed=
+    --SFX.success=
+    SFX.menu_OK=love.audio.newSource(MusicSFXPath.."menu_OK"..".wav","static")
+    SFX.menu_change=love.audio.newSource(MusicSFXPath.."menu_change"..".wav","static")
+    --explodeSFX=love.audio.newSource("Music/SFX/boom.wav","static");
+	--bgm=love.audio.newSource("Music/music/music01.mp3","stream");
+end
+function loadMusic()
+    Music={}
+    Music.menu=love.audio.newSource(MusicSFXPath.."DataFlow"..".ogg","stream")
+    Music.menu:play()
+    --Music.playing=
+
+end
+
 function loadResource()
     initfilePathConstant()
     loadUIResource()
@@ -160,4 +185,6 @@ function loadResource()
         
     end
     LoadCore2SideMap(ArtSpritePath.."Core2SideMap.map")
+    loadSFX()
+    loadMusic()
 end
