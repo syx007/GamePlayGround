@@ -96,6 +96,8 @@ function loadUIResource()
     incomeUI = love.graphics.newImage("Art/UI/Income.png")
     arrowUI = love.graphics.newImage("Art/UI/arrow.png")
     EnterTipsUI=love.graphics.newImage("Art/UI/pressAtostart.png")
+    menuBackground=love.graphics.newImage("Art/UI/background.png")
+    menuLogo=love.graphics.newImage("Art/UI/logo.png")
     
 end
 
