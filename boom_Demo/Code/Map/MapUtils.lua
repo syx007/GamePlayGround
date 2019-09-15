@@ -389,6 +389,7 @@ function evaluateNetwork()
     local queueTmp = longestQueue
     -- Here,use not longest Queue to turn off network side.
     local bgdmultiplier = 1
+    local actualCout = 0
     for i = 0, maxDepth do
         local xy = queueTmp % 100
         local y = xy % 10
@@ -397,12 +398,23 @@ function evaluateNetwork()
 
         -- could also turn on animation of network here
         mapData[x][y].playAnimation = true
-        if brigeCoreID == extractDataByPtr(mapData[x][y].id, 0) then
-            bgdmultiplier = bgdmultiplier * 2
+        local currentCoreID = extractDataByPtr(mapData[x][y].id, 0)
+        if brigeCoreID == currentCoreID then
+            -- either only allow one bridge or lower the effiecent
+            -- I prefer latter one.
+            bgdmultiplier = bgdmultiplier * bridgeMultiplier
+        end
+
+        if doesbridgeCountAsBaseScore then
+            actualCout = actualCout + 1 -- every core now count
+        else
+            if brigeCoreID ~= currentCoreID then
+                actualCout = actualCout + 1 -- bridge not count
+            end
         end
     end
-    maxDepth = math.max(maxDepth, 0)
-    return (maxDepth) * networkIncome * bgdmultiplier
+    actualCout = math.max(actualCout, 0)
+    return (actualCout) * networkIncome * bgdmultiplier
 end
 
 function evaluateEdge()

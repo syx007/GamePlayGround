@@ -44,13 +44,16 @@ function initTileMetaData()
 
     -- shopSidePer = {45, 20, 20, 15}
 
+    bridgeMultiplier=1.5
+    doesbridgeCountAsBaseScore=false
+
     autoQA = false
     couldOnlyBuyInShopOnce = true
 end
 
 function initGamePlayData()
     initCash = 10000.0
-    stepCounterMax = 100
+    stepCounterMax = 10
     destoryInterval = 5
     destoryCount = 4
     -- initCash = 1000000000.0
@@ -88,7 +91,7 @@ function getCostByID(id)
     -- dirverCost = 75
     -- processCost = 30
     -- heatSinkCost = 20
-    local CostID = {10, 15, 25, 35, 75, 85, 65}
+    local CostID = {10, 15, 30, 35, 75, 85, 65}
     return CostID[id + 1]
 end
 

@@ -232,7 +232,7 @@ function updateUI()
         local uiX = 230
         local uiY = 18
 
-        local waringTerm = math.sin(animationFCounter)
+        local waringTerm = math.sin(animationFCounter * 0.5)
         love.graphics.setColor(1.0, 0.2, 0.1, 0.2 * waringTerm)
         love.graphics.rectangle("fill", uiX - 15, uiY - 5, 100, 70)
     end
@@ -325,6 +325,16 @@ function drawMainMenu()
 end
 
 function drawPlayingGame()
+    if inWarningState then
+        local uiX = 0
+        local uiY = 0
+
+        local waringTerm = math.sin(animationFCounter * 0.5)
+        love.graphics.setColor(0.5, 0.1, 0.1, 0.2 * waringTerm)
+        -- love.graphics.setColor(0.0, 0.0, 1.0, 1.0)
+        love.graphics.rectangle("fill", uiX - 15, uiY - 5, 223, 223)
+    end
+
     updateTileMap()
 
     local grid_coord = MapIdx2GridCoord(cursor.cx, cursor.cy)
@@ -363,31 +373,76 @@ function drawPlayingGame()
     love.graphics.draw(gamePlayUIBG, 0, 0)
 end
 function drawRegisterScore()
-    --     
-    local font = love.graphics.newFont(14)
-    love.graphics.print("GAMEOVER", 0, 40)
+    local uiX = 25
+    local dminY = -11
+    local dY = 60
 
-    if endingData ~= nil then
-        if endingData.endingTime <= 0 then
-            love.graphics.print("You survived", 0, 60)
-            local earnedMoney = endingData.endingCash - initCash
-            if earnedMoney >= 0 then
-                love.graphics.print("And you have earned " .. earnedMoney ..
-                                        " money", 0, 80)
-            else
-                love.graphics.print("However, you lost " .. earnedMoney ..
-                                        " money", 0, 80)
-            end
-        else
-            local survivedTime = stepCounterMax - endingData.endingTime
-            love.graphics.print("You run out money", 0, 60)
-            love.graphics.print("You have survived " .. survivedTime ..
-                                    " rounds", 0, 80)
-        end
-        love.graphics.print("Press A to Return to Menu", 0, 100)
+    love.graphics.setColor(0.8, 0.8, 0.8)
+
+    if endingData.endingTime <= 0 then
+        local font = love.graphics.setNewFont(25)
+        love.graphics.print("YOU MADE IT", uiX - 2, 40 + dminY)
+    else
+        local font = love.graphics.setNewFont(30)
+        love.graphics.print("GAMEOVER", uiX - 2, 40 + dminY)
     end
-    -- TODO 
+
+    local earnedMoney = endingData.endingCash - initCash
+
+    local font = love.graphics.setNewFont(14)
+    if earnedMoney >= 0 then
+        love.graphics.print("you've earned ", uiX, 80 + dminY)
+    else
+        if endingData.endingTime <= 0 then
+            love.graphics.print("however, you've lost ", uiX, 80 + dminY)
+        else
+            love.graphics.print("and you've lost ", uiX, 80 + dminY)
+        end
+    end
+    local font = love.graphics.setNewFont(24)
+    if earnedMoney >= 0 then
+        love.graphics.setColor(0.2, 0.8, 0.1)
+    else
+        love.graphics.setColor(0.8, 0.2, 0.1)
+    end
+    love.graphics.print(math.abs(earnedMoney), uiX + 60, 101 + dminY)
+    love.graphics.setColor(0.8, 0.8, 0.8)
+    local font = love.graphics.setNewFont(14)
+
+    if earnedMoney >= 0 then
+        love.graphics.print(" extra money", uiX + 80, 130 + dminY)
+    else
+        love.graphics.print(" money", uiX + 120, 130 + dminY)
+    end
+
+    local survivedTime = stepCounterMax - endingData.endingTime
+    local font = love.graphics.setNewFont(14)
+    love.graphics.print("you've survived ", uiX, 80 + dY)
+    local font = love.graphics.setNewFont(24)
+    love.graphics.print(survivedTime, uiX + 60, 102 + dY)
+    local font = love.graphics.setNewFont(14)
+    love.graphics.print(" rounds", uiX + 120, 130 + dY)
+
+    local font = love.graphics.setNewFont(10)
+    love.graphics.print("Press A to return", 14, 205)
+
+    local font = love.graphics.setNewFont(10)
+    love.graphics.print("Created By", 225, 95)
+    love.graphics.print("theArchitect", 246, 108)
+
+    love.graphics.print("Atwood", 225, 130)
+    love.graphics.print("MasterOfKMK", 225, 142)
+    love.graphics.print("Yuxuan Su", 225, 154)
+    love.graphics.print("Zi Tian", 225, 166)
+
+    local font = love.graphics.setNewFont(12)
+    love.graphics.print("Thank you", 224, 185)
+    love.graphics.print("For playing", 242, 200)
+
+    love.graphics.setColor(1.0, 1.0, 1.0)
+    love.graphics.draw(gamePlayUIBG, 0, 0)
+    love.graphics.draw(studioLogo, 232, 22, 0, 0.25, 0.25)
 end
 function drawViewScore()
-    -- TODO 
+    -- REMOVED
 end
