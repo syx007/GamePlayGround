@@ -95,6 +95,8 @@ function loadUIResource()
     cashUI = love.graphics.newImage("Art/UI/cash.png")
     incomeUI = love.graphics.newImage("Art/UI/Income.png")
     arrowUI = love.graphics.newImage("Art/UI/arrow.png")
+    EnterTipsUI=love.graphics.newImage("Art/UI/pressAtostart.png")
+    
 end
 
 function loadSFX()

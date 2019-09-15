@@ -239,7 +239,65 @@ function updateUI()
     drawShopUI()
     -- printButtonTips()
 end
+function drawCodefall(frameCounter)
+    flags={}
+    if frameCounter%300==0 then
+        for i=1,32 do
+            local k=math.floor(math.random(0,32));
+            if k<8 then
+                flags[k]=true
+            end
+        end
+    else
+        for i=0,31 do
+            flags[i]=false
+        end
+    end
 
+    if frameCounter%50==0 then
+
+        for i=0,31 do
+            temp[i].ch=string.char(math.floor(math.random(33,126)))
+            --print(temp[i].ch)
+            if flags[i]==true then
+                --print("i=",i)
+                temp[i].alpha=1
+            else
+                if temp[i].alpha>0 then
+                    temp[i].alpha=temp[i].alpha-0.1
+                else
+                    temp[i].alpha=0
+                end
+            end
+        end
+
+        for i=0,22 do
+            for j=0,31 do
+                strmap[i+1][j].ch=strmap[i][j].ch
+                strmap[i+1][j].alpha=strmap[i][j].alpha
+            end
+        end
+        for j=0,31 do
+            strmap[0][j].ch=temp[j].ch
+            strmap[0][j].alpha=temp[j].alpha
+        end
+    end
+    for i=0,23 do
+        for j=0,31 do
+            --print("idx=",i,j)
+            --a=love.graphics.getColor()
+            love.graphics.setColor(0.05,0.6,0.6,strmap[i][j].alpha)
+            --print(i,j,strmap[i][j].ch,strmap[i][j].alpha)
+            love.graphics.print(strmap[i][j].ch,j*10,i*10)
+
+        end
+    end
+    love.graphics.setColor(1,1,1,1)
+
+end
+function drawEnterTips(timer)
+    love.graphics.draw(EnterTipsUI,95,162+5*math.sin(2*timer))
+end
 function drawMainMenu()
     local hWindowWidth = windowWidth / 2.0
     local hWindowHeight = windowHeight / 2.0
@@ -250,18 +308,20 @@ function drawMainMenu()
     local mainLogoY = (windowHeight / 2) - (mainLogoHeight / 2) - 25
     love.graphics.draw(mainGameLogo, 0, 0)
     -- love.graphics.draw(studioLogo, 160, 120, 0, 0.1, 0.1)
+    --drawCodefall(frameCounter)
+    drawEnterTips(timer)
 
-    local font = love.graphics.newFont(14)
-    love.graphics.printf("Game Start", 0, hWindowHeight + 20, windowWidth,
-                         "center")
+    --local font = love.graphics.newFont(14)
+    --love.graphics.printf("Game Start", 0, hWindowHeight + 20, windowWidth,
+    --                     "center")
 
-    local font = love.graphics.newFont(14)
-    love.graphics.printf("...Pending", 0, hWindowHeight + 45, windowWidth,
-                         "center")
+    --local font = love.graphics.newFont(14)
+    --love.graphics.printf("...Pending", 0, hWindowHeight + 45, windowWidth,
+    --                     "center")
 
-    love.graphics.rectangle("line", hWindowWidth - 40,
-                            hWindowHeight + 20 - 2 + 24 * mmCursor.x, 80, 20, 3,
-                            5)
+    --love.graphics.rectangle("line", hWindowWidth - 40,
+    --                        hWindowHeight + 20 - 2 + 24 * mmCursor.x, 80, 20, 3,
+    --                        5)
 end
 
 function drawPlayingGame()
