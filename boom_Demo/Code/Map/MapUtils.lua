@@ -259,50 +259,34 @@ function DFS_Network(x, y, depth, queue)
 
         if IsSpreadableNetwork(westID) then
             if checkConnection(x, y, 1) then
-                if mapData[x][y].idOnOff ~= nil then
-                    mapData[x][y].idOnOff =
-                        SetSideOnOff(mapData[x][y].idOnOff,
-                                     rotatePtr(1, mapData[x][y].rotation), 2)
-                    DFS_Network(x - 1, y, currentdepth, queue)
-                else
-                    return
-                end
+                mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                     rotatePtr(1, mapData[x][y]
+                                                                   .rotation), 2)
+                DFS_Network(x - 1, y, currentdepth, queue)
             end
         end
         if IsSpreadableNetwork(northID) then
             if checkConnection(x, y, 2) then
-                if mapData[x][y].idOnOff ~= nil then
-                    mapData[x][y].idOnOff =
-                        SetSideOnOff(mapData[x][y].idOnOff,
-                                     rotatePtr(2, mapData[x][y].rotation), 2)
-                    DFS_Network(x, y - 1, currentdepth, queue)
-                else
-                    return
-                end
+                mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                     rotatePtr(2, mapData[x][y]
+                                                                   .rotation), 2)
+                DFS_Network(x, y - 1, currentdepth, queue)
             end
         end
         if IsSpreadableNetwork(southID) then
             if checkConnection(x, y, 3) then
-                if mapData[x][y].idOnOff ~= nil then
-                    mapData[x][y].idOnOff =
-                        SetSideOnOff(mapData[x][y].idOnOff,
-                                     rotatePtr(3, mapData[x][y].rotation), 2)
-                    DFS_Network(x, y + 1, currentdepth, queue)
-                else
-                    return
-                end
+                mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                     rotatePtr(3, mapData[x][y]
+                                                                   .rotation), 2)
+                DFS_Network(x, y + 1, currentdepth, queue)
             end
         end
         if IsSpreadableNetwork(eastID) then
             if checkConnection(x, y, 4) then
-                if mapData[x][y].idOnOff ~= nil then
-                    mapData[x][y].idOnOff =
-                        SetSideOnOff(mapData[x][y].idOnOff,
-                                     rotatePtr(4, mapData[x][y].rotation), 2)
-                    DFS_Network(x + 1, y, currentdepth, queue)
-                else
-                    return
-                end
+                mapData[x][y].idOnOff = SetSideOnOff(mapData[x][y].idOnOff,
+                                                     rotatePtr(4, mapData[x][y]
+                                                                   .rotation), 2)
+                DFS_Network(x + 1, y, currentdepth, queue)
             end
         end
     end
@@ -411,15 +395,6 @@ function evaluateNetwork()
         local y = xy % 10
         local x = math.floor(xy / 10)
         queueTmp = math.floor(queueTmp / 100)
-
-        if mapData[x]==nil then 
-            --this would happen if the lane is too long, however, this is not practical in real gaming
-            return actualCout 
-        end
-        if mapData[x][y]==nil then 
-            --this would happen if the lane is too long, however, this is not practical in real gaming
-            return actualCout 
-        end
 
         -- could also turn on animation of network here
         mapData[x][y].playAnimation = true

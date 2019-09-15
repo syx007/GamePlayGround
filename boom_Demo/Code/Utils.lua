@@ -63,11 +63,7 @@ end
 function mathClamp(x, min, max) return math.min(math.max(x, min), max) end
 
 function GetSideOnOff(data, ptr)
-    if data ~= nil then
-        return math.floor((data / math.pow(10, 4 - ptr))) % 10
-    else
-        return 0
-    end
+    return math.floor((data / math.pow(10, 4 - ptr))) % 10
 end
 
 function SetSideOnOff(data, ptr, onoff)
@@ -170,7 +166,7 @@ function initMap()
     for i = 1, mapLineCount do
         mapData[i] = {}
         for j = 1, mapLineCount do
-            -- is same currently but allow for different    
+            -- is same currently but allow for different
             mapData[i][j] = BlankTile()
         end
     end
@@ -185,14 +181,14 @@ function setTileMap()
 end
 
 function setTileMapByScramble()
-    local source = {nil, 00001, 41101, 51011, 11111, 31111, 11111, 20011}
-    local sourcePer = {30, 10, 10, 10, 10, 10, 10, 10}
+    local source = {nil, 00000, 10110}
+    local sourcePer = {15, 70, 15}
     mapData = {}
     for i = 1, mapLineCount do
         mapData[i] = {}
         for j = 1, mapLineCount do
             mapData[i][j] = BlankTile()
-            local rnd = love.math.random(0, 100)
+            local rnd = math.random(0, 100)
             local accm = sourcePer[1]
             local ptr = 1
             while rnd >= accm do
@@ -214,7 +210,7 @@ function setTileMapByCount()
     -- local source = {nil, 00000, 11001, 11221, 33131, 31131, 42222, 52222}
     -- local sourceCount = {16, 3, 2, 4, 5, 4, 1, 1}
     local source = {nil, 00001, 41101, 51011, 11111, 31111, 11111, 20011}
-    local sourceCount = {4, 5, 7, 1, 7, 1, 7, 4}
+    local sourceCount = {26, 2, 2, 1, 1, 1, 3, 1}
     -- local source = {nil, 41101, 51011}
     -- local sourceCount = {34, 1, 1}
     mapData = {}
@@ -230,12 +226,10 @@ function setTileMapByCount()
                 mapData[i][j] = nil
             else
                 mapData[i][j].id = source[rnd]
-                mapData[i][j].rotation = math.floor(love.math.random(4))+1
             end
             sourceCount[rnd] = sourceCount[rnd] - 1
         end
     end
-    -- autoQA=false
 end
 
 function setRealGamePlayMap()

@@ -53,11 +53,11 @@ end
 
 function initGamePlayData()
     initCash = 10000.0
-    stepCounterMax = 100
+    stepCounterMax = 10
     destoryInterval = 5
     destoryCount = 4
     -- initCash = 1000000000.0
-    -- stepCounterMax = 100000
+    -- stepCounterMax = 100
     -- destoryInterval = 9999999
     -- destoryCount = 4
 end

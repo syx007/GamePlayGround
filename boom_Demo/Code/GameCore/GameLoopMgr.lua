@@ -213,9 +213,6 @@ function PerStepUpdate()
     totalCash = totalCash + (totalIncome - totalCost)
     doDestory()
     refreshShop()
-    if autoQA then
-        setTileMapByCount()
-    end
 end
 
 function GameLoopUpdatePlayingGame(dt)
