@@ -60,7 +60,7 @@ function printScore()
     else
         love.graphics.setColor(1, 1, 1)
         love.graphics.draw(incomeUI, uiX - 3, uiY + uiDY - 2, 0, 1.0, 1.0)
-        local font = love.graphics.newFont(14)
+        local font = love.graphics.setNewFont(12)
         local totalBenefit = totalIncome - totalCost
         if totalBenefit >= 0 then
             love.graphics.setColor(0.2, 1.0, 0.1)
@@ -79,7 +79,7 @@ function printScore()
         else
             love.graphics.setColor(1.0, 0.2, 0.1)
         end
-        local font = love.graphics.newFont(14)
+        local font = love.graphics.setNewFont(12)
         love.graphics.print((totalCash), uiX + 20, uiY * 2.0 + uiDY)
 
         inWarningState = inWarningState or (totalCash < initCash / 5.0)
