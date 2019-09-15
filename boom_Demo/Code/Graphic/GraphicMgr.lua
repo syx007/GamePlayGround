@@ -212,6 +212,15 @@ end
 function drawCursor(grid_x, grid_y, r, g, b, a)
     DrawMapUnit(grid_x, grid_y, camera_bias_x, camera_bias_y, r, g, b, a)
 end
+
+function drawDestoryCursor(grid_x, grid_y, r, g, b, a)
+    local coord = getWorldCoordfromGrid(grid_x, grid_y, camera_bias_x,
+                                        camera_bias_y)
+    love.graphics.setColor(r, g, b, a)
+    love.graphics.rectangle("line", coord.x+3, coord.y+3, cellSize - 5,
+                            cellSize - 5, 3, 5)
+end
+
 function updateAnimation()
     -- TODO
 end
@@ -240,65 +249,59 @@ function updateUI()
     -- printButtonTips()
 end
 function drawCodefall(frameCounter)
-    flags={}
-    if frameCounter%10==0 then
-        local val={}
-        for i=0,31 do
-            val[i]=math.floor(math.random(0,32));
-            if val[i]<2 then
-                flags[i]=true
-            end
+    flags = {}
+    if frameCounter % 300 == 0 then
+        for i = 1, 32 do
+            local k = math.floor(math.random(0, 32))
+            if k < 8 then flags[k] = true end
         end
     else
-        for i=0,31 do
-            flags[i]=false
-        end
+        for i = 0, 31 do flags[i] = false end
     end
 
-    if frameCounter%10==0 then
+    if frameCounter % 50 == 0 then
 
-        for i=0,31 do
-            temp[i].ch=string.char(math.floor(math.random(33,126)))
-            --print(temp[i].ch)
-            if flags[i]==true then
-                --print("i=",i)
-                temp[i].alpha=1
+        for i = 0, 31 do
+            temp[i].ch = string.char(math.floor(math.random(33, 126)))
+            -- print(temp[i].ch)
+            if flags[i] == true then
+                -- print("i=",i)
+                temp[i].alpha = 1
             else
-                if temp[i].alpha>0 then
-                    temp[i].alpha=temp[i].alpha-0.1
+                if temp[i].alpha > 0 then
+                    temp[i].alpha = temp[i].alpha - 0.1
                 else
-                    temp[i].alpha=0
+                    temp[i].alpha = 0
                 end
             end
         end
 
-        for i=22,0,-1 do
-            for j=0,31 do
-                strmap[i+1][j].ch=strmap[i][j].ch
-                strmap[i+1][j].alpha=strmap[i][j].alpha
+        for i = 0, 22 do
+            for j = 0, 31 do
+                strmap[i + 1][j].ch = strmap[i][j].ch
+                strmap[i + 1][j].alpha = strmap[i][j].alpha
             end
         end
-        for j=0,31 do
-            strmap[0][j].ch=temp[j].ch
-            strmap[0][j].alpha=temp[j].alpha
+        for j = 0, 31 do
+            strmap[0][j].ch = temp[j].ch
+            strmap[0][j].alpha = temp[j].alpha
         end
     end
-    local font = love.graphics.setNewFont(9)
-    for i=0,23 do
-        for j=0,31 do
-            --print("idx=",i,j)
-            --a=love.graphics.getColor()
-            love.graphics.setColor(0.05,0.6,0.6,strmap[i][j].alpha)
-            --print(i,j,strmap[i][j].ch,strmap[i][j].alpha)
-            love.graphics.print(strmap[i][j].ch,j*10,i*10)
+    for i = 0, 23 do
+        for j = 0, 31 do
+            -- print("idx=",i,j)
+            -- a=love.graphics.getColor()
+            love.graphics.setColor(0.05, 0.6, 0.6, strmap[i][j].alpha)
+            -- print(i,j,strmap[i][j].ch,strmap[i][j].alpha)
+            love.graphics.print(strmap[i][j].ch, j * 10, i * 10)
 
         end
     end
-    love.graphics.setColor(1,1,1,1)
+    love.graphics.setColor(1, 1, 1, 1)
 
 end
 function drawEnterTips(timer)
-    love.graphics.draw(EnterTipsUI,95,162+5*math.sin(2*timer))
+    love.graphics.draw(EnterTipsUI, 95, 162 + 5 * math.sin(2 * timer))
 end
 function drawMainMenu()
     local hWindowWidth = windowWidth / 2.0
@@ -308,21 +311,20 @@ function drawMainMenu()
     local mainLogoHeight = mainGameLogo:getHeight()
     local mainLogoX = (windowWidth / 2) - (mainLogoWidth / 2)
     local mainLogoY = (windowHeight / 2) - (mainLogoHeight / 2) - 25
-    love.graphics.draw(menuBackground, 0, 0)
+    love.graphics.draw(mainGameLogo, 0, 0)
     -- love.graphics.draw(studioLogo, 160, 120, 0, 0.1, 0.1)
-    drawCodefall(frameCounter)
-    love.graphics.draw(menuLogo, 0, 0)
+    -- drawCodefall(frameCounter)
     drawEnterTips(timer)
 
-    --local font = love.graphics.newFont(14)
-    --love.graphics.printf("Game Start", 0, hWindowHeight + 20, windowWidth,
+    -- local font = love.graphics.newFont(14)
+    -- love.graphics.printf("Game Start", 0, hWindowHeight + 20, windowWidth,
     --                     "center")
 
-    --local font = love.graphics.newFont(14)
-    --love.graphics.printf("...Pending", 0, hWindowHeight + 45, windowWidth,
+    -- local font = love.graphics.newFont(14)
+    -- love.graphics.printf("...Pending", 0, hWindowHeight + 45, windowWidth,
     --                     "center")
 
-    --love.graphics.rectangle("line", hWindowWidth - 40,
+    -- love.graphics.rectangle("line", hWindowWidth - 40,
     --                        hWindowHeight + 20 - 2 + 24 * mmCursor.x, 80, 20, 3,
     --                        5)
 end
@@ -353,7 +355,8 @@ function drawPlayingGame()
                     local grid_coord = MapIdx2GridCoord(
                                            nextDestoryPosX[i + 1] - 1,
                                            nextDestoryPosY[i + 1] - 1)
-                    drawCursor(grid_coord.x, grid_coord.y, 1.0, 0.0, 0.0, 1.0)
+                    drawDestoryCursor(grid_coord.x, grid_coord.y, 1.0, 0.0, 0.0,
+                                      1.0)
                 end
             elseif destoryCounter == 2 then
                 local gsize = map_size.w / MaxGridWidth
@@ -361,7 +364,8 @@ function drawPlayingGame()
                     local grid_coord = MapIdx2GridCoord(
                                            nextDestoryPosX[i + 1] - 1,
                                            nextDestoryPosY[i + 1] - 1)
-                    drawCursor(grid_coord.x, grid_coord.y, 0.8, 0.5, 0.0, 1.0)
+                    drawDestoryCursor(grid_coord.x, grid_coord.y, 0.8, 0.5, 0.0,
+                                      1.0)
                 end
             end
         end
