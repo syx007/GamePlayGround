@@ -1,6 +1,6 @@
 function reloadScreenPlayingGame()
     shopContent = {00000, 00000, 00000, 00000}
-    shopPrice = {150, 160, 170, 180}
+    shopPrice = {0, 0, 0, 0}
     -- body
     initCursor(mapWidthCount / 2, mapHeightCount / 2)
     initMap()
@@ -55,7 +55,7 @@ end
 function reloadScreenMainMenu()
     -- body
     love.audio.stop()
-    Music.menu:play() -- not yet
+    -- Music.menu:play() -- not yet
     initMainMenuCursor()
 end
 function reloadScreenRegisterScore()

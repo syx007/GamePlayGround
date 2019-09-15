@@ -122,8 +122,7 @@ function loadSFX()
 end
 function loadMusic()
     Music = {}
-    Music.menu = love.audio.newSource(MusicSFXPath .. "DataFlow" .. ".mp3",
-                                      "stream")
+    -- Music.menu = love.audio.newSource(MusicSFXPath .. "DataFlow" .. ".mp3", "stream")
     -- Music.playing=
 end
 

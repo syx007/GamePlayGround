@@ -78,7 +78,7 @@ function globalInit()
     tiker = 0.0
     frameCounter = 0
     frametiker = 0
-
+    noGoodSideCount = 0
     gridSize = cellSize
 
     love.math.setRandomSeed(love.timer.getTime())
