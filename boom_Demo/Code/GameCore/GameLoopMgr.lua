@@ -282,6 +282,7 @@ function GameLoopUpdatePlayingGame(dt)
             else
                 -- no cash
                 -- TODO
+                love.audio.play(SFX.move_denied)
             end
         else
             -- have bought once
