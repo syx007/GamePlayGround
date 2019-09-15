@@ -19,11 +19,8 @@ function GameLoopUpdateMainMenu(dt)
     mmCursor.dx = 0
     if mmCursor.action == 1 then
         mmCursor.action = 0
-        if mmCursor.x == 0 then
-            -- Entry Block
-            love.audio.play(SFX.move_cursor)
-            changeGameStateTo(1)
-        end
+        love.audio.play(SFX.move_cursor)
+        changeGameStateTo(1)
     end
     -- print(mmCursor.x)
 end

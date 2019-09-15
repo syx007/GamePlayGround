@@ -1,10 +1,10 @@
 -- we upadate all input data here
 function updateInputMainMenu(key)
-    if love.keyboard.isDown('up') then
-        mmCursor.dx = -1
-    elseif love.keyboard.isDown('down') then
-        mmCursor.dx = 1
-    end
+    -- if love.keyboard.isDown('up') then
+    --     mmCursor.dx = -1
+    -- elseif love.keyboard.isDown('down') then
+    --     mmCursor.dx = 1
+    -- end
     if (love.keyboard.isDown('z') or love.keyboard.isDown('j')) then
         mmCursor.action = 1
     end

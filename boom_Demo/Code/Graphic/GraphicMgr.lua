@@ -262,7 +262,6 @@ function drawCodefall(frameCounter)
     end
 
     if frameCounter % 10 == 0 then
-
         for i = 0, 31 do
             temp[i].ch = string.char(math.floor(math.random(33, 126)))
             -- print(temp[i].ch)
@@ -292,20 +291,17 @@ function drawCodefall(frameCounter)
     local font = love.graphics.setNewFont(9)
     for i = 0, 23 do
         for j = 0, 31 do
-            -- print("idx=",i,j)
-            -- a=love.graphics.getColor()
             love.graphics.setColor(0.05, 0.7, 0.7, strmap[i][j].alpha)
-            -- print(i,j,strmap[i][j].ch,strmap[i][j].alpha)
             love.graphics.print(strmap[i][j].ch, j * 10, i * 10)
-
         end
     end
     love.graphics.setColor(1, 1, 1, 1)
-
 end
+
 function drawEnterTips(timer)
     love.graphics.draw(EnterTipsUI, 95, 162 + 5 * math.sin(2 * timer))
 end
+
 function drawMainMenu()
     local hWindowWidth = windowWidth / 2.0
     local hWindowHeight = windowHeight / 2.0
@@ -316,7 +312,7 @@ function drawMainMenu()
     local mainLogoY = (windowHeight / 2) - (mainLogoHeight / 2) - 25
     love.graphics.draw(menuBackground, 0, 0)
 
-    drawCodefall(frameCounter)
+    drawCodefall(100)
     love.graphics.draw(menuLogo, 0, 0)
     drawEnterTips(timer)
 end
