@@ -109,9 +109,6 @@ function generateRandomSideCount()
         if love.math.random() < 0.5 then res = 5 - res end
         noGoodSideCount = 0
     end
-
-    print(res)
-
     return res
 end
 
