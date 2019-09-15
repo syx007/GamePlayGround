@@ -4,15 +4,37 @@ require("Code/GameStateSwh")
 -- tmd on DEOT we can't use Chinese comment
 -- DON'T write Chinese comment.
 
-function love.load()
+-- now random destory should implement ---DONE
+---need update random seed per game---DONE
+---need mutiple random destory---DONE
+----should be configurable---DONE
+---need presudo-random interval---DONE
+----should be configurable---DONE
 
+-- cost system should implement---DONE
+---should expose to designer---DONE
+-- shop system should implement---DONE
+---should comply to core/side rules---DONE
+
+-- should implement NetBridge ---DONE
+-- should implement HeatSink
+-- should implement “Smart Destory”
+
+-- shop could only buy once per move---DONE
+-- shop could sell Server/CPU---DONE
+
+-- should deal with side with multipledata---DONE
+-- is okay to show all network connector---DONE
+
+function globalInit()
+    -- this only do once
     loadResource()
     initTileMetaData()
     initTiles()
     gameState = 0
 
-    debug_directGame = true
-    -- debug_directGame = false
+    -- debug_directGame = true
+    debug_directGame = false
     if debug_directGame then gameState = 1 end
 
     debug_view = false
@@ -59,49 +81,12 @@ function love.load()
 
     gridSize = cellSize
 
-    win = false
-    hold_buying = false
-    buying_ptr = 0
-    -- haveSetRandomSeed = false
-
-    -- now random destory should implement ---DONE
-    ---need update random seed per game---DONE
-    ---need mutiple random destory---DONE
-    ----should be configurable---DONE
-    ---need presudo-random interval---DONE
-    ----should be configurable---DONE
-
-    -- cost system should implement---DONE
-    ---should expose to designer---DONE
-    -- shop system should implement---DONE
-    ---should comply to core/side rules---DONE
-
-    -- should implement NetBridge ---DONE
-    -- should implement HeatSink
-    -- should implement “Smart Destory”
-
-    -- shop could only buy once per move---DONE
-    -- shop could sell Server/CPU---DONE
-
-    -- should deal with side with multipledata---DONE
-    -- is okay to show all network connector---DONE
-
-    noSideID = 0
-    offSideID = 1
-    -- onSideID = 2 -- ?
-
-    nextDestoryPosX = nil
-    nextDestoryPosY = nil
-    stepDrawSwch = false
-    drawDestoryCursorSwch = false
-
-    haveBoughtInShop = false
-    haveBoughtInShopWaring = false
-    inWarningState = false
-
     love.math.setRandomSeed(love.timer.getTime())
     love.audio.setVolume(0.6)
+end
 
+function love.load()
+    globalInit()
     changeGameStateTo(gameState)
 end
 
@@ -112,7 +97,6 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
-    -- print(math.floor(love.math.random(4)))
     timer = timer + dt
     tiker = timer - math.floor(timer)
 
@@ -123,6 +107,6 @@ function love.update(dt)
 end
 
 function love.draw()
-    -- Return Blocker
+    -- Entry Blocker
     mainDrawingSwitch(gameState)
 end

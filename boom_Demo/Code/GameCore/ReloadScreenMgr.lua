@@ -28,6 +28,26 @@ function reloadScreenPlayingGame()
     endingData.endingCash = initCash
     endingData.endingTime = stepCounterMax
 
+    win = false
+    hold_buying = false
+    buying_ptr = 0
+    -- haveSetRandomSeed = false
+
+    noSideID = 0
+    offSideID = 1
+    -- onSideID = 2 -- ?
+
+    nextDestoryPosX = nil
+    nextDestoryPosY = nil
+    stepDrawSwch = false
+    drawDestoryCursorSwch = false
+
+    haveBoughtInShop = false
+    haveBoughtInShopWaring = false
+    inWarningState = false
+    
+    noGoodSideCount=0
+
     love.audio.stop()
     -- Music.menu:play() --not yet PlayGameplayBGM
 end
@@ -41,8 +61,10 @@ end
 function reloadScreenRegisterScore()
     -- GameOver Screen
     -- body
+    love.audio.stop()
     initGameOverCursor()
 end
 function reloadScreenViewScore()
     -- body
+    love.audio.stop()
 end

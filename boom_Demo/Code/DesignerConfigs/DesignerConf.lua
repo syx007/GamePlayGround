@@ -38,7 +38,11 @@ function initTileMetaData()
     ParllelCSideID = 2
     fenceSideID = 3
 
-    shopSidePer = {40, 35, 15, 10}
+    shopSideTwoOrThree = 40
+    shopSideTwoOrThreedelta = 10
+    shopSideOnePrecentage = 75
+
+    -- shopSidePer = {45, 20, 20, 15}
 
     autoQA = false
     couldOnlyBuyInShopOnce = true

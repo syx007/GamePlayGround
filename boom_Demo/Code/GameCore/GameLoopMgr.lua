@@ -90,19 +90,29 @@ function doDestory()
 end
 
 function generateRandomSideCount()
-    local rnd = math.random(0, 100)
-    local accm = shopSidePer[1]
-    local ptr = 1
-    while rnd >= accm do
-        ptr = ptr + 1
-        if shopSidePer[ptr] ~= nil then
-            accm = accm + shopSidePer[ptr]
-        else
-            return 2
-        end
+    local rnd = love.math.random(0, 100)
+    local res = 0
+    local actualPer = shopSideTwoOrThree + noGoodSideCount *
+                          shopSideTwoOrThreedelta
+    if rnd <= actualPer then
+        res = 2
+    else
+        res = 1
     end
 
-    return ptr
+    if res ~= 2 and res ~= 3 then
+        if love.math.random() > shopSideOnePrecentage / 100 then
+            res = 5 - res
+        end
+        noGoodSideCount = noGoodSideCount + 1
+    else
+        if love.math.random() < 0.5 then res = 5 - res end
+        noGoodSideCount = 0
+    end
+
+    print(res)
+
+    return res
 end
 
 function genShopTile()
