@@ -81,6 +81,23 @@ function globalInit()
     noGoodSideCount = 0
     gridSize = cellSize
 
+
+    strmap={}
+    for i=0,23 do
+        strmap[i]={}
+        for j=0,31 do
+            strmap[i][j]={ch,alpha}
+            strmap[i][j].ch="\0"
+            strmap[i][j].alpha=0
+        end
+    end
+    temp={}
+    for i=0,31 do
+        temp[i]={ch,alpha}
+        temp[i].ch="\0"
+        temp[i].alpha=0
+    end
+
     love.math.setRandomSeed(love.timer.getTime())
     love.audio.setVolume(0.6)
 end
